@@ -2,6 +2,7 @@
 <html lang="en" ng-app="nightwatch">
 <head>
     <meta charset="utf-8">
+    <base href="http://localhost:9200/_plugin/nightwatch/"></base>
     <title>Night Watch Elastic Search plugin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,27 +23,31 @@
           <md-icon class="material-icons md-48" style="color: greenyellow;">dashboard</md-icon>&nbsp;<span>Nightwatch 1.0</span>
         </md-button>
         <span flex></span>
-        <md-button aria-label="Health">
+        <md-button aria-label="Health" ui-sref="health">
           <md-icon class="material-icons md-48" style="color: greenyellow;">timeline</md-icon>&nbsp;<span>Health</span>
         </md-button>
-        <md-button aria-label="Percolator&nbsp;/&nbsp;Watcher">
+        <md-button aria-label="Percolator&nbsp;/&nbsp;Watcher" ui-sref="watcher">
           <md-icon class="material-icons md-48" style="color: greenyellow;">schedule</md-icon>&nbsp;Percolator&nbsp;/&nbsp;Watcher
         </md-button>
-        <md-button aria-label="Query">
+        <md-button aria-label="Query" ui-sref="query">
           <md-icon class="material-icons md-48" style="color: greenyellow;">code</md-icon>&nbsp;Query
         </md-button>
         <span flex></span>
-        <md-button class="md-icon-button" aria-label="Settings">
+        <md-button class="md-icon-button" aria-label="Settings" ui-sref="settings">
           <md-icon class="material-icons md-48" style="color: greenyellow;">settings</md-icon>
         </md-button>
       </div>
     </md-toolbar>
+    <md-content flex layout-padding>
+      <div ui-view layout="row" layout-align="center center" layout-wrap></div>
+    </md-content>
   </div>
 <script src="assets/libs/angular.min.js"></script>
 <script src="assets/libs/angular-aria.min.js"></script>
 <script src="assets/libs/angular-animate.min.js"></script>
 <script src="assets/libs/angular-messages.min.js"></script>
 <script src="assets/libs/angular-material.min.js"></script>
+<script src="assets/libs/angular-ui-router.min.js"></script>
 <script src="assets/js/nightwatch.js"></script>
 
 </body>
