@@ -40,7 +40,6 @@
       nightWatchVM.menu = menu;
 
       function menu() {
-        console.log('menu opened: ' + nightWatchVM.leftMenuOpen);
         nightWatchVM.leftMenuOpen != nightWatchVM.leftMenuOpen;
       }
     }
