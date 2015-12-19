@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="nightwatch">
+<head>
+    <meta charset="utf-8">
+    <title>Night Watch Elastic Search plugin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Plugin for dealing with Elastic Search">
+    <meta name="author" content="Antoine Picone">
+
+    <link href="assets/css/angular-material.css" rel="stylesheet">
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="assets/css/app.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <div ng-controller="NightWatchCtrl as nightWatchVM" layout="column" style="height:600px" ng-cloak>
+    <md-fab-toolbar md-open="nightWatchVM.leftMenuOpen" count="0" md-direction="right" ng-click="nightWatchVM.menu()">
+        <md-fab-trigger class="align-with-text">
+          <md-button aria-label="menu" class="md-fab md-primary">
+            <md-icon class="material-icons md-48">view_headline</md-icon>
+            <md-tooltip md-direction="bottom" ng-hide="leftMenuOpen">Display toolbar</md-tooltip>
+          </md-button>
+        </md-fab-trigger>
+        <md-toolbar>
+          <md-fab-actions class="md-toolbar-tools">
+            <md-button aria-label="comment" class="md-icon-button">
+              <md-icon class="material-icons md-48">timeline</md-icon>
+              <md-tooltip md-direction="right" ng-show="{{nightWatchVM.leftMenuOpen}}">Health</md-tooltip>
+            </md-button>
+            <md-button aria-label="label" class="md-icon-button">
+              <md-icon class="material-icons md-48">assignment</md-icon>
+              <md-tooltip md-direction="bottom" ng-show="nightWatchVM.leftMenuOpen">Percolator/Watcher</md-tooltip>
+            </md-button>
+            <md-button aria-label="photo" class="md-icon-button">
+              <md-icon class="material-icons md-48">code</md-icon>
+              <md-tooltip md-direction="bottom" ng-show="nightWatchVM.leftMenuOpen">Write query</md-tooltip>
+            </md-button>
+          </md-fab-actions>
+        </md-toolbar>
+      </md-fab-toolbar>
+  </div>
+<script src="assets/libs/angular.min.js"></script>
+<script src="assets/libs/angular-aria.min.js"></script>
+<script src="assets/libs/angular-animate.min.js"></script>
+<script src="assets/libs/angular-messages.min.js"></script>
+<script src="assets/libs/angular-material.min.js"></script>
+<script src="assets/js/nightwatch.js"></script>
+
+</body>
+</html>
