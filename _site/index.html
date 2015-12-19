@@ -16,27 +16,27 @@
 <body>
 
   <div ng-controller="NightWatchCtrl as nightWatchVM" layout="column" style="height:600px" ng-cloak>
-    <md-fab-toolbar md-open="nightWatchVM.leftMenuOpen" count="0" md-direction="right" ng-click="nightWatchVM.menu()">
-        <md-fab-trigger class="align-with-text">
-          <md-button aria-label="menu" class="md-fab md-primary">
-            <md-icon class="material-icons md-48">view_headline</md-icon>
-            <md-tooltip md-direction="bottom" ng-hide="leftMenuOpen">Display toolbar</md-tooltip>
-          </md-button>
-        </md-fab-trigger>
-        <md-toolbar>
-          <md-fab-actions class="md-toolbar-tools">
-            <md-button aria-label="comment">
-              <md-icon class="material-icons md-48" style="color: greenyellow;">timeline</md-icon>&nbsp;<span>Health</span>
-            </md-button>
-            <md-button aria-label="label">
-              <md-icon class="material-icons md-48" style="color: greenyellow;">assignment</md-icon>&nbsp;Percolator&nbsp;/&nbsp;Watcher
-            </md-button>
-            <md-button aria-label="photo">
-              <md-icon class="material-icons md-48" style="color: greenyellow;">code</md-icon>&nbsp;Query
-            </md-button>
-          </md-fab-actions>
-        </md-toolbar>
-      </md-fab-toolbar>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <md-button aria-label="Health">
+          <md-icon class="material-icons md-48" style="color: greenyellow;">dashboard</md-icon>&nbsp;<span>Nightwatch 1.0</span>
+        </md-button>
+        <span flex></span>
+        <md-button aria-label="Health">
+          <md-icon class="material-icons md-48" style="color: greenyellow;">timeline</md-icon>&nbsp;<span>Health</span>
+        </md-button>
+        <md-button aria-label="Percolator&nbsp;/&nbsp;Watcher">
+          <md-icon class="material-icons md-48" style="color: greenyellow;">schedule</md-icon>&nbsp;Percolator&nbsp;/&nbsp;Watcher
+        </md-button>
+        <md-button aria-label="Query">
+          <md-icon class="material-icons md-48" style="color: greenyellow;">code</md-icon>&nbsp;Query
+        </md-button>
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Settings">
+          <md-icon class="material-icons md-48" style="color: greenyellow;">settings</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
   </div>
 <script src="assets/libs/angular.min.js"></script>
 <script src="assets/libs/angular-aria.min.js"></script>
