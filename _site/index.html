@@ -16,8 +16,8 @@
 
 <body>
 
-  <div ng-controller="NightWatchCtrl as nightWatchVM" layout="column" style="height:600px" ng-cloak>
-    <md-toolbar>
+  <div ng-controller="NightWatchCtrl as nightWatchVM" style="height:600px" ng-cloak>
+    <md-toolbar layout="colum">
       <div class="md-toolbar-tools">
         <md-button aria-label="Home" ui-sref="index">
           <md-icon class="material-icons md-48" style="color: greenyellow;">dashboard</md-icon>&nbsp;<span>Nightwatch 1.0</span>
@@ -26,7 +26,7 @@
         <md-button aria-label="Health" ui-sref="health.nodes">
           <md-icon class="material-icons md-48" style="color: greenyellow;">timeline</md-icon>&nbsp;<span>Health</span>
         </md-button>
-        <md-button aria-label="Percolator&nbsp;/&nbsp;Watcher" ui-sref="watcher">
+        <md-button aria-label="Percolator&nbsp;/&nbsp;Watcher" ui-sref="watch.percolators">
           <md-icon class="material-icons md-48" style="color: greenyellow;">schedule</md-icon>&nbsp;Percolator&nbsp;/&nbsp;Watcher
         </md-button>
         <md-button aria-label="Query" ui-sref="query">
@@ -38,13 +38,13 @@
         </md-button>
       </div>
     </md-toolbar>
-    <md-content flex layout-padding>
-      <div layout="row" layout-align="center center" layout-wrap>
+    <md-content flex="grow">
+      <div layout="row" layout-align="center start" layout-wrap>
         <div ui-view="cluster"></div>
         <div ui-view="nodes"></div>
       </div>
-      <div ui-view layout="row" layout-align="center center" layout-wrap></div>
     </md-content>
+    <div ui-view layout="row" flex="grow" layout-align="center start" layout-wrap layout-fill></div>
     <footer class="footer" style="position: absolute; bottom: 0; width:100%">
       <div layout="row" layout-align="center end">
         <span>

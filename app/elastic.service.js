@@ -10,7 +10,8 @@
     return {
       health: health,
       indicesHealth: indicesHealth,
-      nodesInfo: nodesInfo
+      nodesInfo: nodesInfo,
+      percolators: percolators
     };
 
     function health() {
@@ -23,6 +24,10 @@
 
     function nodesInfo() {
       return $http.get('http://localhost:9200/_nodes');
+    }
+
+    function percolators(indice) {
+      return $http.get('http://localhost:9200/' + indice + '/.percolator/_search');
     }
   }
 })();

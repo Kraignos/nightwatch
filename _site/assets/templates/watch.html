@@ -1,0 +1,15 @@
+<div layout="row" layout-align="center start" flex="100" layout-wrap layout-fill>
+  <md-tabs md-dynamic-height md-border-bottom style="min-width: 90%;">
+    <md-tab label="Percolators" ui-sref="watch.percolators">
+      <md-content class="md-padding">
+        <div ui-view="percolator"></div>
+      </md-content>
+    </md-tab>
+    <md-tab label="Watchers" ui-sref="watch.watchers">
+      <md-content class="md-padding">
+        <h1 class="md-display-2">Watchers</h1>
+        <div ui-view="watchers"></div>
+      </md-content>
+    </md-tab>
+  </md-tabs>
+</div>

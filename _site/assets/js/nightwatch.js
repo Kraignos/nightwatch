@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2015-12-20
+/*! nightwatch - v1.0.0 - 2015-12-21
 * Copyright (c) 2015 ; Licensed  */
 (function() {
   'use strict';
@@ -69,9 +69,30 @@
           controller: 'HealthNodesCtrl',
           controllerAs: 'healthNodesVM'
         })
-        .state('watcher', {
-            url: '/watcher',
-            template: '<h5>Watcher</h5>'
+        .state('watch', {
+            url: '/watch',
+            abstract: 'true',
+            templateUrl: 'assets/templates/watch.html'
+        })
+        .state('watch.percolators', {
+            url: '/percolators',
+            views: {
+              'percolator': {
+                templateUrl: 'assets/templates/watch.percolators.html',
+                controller: 'PercolatorsCtrl',
+                controllerAs: 'percolatorsVM'
+              }
+            }
+        })
+        .state('watch.watchers', {
+            url: '/watchers',
+            views: {
+              'watchers': {
+                templateUrl: 'assets/templates/watch.watchers.html',
+                controller: 'WatchersCtrl',
+                controllerAs: 'watchersVM'
+              }
+            }
         })
         .state('query', {
             url: '/query',
@@ -119,7 +140,8 @@
     return {
       health: health,
       indicesHealth: indicesHealth,
-      nodesInfo: nodesInfo
+      nodesInfo: nodesInfo,
+      percolators: percolators
     };
 
     function health() {
@@ -132,6 +154,10 @@
 
     function nodesInfo() {
       return $http.get('http://localhost:9200/_nodes');
+    }
+
+    function percolators(indice) {
+      return $http.get('http://localhost:9200/' + indice + '/.percolator/_search');
     }
   }
 })();
@@ -249,5 +275,54 @@
       function menu() {
         nightWatchVM.leftMenuOpen != nightWatchVM.leftMenuOpen;
       }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('PercolatorsCtrl', PercolatorsCtrl);
+
+    PercolatorsCtrl.$inject = ['$scope', 'elastic'];
+
+    function PercolatorsCtrl($scope, elastic) {
+      var percolatorsVM = this;
+
+      percolatorsVM.indices = null;
+      percolatorsVM.indice = null;
+      percolatorsVM.percolators = null;
+      percolatorsVM.percolator = null;
+      percolatorsVM.loadIndices = loadIndices;
+      percolatorsVM.loadPercolators = loadPercolators;
+
+      function loadIndices() {
+        return elastic.indicesHealth().then(function(response) {
+          percolatorsVM.indices = _.keys(response.data.indices);
+        });
+      }
+
+      function loadPercolators() {
+        console.log('load percolators called');
+        return elastic.percolators(percolatorsVM.indice).then(function(response) {
+          percolatorsVM.percolators = response.data.hits.hits;
+        });
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatchersCtrl', WatchersCtrl);
+
+    WatchersCtrl.$inject = ['$scope'];
+
+    function WatchersCtrl($scope) {
+      var watchersVM = this;
+
+      // Injection though resolve promise in route
+      //healthNodesVM.nodes = nodes;
     }
 })();

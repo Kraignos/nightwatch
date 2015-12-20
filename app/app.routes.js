@@ -61,9 +61,30 @@
           controller: 'HealthNodesCtrl',
           controllerAs: 'healthNodesVM'
         })
-        .state('watcher', {
-            url: '/watcher',
-            template: '<h5>Watcher</h5>'
+        .state('watch', {
+            url: '/watch',
+            abstract: 'true',
+            templateUrl: 'assets/templates/watch.html'
+        })
+        .state('watch.percolators', {
+            url: '/percolators',
+            views: {
+              'percolator': {
+                templateUrl: 'assets/templates/watch.percolators.html',
+                controller: 'PercolatorsCtrl',
+                controllerAs: 'percolatorsVM'
+              }
+            }
+        })
+        .state('watch.watchers', {
+            url: '/watchers',
+            views: {
+              'watchers': {
+                templateUrl: 'assets/templates/watch.watchers.html',
+                controller: 'WatchersCtrl',
+                controllerAs: 'watchersVM'
+              }
+            }
         })
         .state('query', {
             url: '/query',

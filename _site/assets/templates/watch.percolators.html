@@ -1,0 +1,26 @@
+<div layout="column" layout-align="center center">
+  <form>
+    <div>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Choose on which indice you want to deal with percolators:</label>
+        <md-icon class="material-icons md-primary md-48">poll</md-icon>
+        <md-select placeholder="Choose an indice" ng-model="percolatorsVM.indice" md-on-open="percolatorsVM.loadIndices()" ng-change="percolatorsVM.loadPercolators()" style="min-width: 400px;">
+          <md-option ng-value="indice" ng-repeat="indice in percolatorsVM.indices">{{ indice }}</md-option>
+        </md-select>
+      </md-input-container>
+      <p class="md-caption">You have chosen the indice: {{ percolatorsVM.indice ? percolatorsVM.indice : 'No one yet' }}</p>
+    </div>
+  </form>
+  <md-list ng-show="!_.isEmpty(percolatorsVM.percolators.length)">
+    <md-subheader class="md-no-sticky">{{ percolatorsVM.percolators.length }} percolators in {{ percolatorsVM.indice }}</md-subheader>
+    <md-list-item class="md-2-line" ng-repeat="p in percolatorsVM.percolators">
+      <md-button class="md-fab md-mini md-primary" aria-label="See detail of {{ p._id }}">
+        <md-icon class="material-icons md-primary md-24">code</md-icon>
+      </md-button>
+      <div class="md-list-item-text">
+        <h3>{{ p._id }}</h3>
+        <p>{{ p._source }}</p>
+      </div>
+    </md-list-item>
+  </md-list>
+</div>
