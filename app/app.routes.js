@@ -26,14 +26,23 @@
             controller: 'HealthCtrl',
             controllerAs: 'healthVM'
         })
-        .state('health.details', {
-          url: '/health_details',
-          templateUrl: 'assets/templates/health.details.html',
+        .state('health.indices', {
+          url: '/health_indices',
+          templateUrl: 'assets/templates/health.indices.html',
           resolve: {
-            details: clusterDetails
+            indices: clusterIndices
           },
-          controller: 'HealthDetailsCtrl',
-          controllerAs: 'healthDetailsVM'
+          controller: 'HealthIndicesCtrl',
+          controllerAs: 'healthIndicesVM'
+        })
+        .state('health.nodes', {
+          url: '/health_nodes',
+          templateUrl: 'assets/templates/health.nodes.html',
+          resolve: {
+            nodes: clusterNodes
+          },
+          controller: 'HealthNodesCtrl',
+          controllerAs: 'healthNodesVM'
         })
         .state('watcher', {
             url: '/watcher',
@@ -50,7 +59,8 @@
     }
 
     clusterStatus.$inject = ['elastic'];
-    clusterDetails.$inject = ['elastic'];
+    clusterIndices.$inject = ['elastic'];
+    clusterNodes.$inject = ['elastic'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
@@ -58,9 +68,15 @@
       });
     }
 
-    function clusterDetails(elastic) {
+    function clusterIndices(elastic) {
       return elastic.indicesHealth().then(function(response) {
-        return response.data;
+        return response.data.indices;
+      });
+    }
+
+    function clusterNodes(elastic) {
+      return elastic.nodesInfo().then(function(response) {
+        return response.data.nodes;
       });
     }
   }

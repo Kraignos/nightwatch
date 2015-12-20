@@ -34,14 +34,23 @@
             controller: 'HealthCtrl',
             controllerAs: 'healthVM'
         })
-        .state('health.details', {
-          url: '/health_details',
-          templateUrl: 'assets/templates/health.details.html',
+        .state('health.indices', {
+          url: '/health_indices',
+          templateUrl: 'assets/templates/health.indices.html',
           resolve: {
-            details: clusterDetails
+            indices: clusterIndices
           },
-          controller: 'HealthDetailsCtrl',
-          controllerAs: 'healthDetailsVM'
+          controller: 'HealthIndicesCtrl',
+          controllerAs: 'healthIndicesVM'
+        })
+        .state('health.nodes', {
+          url: '/health_nodes',
+          templateUrl: 'assets/templates/health.nodes.html',
+          resolve: {
+            nodes: clusterNodes
+          },
+          controller: 'HealthNodesCtrl',
+          controllerAs: 'healthNodesVM'
         })
         .state('watcher', {
             url: '/watcher',
@@ -58,7 +67,8 @@
     }
 
     clusterStatus.$inject = ['elastic'];
-    clusterDetails.$inject = ['elastic'];
+    clusterIndices.$inject = ['elastic'];
+    clusterNodes.$inject = ['elastic'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
@@ -66,9 +76,15 @@
       });
     }
 
-    function clusterDetails(elastic) {
+    function clusterIndices(elastic) {
       return elastic.indicesHealth().then(function(response) {
-        return response.data;
+        return response.data.indices;
+      });
+    }
+
+    function clusterNodes(elastic) {
+      return elastic.nodesInfo().then(function(response) {
+        return response.data.nodes;
       });
     }
   }
@@ -85,7 +101,8 @@
   function elastic($http) {
     return {
       health: health,
-      indicesHealth: indicesHealth
+      indicesHealth: indicesHealth,
+      nodesInfo: nodesInfo
     };
 
     function health() {
@@ -94,6 +111,10 @@
 
     function indicesHealth() {
       return $http.get('http://localhost:9200/_cluster/health?level=indices');
+    }
+
+    function nodesInfo() {
+      return $http.get('http://localhost:9200/_nodes');
     }
   }
 })();
@@ -109,14 +130,19 @@
     function HealthCtrl($scope, cluster) {
       var healthVM = this;
       var icons = { green: 'thumb_up', yellow: 'thumbs_up_down', red: 'thumb_down'};
+      var colors = { green: 'greenyellow', yellow: 'yellow', red: 'red'};
 
       // Injection though resolve promise in route
       healthVM.cluster = cluster;
-
+      healthVM.clusterColor = clusterColor;
       healthVM.clusterIcon = clusterIcon;
 
       function clusterIcon(status) {
         return icons[status];
+      }
+
+      function clusterColor(status) {
+        return colors[status];
       }
     }
 })();
@@ -125,30 +151,48 @@
   'use strict';
 
   angular.module('nightwatch')
-    .controller('HealthDetailsCtrl', HealthDetailsCtrl);
+    .controller('HealthIndicesCtrl', HealthIndicesCtrl);
 
-    HealthDetailsCtrl.$inject = ['$scope', 'details'];
+    HealthIndicesCtrl.$inject = ['$scope', 'indices'];
 
-    function HealthDetailsCtrl($scope, details) {
-      var healthDetailsVM = this;
+    function HealthIndicesCtrl($scope, indices) {
+      var healthIndicesVM = this;
       var icons = { green: 'thumb_up', yellow: 'thumbs_up_down', red: 'thumb_down'};
+      var colors = { green: 'greenyellow', yellow: 'yellow', red: 'red'};
 
       // Injection though resolve promise in route
-      healthDetailsVM.details = details;
-      healthDetailsVM.clusterIcon = clusterIcon;
-      healthDetailsVM.indiceName = indiceName;
-
-      angular.forEach(healthDetailsVM.details.indices, function(detail, index) {
-        console.log('detail: ' + _.keys(healthDetailsVM.details.indices));
-      });
+      healthIndicesVM.indices = indices;
+      healthIndicesVM.clusterIcon = clusterIcon;
+      healthIndicesVM.clusterColor = clusterColor;
+      healthIndicesVM.indiceName = indiceName;
 
       function clusterIcon(status) {
         return icons[status];
       }
 
-      function indiceName(index) {
-        return _.keys(healthDetailsVM.details.indices)[index];
+      function clusterColor(status) {
+        return colors[status];
       }
+
+      function indiceName(index) {
+        return _.keys(healthIndicesVM.indices)[index];
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('HealthNodesCtrl', HealthNodesCtrl);
+
+    HealthNodesCtrl.$inject = ['$scope', 'nodes'];
+
+    function HealthNodesCtrl($scope, nodes) {
+      var healthNodesVM = this;
+
+      // Injection though resolve promise in route
+      healthNodesVM.nodes = nodes;
     }
 })();
 

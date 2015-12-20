@@ -1,0 +1,25 @@
+<div layout="row" layout-sm="column" layout-align="start start" layout-wrap>
+  <md-card ng-repeat="node in healthNodesVM.nodes">
+    <md-card-header>
+      <md-card-avatar style="background-color: #5c6bc0; border-radius: 99%;">
+        <md-icon class="material-icons" style="color: greenyellow;">cloud_queue</md-icon>
+      </md-card-avatar>
+      <md-card-header-text>
+        <span class="md-title">{{ node.name }}</span>
+        <span class="md-subhead">elastic &nbsp;{{ node.version }}</span>
+      </md-card-header-text>
+    </md-card-header>
+    <md-card-title>
+      <md-card-title-text>
+        <span class="md-headline">Host:&nbsp;{{ node.host }}</span>
+        <span class="md-subhead">IP:&nbsp;{{ node.ip }}</span>
+      </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+      <div layout="row" ng-repeat="plugin in node.plugins">
+        <div flex="80">{{ plugin.name }}</div>
+        <div flex="20" flex-direction="reverse">{{ plugin.version }}</div>
+      </div>
+    </md-card-content>
+  </md-card>
+</div>

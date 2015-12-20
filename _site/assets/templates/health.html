@@ -1,8 +1,8 @@
 <div layout="row" layout-sm="column" layout-align="center center" layout-wrap>
   <md-card>
     <md-card-header>
-      <md-card-avatar>
-        <md-icon class="material-icons" ng-style="{color: healthVM.cluster.status }">{{ healthVM.clusterIcon(healthVM.cluster.status) }}</md-icon>
+      <md-card-avatar style="background-color: #5c6bc0; border-radius: 99%;">
+        <md-icon class="material-icons" ng-style="{color: healthVM.clusterColor(healthVM.cluster.status) }">{{ healthVM.clusterIcon(healthVM.cluster.status) }}</md-icon>
       </md-card-avatar>
       <md-card-header-text>
         <span class="md-title">{{ healthVM.cluster.cluster_name }}</span>
@@ -17,7 +17,7 @@
     </md-card-title>
     <md-card-content>
       <p>
-        <strong>{{ healthVM.cluster.number_of_nodes }}</strong> nodes<br>
+        <a ui-sref="health.nodes" style="text-decoration: none;"><strong>{{ healthVM.cluster.number_of_nodes }}</strong> nodes<br></a>
         <strong>{{ healthVM.cluster.number_of_data_nodes }}</strong> data nodes
       </p>
       <p>
@@ -29,7 +29,7 @@
       </p>
     </md-card-content>
     <md-card-actions layout="row" layout-align="end center">
-      <md-button class="md-fab md-mini md-primary" aria-label="More" ui-sref="health.details">
+      <md-button class="md-fab md-mini md-primary" aria-label="More" ui-sref="health.indices">
         <md-icon class="material-icons md-48" style="color: greenyellow;">zoom_in</md-icon>
       </md-button>
     </md-card-actions>

@@ -1,0 +1,28 @@
+<div layout="row" layout-sm="column" layout-align="start start" layout-wrap>
+  <md-card ng-repeat="indice in healthIndicesVM.indices">
+    <md-card-header>
+      <md-card-avatar style="background-color: #5c6bc0; border-radius: 99%;">
+        <md-icon class="material-icons" ng-style="{color: healthIndicesVM.clusterColor(indice.status) }">{{ healthIndicesVM.clusterIcon(indice.status) }}</md-icon>
+      </md-card-avatar>
+      <md-card-header-text>
+        <span class="md-title">{{ healthIndicesVM.indiceName($index) }}</span>
+        <span class="md-subhead">indice</span>
+      </md-card-header-text>
+    </md-card-header>
+    <md-card-title>
+      <md-card-title-text>
+        <span class="md-headline">{{ _.keys(healthIndicesVM.indices) }}</span>
+        <span class="md-subhead"></span>
+      </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+      <p>
+        <strong>{{ indice.active_primary_shards }}</strong> active primary shards<br>
+        <strong>{{ indice.active_shards }}</strong> active shards<br>
+        <strong>{{ indice.relocating_shards }}</strong> relocating shards<br>
+        <strong>{{ indice.initializing_shards }}</strong> initializing shards<br>
+        <strong>{{ indice.unassigned_shards }}</strong> unassigned shards<br>
+      </p>
+    </md-card-content>
+  </md-card>
+</div>
