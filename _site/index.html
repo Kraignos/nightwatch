@@ -39,6 +39,10 @@
       </div>
     </md-toolbar>
     <md-content flex layout-padding>
+      <div layout="row" layout-align="center center" layout-wrap>
+        <div ui-view="cluster"></div>
+        <div ui-view="nodes"></div>
+      </div>
       <div ui-view layout="row" layout-align="center center" layout-wrap></div>
     </md-content>
   </div>

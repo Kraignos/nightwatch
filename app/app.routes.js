@@ -15,7 +15,24 @@
       $stateProvider
         .state('index', {
             url: '/',
-            template: '<h5>Home</h5>'
+            views: {
+              'cluster': {
+                templateUrl: 'assets/templates/health.html',
+                resolve: {
+                  cluster: clusterStatus
+                },
+                controller: 'HealthCtrl',
+                controllerAs: 'healthVM'
+              },
+              'nodes': {
+                templateUrl: 'assets/templates/health.nodes.html',
+                resolve: {
+                  nodes: clusterNodes
+                },
+                controller: 'HealthNodesCtrl',
+                controllerAs: 'healthNodesVM'
+              }
+            }
         })
         .state('health', {
             url: '/health',
