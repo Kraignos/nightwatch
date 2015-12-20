@@ -19,7 +19,12 @@
         })
         .state('health', {
             url: '/health',
-            templateUrl: 'assets/templates/health.html'
+            templateUrl: 'assets/templates/health.html',
+            resolve: {
+              cluster: clusterStatus
+            },
+            controller: 'HealthCtrl',
+            controllerAs: 'healthVM'
         })
         .state('watcher', {
             url: '/watcher',
@@ -33,6 +38,14 @@
             url: '/settings',
             template: '<h5>Settings</h5>'
         });
+    }
+
+    clusterStatus.$inject = ['elastic'];
+
+    function clusterStatus(elastic) {
+      return elastic.health().then(function(response) {
+        return response.data;
+      });
     }
   }
 })();

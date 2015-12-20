@@ -27,7 +27,12 @@
         })
         .state('health', {
             url: '/health',
-            templateUrl: 'assets/templates/health.html'
+            templateUrl: 'assets/templates/health.html',
+            resolve: {
+              cluster: clusterStatus
+            },
+            controller: 'HealthCtrl',
+            controllerAs: 'healthVM'
         })
         .state('watcher', {
             url: '/watcher',
@@ -42,7 +47,71 @@
             template: '<h5>Settings</h5>'
         });
     }
+
+    clusterStatus.$inject = ['elastic'];
+
+    function clusterStatus(elastic) {
+      return elastic.health().then(function(response) {
+        return response.data;
+      });
+    }
   }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .factory('elastic', elastic);
+
+  elastic.$inject = ['$http'];
+
+  function elastic($http) {
+    return {
+      health: health
+    };
+
+    function health() {
+      return $http.get('http://localhost:9200/_cluster/health');
+    }
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('HealthCtrl', HealthCtrl);
+
+    HealthCtrl.$inject = ['$scope', 'cluster'];
+
+    function HealthCtrl($scope, cluster) {
+      var healthVM = this;
+      console.log('cluster: ' + angular.toJson(cluster));
+
+      // Injection though resolve promise in route
+      healthVM.cluster = cluster;
+      healthVM.color = clusterColor();
+      console.log('color: ' + healthVM.color);
+
+      healthVM.clusterIcon = clusterIcon;
+
+      function clusterIcon() {
+        if (healthVM.cluster.status === 'green') {
+          return 'thumb_up';
+        }
+        else if (healthVM.cluster.status === 'yellow') {
+          return 'thumbs_up_down';
+        }
+        else {
+          return 'thumb_down';
+        }
+      }
+
+      function clusterColor() {
+        return '{ color: ' + healthVM.cluster.status + '; }';
+      }
+    }
 })();
 
 (function() {

@@ -1,3 +1,37 @@
-<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-  Health
-</section>
+<div layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+  <md-card>
+        <md-card-header>
+          <md-card-avatar>
+            <md-icon class="material-icons" ng-style="{color: healthVM.cluster.status }">{{ healthVM.clusterIcon() }}</md-icon>
+          </md-card-avatar>
+          <md-card-header-text>
+            <span class="md-title">{{ healthVM.cluster.cluster_name }}</span>
+            <span class="md-subhead">{{ healthVM.cluster.active_shards_percent_as_number }}%</span>
+          </md-card-header-text>
+        </md-card-header>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Cluster information</span>
+            <span class="md-subhead"></span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+          <p>
+            <strong>{{ healthVM.cluster.number_of_nodes }}</strong> nodes<br>
+            <strong>{{ healthVM.cluster.number_of_data_nodes }}</strong> data nodes
+          </p>
+          <p>
+            <strong>{{ healthVM.cluster.active_primary_shards }}</strong> active primary shards<br>
+            <strong>{{ healthVM.cluster.active_shards }}</strong> active shards<br>
+            <strong>{{ healthVM.cluster.relocating_shards }}</strong> relocating shards<br>
+            <strong>{{ healthVM.cluster.initializing_shards }}</strong> initializing shards<br>
+            <strong>{{ healthVM.cluster.unassigned_shards }}</strong> unassigned shards<br>
+          </p>
+        </md-card-content>
+        <md-card-actions layout="row" layout-align="end center">
+          <md-button class="md-fab md-mini md-primary" aria-label="More" ui-sref="healthDetails">
+            <md-icon class="material-icons md-48" style="color: greenyellow;">zoom_in</md-icon>
+          </md-button>
+        </md-card-actions>
+      </md-card>
+</div>
