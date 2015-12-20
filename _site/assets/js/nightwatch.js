@@ -34,6 +34,15 @@
             controller: 'HealthCtrl',
             controllerAs: 'healthVM'
         })
+        .state('health.details', {
+          url: '/health_details',
+          templateUrl: 'assets/templates/health.details.html',
+          resolve: {
+            details: clusterDetails
+          },
+          controller: 'HealthDetailsCtrl',
+          controllerAs: 'healthDetailsVM'
+        })
         .state('watcher', {
             url: '/watcher',
             template: '<h5>Watcher</h5>'
@@ -49,9 +58,16 @@
     }
 
     clusterStatus.$inject = ['elastic'];
+    clusterDetails.$inject = ['elastic'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
+        return response.data;
+      });
+    }
+
+    function clusterDetails(elastic) {
+      return elastic.indicesHealth().then(function(response) {
         return response.data;
       });
     }
@@ -68,11 +84,16 @@
 
   function elastic($http) {
     return {
-      health: health
+      health: health,
+      indicesHealth: indicesHealth
     };
 
     function health() {
       return $http.get('http://localhost:9200/_cluster/health');
+    }
+
+    function indicesHealth() {
+      return $http.get('http://localhost:9200/_cluster/health?level=indices');
     }
   }
 })();
@@ -87,29 +108,46 @@
 
     function HealthCtrl($scope, cluster) {
       var healthVM = this;
-      console.log('cluster: ' + angular.toJson(cluster));
+      var icons = { green: 'thumb_up', yellow: 'thumbs_up_down', red: 'thumb_down'};
 
       // Injection though resolve promise in route
       healthVM.cluster = cluster;
-      healthVM.color = clusterColor();
-      console.log('color: ' + healthVM.color);
 
       healthVM.clusterIcon = clusterIcon;
 
-      function clusterIcon() {
-        if (healthVM.cluster.status === 'green') {
-          return 'thumb_up';
-        }
-        else if (healthVM.cluster.status === 'yellow') {
-          return 'thumbs_up_down';
-        }
-        else {
-          return 'thumb_down';
-        }
+      function clusterIcon(status) {
+        return icons[status];
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('HealthDetailsCtrl', HealthDetailsCtrl);
+
+    HealthDetailsCtrl.$inject = ['$scope', 'details'];
+
+    function HealthDetailsCtrl($scope, details) {
+      var healthDetailsVM = this;
+      var icons = { green: 'thumb_up', yellow: 'thumbs_up_down', red: 'thumb_down'};
+
+      // Injection though resolve promise in route
+      healthDetailsVM.details = details;
+      healthDetailsVM.clusterIcon = clusterIcon;
+      healthDetailsVM.indiceName = indiceName;
+
+      angular.forEach(healthDetailsVM.details.indices, function(detail, index) {
+        console.log('detail: ' + _.keys(healthDetailsVM.details.indices));
+      });
+
+      function clusterIcon(status) {
+        return icons[status];
       }
 
-      function clusterColor() {
-        return '{ color: ' + healthVM.cluster.status + '; }';
+      function indiceName(index) {
+        return _.keys(healthDetailsVM.details.indices)[index];
       }
     }
 })();

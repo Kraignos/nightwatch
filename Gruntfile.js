@@ -34,7 +34,7 @@ module.exports = function (grunt) {
         jshint: {
             options: {
                 jshintrc: '.jshintrc',
-                "force": true
+                'force': true
             },
             all: [
                 'Gruntfile.js',
@@ -101,8 +101,8 @@ module.exports = function (grunt) {
         rsync: {
             git: {
                 options: {
-                    src: [""],
-                    args: ["--verbose"],
+                    src: [''],
+                    args: ['--verbose'],
                     exclude: ['.git*',
                         '.idea',
                         '.sass-cache',
@@ -121,41 +121,42 @@ module.exports = function (grunt) {
                     ],
                     recursive: true,
                     syncDestIgnoreExcl: true,
-                    dest: "_site/"
+                    dest: '_site/'
                 }
             },
             libs: {
                 options: {
                     src: [
-                        "bower_components/angular/angular.min.js",
-                        "bower_components/angular-aria/angular-aria.min.js",
-                        "bower_components/angular-animate/angular-animate.min.js",
-                        "bower_components/angular-messages/angular-messages.min.js",
-                        "bower_components/angular-material/angular-material.min.js",
-                        "bower_components/angular-ui-router/release/angular-ui-router.min.js"
+                        'bower_components/angular/angular.min.js',
+                        'bower_components/angular-aria/angular-aria.min.js',
+                        'bower_components/angular-animate/angular-animate.min.js',
+                        'bower_components/angular-messages/angular-messages.min.js',
+                        'bower_components/angular-material/angular-material.min.js',
+                        'bower_components/angular-ui-router/release/angular-ui-router.min.js',
+                        'bower_components/underscore/underscore-min.js'
                     ],
-                    args: ["--verbose"],
+                    args: ['--verbose'],
                     recursive: true,
                     syncDestIgnoreExcl: true,
-                    dest: "_site/assets/libs/"
+                    dest: '_site/assets/libs/'
                 }
             },
             deploy: {
                 options: {
-                    src: ["_site","plugin-descriptor.properties"],
-                    args: ["--verbose"],
+                    src: ['_site','plugin-descriptor.properties'],
+                    args: ['--verbose'],
                     exclude: [
                     ],
                     recursive: true,
                     syncDestIgnoreExcl: true,
-                    dest: "/Users/antoine/Development/elasticsearch-2.1.0/plugins/nightwatch"
+                    dest: '/Users/antoine/Development/elasticsearch-2.1.0/plugins/nightwatch'
                 }
             }
         },
         devserver: {
             options: {
                 port : 8888,
-                base : "_site"
+                base : '_site'
             },
             server: {}
         }
