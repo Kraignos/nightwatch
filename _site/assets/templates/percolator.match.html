@@ -1,0 +1,43 @@
+<md-dialog aria-label="Match a document" ng-cloak style="min-width: 50%; min-height: 75%;">
+  <form>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Match a document on "{{ percolatorMatchVM.percolator }}"</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="percolatorMatchVM.cancelForm()">
+          <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Choose the mapping in which the document is:</label>
+          <md-icon class="material-icons md-primary md-48">poll</md-icon>
+          <md-select placeholder="Choose a mapping" ng-model="percolatorMatchVM.mapping" md-on-open="percolatorMatchVM.loadMappings()" style="min-width: 400px;">
+            <md-option ng-value="mapping" ng-repeat="mapping in percolatorMatchVM.mappings">{{ mapping }}</md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container class="md-block">
+          <label>Document to match</label>
+          <textarea ng-model="percolatorMatchVM.document" columns="1" md-maxlength="1000" rows="10"></textarea>
+        </md-input-container>
+        <p ng-show="percolatorMatchVM.document.length > 0">
+          <h3 ng-show="percolatorMatchVM.document.length > 0">Copy / paste this command in a bash:</h3>
+          <code ng-show="percolatorMatchVM.document.length > 0">
+            {{ 'curl -XGET ' + 'http://localhost:9200/' + percolatorMatchVM.indice + '/' + percolatorMatchVM.mapping + '/_percolate' + ' -d \'{' }}<br>
+            {{ '&nbsp;&nbsp;"doc":' }}<br>
+            {{ '&nbsp;&nbsp;&nbsp;&nbsp;' + percolatorMatchVM.document }}<br>
+            {{ '}\''}}
+          </code>
+        </p>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-fill layout-align="center end">
+      <span flex></span>
+      <md-button style="margin-right:20px;" ng-click="percolatorMatchVM.cancelForm()">
+        <md-icon class="material-icons">done</md-icon>&nbsp;Got it
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

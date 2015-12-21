@@ -17,14 +17,21 @@
       <md-fab-speed-dial md-open="false" md-direction="right" class="md-fling" flex="15">
         <md-fab-trigger>
           <md-button class="md-fab md-mini md-primary" aria-label="See detail of {{ p._id }}">
+            <md-tooltip md-direction="top" md-visible="tooltipVisible">Display actions</md-tooltip>
             <md-icon class="material-icons">loupe</md-icon>
           </md-button>
         </md-fab-trigger>
         <md-fab-actions>
           <md-button aria-label="See content" class="md-fab md-raised md-mini md-primary">
+            <md-tooltip md-direction="top" md-visible="tooltipVisible">Display query</md-tooltip>
             <md-icon class="material-icons" style="color: greenyellow;">code</md-icon>
           </md-button>
+          <md-button aria-label="See content" class="md-fab md-raised md-mini md-primary"  ng-click="percolatorsVM.matchPercolator($event, percolatorsVM.indice, p._id)">
+            <md-tooltip md-direction="top" md-visible="tooltipVisible">Match a document</md-tooltip>
+            <md-icon class="material-icons" style="color: greenyellow;">check</md-icon>
+          </md-button>
           <md-button aria-label="Delete" class="md-fab md-raised md-mini md-warn" ng-click="percolatorsVM.deletePercolator($event, p._id, $index)">
+            <md-tooltip md-direction="top" md-visible="tooltipVisible">Delete</md-tooltip>
             <md-icon class="material-icons">delete</md-icon>
           </md-button>
         </md-fab-actions>

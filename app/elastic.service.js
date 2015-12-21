@@ -10,6 +10,7 @@
     return {
       health: health,
       indicesHealth: indicesHealth,
+      indiceInfo: indiceInfo,
       nodesInfo: nodesInfo,
       percolators: percolators,
       deletePercolator: deletePercolator,
@@ -38,6 +39,10 @@
 
     function createPercolator(indice, name, query) {
       return $http.put('http://localhost:9200/' + indice + '/.percolator/' + name, query);
+    }
+
+    function indiceInfo(indice) {
+      return $http.get('http://localhost:9200/' + indice);
     }
   }
 })();

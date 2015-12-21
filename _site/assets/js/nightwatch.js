@@ -140,6 +140,7 @@
     return {
       health: health,
       indicesHealth: indicesHealth,
+      indiceInfo: indiceInfo,
       nodesInfo: nodesInfo,
       percolators: percolators,
       deletePercolator: deletePercolator,
@@ -168,6 +169,10 @@
 
     function createPercolator(indice, name, query) {
       return $http.put('http://localhost:9200/' + indice + '/.percolator/' + name, query);
+    }
+
+    function indiceInfo(indice) {
+      return $http.get('http://localhost:9200/' + indice);
     }
   }
 })();
@@ -292,6 +297,39 @@
   'use strict';
 
   angular.module('nightwatch')
+    .controller('PercolatorMatchCtrl', PercolatorMatchCtrl);
+
+    PercolatorMatchCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data'];
+
+    function PercolatorMatchCtrl($scope, $mdDialog, elastic, data) {
+      var percolatorMatchVM = this;
+
+      percolatorMatchVM.indice = data.indice;
+      percolatorMatchVM.percolator = data.percolator;
+      percolatorMatchVM.document = '';
+      percolatorMatchVM.mappings = null;
+      percolatorMatchVM.mapping = null;
+
+      percolatorMatchVM.loadMappings = loadMappings;
+      percolatorMatchVM.cancelForm = cancelForm;
+
+      function loadMappings() {
+        return elastic.indiceInfo(percolatorMatchVM.indice).then(function(response) {
+          console.log('mappings: ' + angular.toJson(response));
+          percolatorMatchVM.mappings = _.keys(response.data[percolatorMatchVM.indice].mappings);
+        });
+      }
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('PercolatorsCtrl', PercolatorsCtrl);
 
     PercolatorsCtrl.$inject = ['$scope', '$mdDialog', 'elastic'];
@@ -299,7 +337,6 @@
     function PercolatorsCtrl($scope, $mdDialog, elastic) {
       var percolatorsVM = this;
 
-      percolatorsVM.searchedIndice = null;
       percolatorsVM.indices = null;
       percolatorsVM.indice = null;
       percolatorsVM.percolators = null;
@@ -311,6 +348,7 @@
       percolatorsVM.displayForm = displayForm;
       percolatorsVM.cancelForm = cancelForm;
       percolatorsVM.createPercolator = createPercolator;
+      percolatorsVM.matchPercolator = matchPercolator;
 
       function loadIndices() {
         return elastic.indicesHealth().then(function(response) {
@@ -388,6 +426,22 @@
             percolatorsVM.indices = $scope.currentIndices;
             percolatorsVM.indice = $scope.currentIndice;
           });
+      }
+
+      function matchPercolator(event, indice, percolator) {
+        $mdDialog.show({
+          controller: 'PercolatorMatchCtrl',
+          controllerAs: 'percolatorMatchVM',
+          templateUrl: 'assets/templates/percolator.match.html',
+          parent: angular.element(document.body),
+          targetEvent: event,
+          clickOutsideToClose: true,
+          resolve: {
+            data: function() {
+              return { indice: percolatorsVM.indice, percolator: percolator };
+            }
+          }
+        });
       }
     }
 })();
