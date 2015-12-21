@@ -16,6 +16,9 @@
       percolatorsVM.loadIndices = loadIndices;
       percolatorsVM.loadPercolators = loadPercolators;
       percolatorsVM.deletePercolator = deletePercolator;
+      percolatorsVM.displayForm = displayForm;
+      percolatorsVM.cancelForm = cancelForm;
+      percolatorsVM.createPercolator = createPercolator;
 
       function loadIndices() {
         return elastic.indicesHealth().then(function(response) {
@@ -47,6 +50,48 @@
               console.error('an error occured');
             })
         });
+      }
+
+      function displayForm(event, indice) {
+        $scope.currentIndice = indice;
+        $scope.currentIndices = percolatorsVM.indices;
+        $scope.oldPercolators = percolatorsVM.percolators;
+        $mdDialog.show({
+          controller: PercolatorsCtrl,
+          controllerAs: 'percolatorsVM',
+          templateUrl: 'assets/templates/percolator.dialog.html',
+          parent: angular.element(document.body),
+          targetEvent: event,
+          scope: $scope,
+          preserveScope: true
+        })
+        .then(function() {
+          percolatorsVM.percolators = $scope.oldPercolators;
+          percolatorsVM.indices = $scope.currentIndices;
+          percolatorsVM.indice = $scope.currentIndice;
+        });
+      }
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function createPercolator(indice, name, query) {
+        elastic.createPercolator(indice, name, query)
+          .success(function() {
+            $mdDialog.cancel();
+            $scope.oldPercolators.push({ '_id': name, '_source': query });
+            percolatorsVM.percolators = $scope.oldPercolators;
+            percolatorsVM.indices = $scope.currentIndices;
+            percolatorsVM.indice = $scope.currentIndice;
+          })
+          .error(function() {
+            console.error('an error occured');
+            $mdDialog.cancel();
+            percolatorsVM.percolators = $scope.oldPercolators;
+            percolatorsVM.indices = $scope.currentIndices;
+            percolatorsVM.indice = $scope.currentIndice;
+          });
       }
     }
 })();
