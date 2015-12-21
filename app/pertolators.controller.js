@@ -13,6 +13,7 @@
       percolatorsVM.indice = null;
       percolatorsVM.percolators = null;
       percolatorsVM.percolator = null;
+      percolatorsVM.displayPercolators = displayPercolators;
       percolatorsVM.loadIndices = loadIndices;
       percolatorsVM.loadPercolators = loadPercolators;
       percolatorsVM.deletePercolator = deletePercolator;
@@ -30,6 +31,10 @@
         return elastic.percolators(percolatorsVM.indice).then(function(response) {
           percolatorsVM.percolators = response.data.hits.hits;
         });
+      }
+
+      function displayPercolators() {
+        return !_.isNull(percolatorsVM.percolators) && percolatorsVM.percolators.length > 0;
       }
 
       function deletePercolator(event, p, index) {
