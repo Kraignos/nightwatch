@@ -11,7 +11,8 @@
       health: health,
       indicesHealth: indicesHealth,
       nodesInfo: nodesInfo,
-      percolators: percolators
+      percolators: percolators,
+      deletePercolator: deletePercolator
     };
 
     function health() {
@@ -28,6 +29,10 @@
 
     function percolators(indice) {
       return $http.get('http://localhost:9200/' + indice + '/.percolator/_search');
+    }
+
+    function deletePercolator(indice, p) {
+      return $http.delete('http://localhost:9200/' + indice + '/.percolator/' + p);
     }
   }
 })();
