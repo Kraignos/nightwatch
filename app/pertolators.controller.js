@@ -23,7 +23,6 @@
       }
 
       function loadPercolators() {
-        console.log('load percolators called');
         return elastic.percolators(percolatorsVM.indice).then(function(response) {
           percolatorsVM.percolators = response.data.hits.hits;
         });
