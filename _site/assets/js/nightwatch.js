@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2015-12-21
+/*! nightwatch - v1.0.0 - 2015-12-22
 * Copyright (c) 2015 ; Licensed  */
 (function() {
   'use strict';
@@ -297,6 +297,45 @@
   'use strict';
 
   angular.module('nightwatch')
+    .controller('PercolatorCreateCtrl', PercolatorCreateCtrl);
+
+    PercolatorCreateCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data'];
+
+    function PercolatorCreateCtrl($scope, $mdDialog, elastic, data) {
+      var percolatorsCreateVM = this;
+
+      percolatorsCreateVM.indice = data.indice;
+      percolatorsCreateVM.name = null;
+      percolatorsCreateVM.query = null;
+
+      percolatorsCreateVM.createPercolator = createPercolator;
+      percolatorsCreateVM.cancelForm = cancelForm;
+
+      function createPercolator() {
+        elastic.createPercolator(percolatorsCreateVM.indice, percolatorsCreateVM.name, percolatorsCreateVM.query)
+          .success(function() {
+            closeForm({ '_id': percolatorsCreateVM.name, '_source': percolatorsCreateVM.query });
+          })
+          .error(function() {
+            console.error('an error occured');
+            $mdDialog.cancel();
+          });
+      }
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function closeForm(percolator) {
+        $mdDialog.hide(percolator);
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('PercolatorMatchCtrl', PercolatorMatchCtrl);
 
     PercolatorMatchCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data'];
@@ -315,8 +354,9 @@
 
       function loadMappings() {
         return elastic.indiceInfo(percolatorMatchVM.indice).then(function(response) {
-          console.log('mappings: ' + angular.toJson(response));
-          percolatorMatchVM.mappings = _.keys(response.data[percolatorMatchVM.indice].mappings);
+          percolatorMatchVM.mappings = _.filter(_.keys(response.data[percolatorMatchVM.indice].mappings), function(m) {
+            return m !== '.percolator'
+          });
         });
       }
 
@@ -347,7 +387,6 @@
       percolatorsVM.deletePercolator = deletePercolator;
       percolatorsVM.displayForm = displayForm;
       percolatorsVM.cancelForm = cancelForm;
-      percolatorsVM.createPercolator = createPercolator;
       percolatorsVM.matchPercolator = matchPercolator;
 
       function loadIndices() {
@@ -387,45 +426,24 @@
       }
 
       function displayForm(event, indice) {
-        $scope.currentIndice = indice;
-        $scope.currentIndices = percolatorsVM.indices;
-        $scope.oldPercolators = percolatorsVM.percolators;
         $mdDialog.show({
-          controller: PercolatorsCtrl,
-          controllerAs: 'percolatorsVM',
+          controller: 'PercolatorCreateCtrl',
+          controllerAs: 'percolatorsCreateVM',
           templateUrl: 'assets/templates/percolator.dialog.html',
           parent: angular.element(document.body),
           targetEvent: event,
-          scope: $scope,
-          preserveScope: true
-        })
-        .then(function() {
-          percolatorsVM.percolators = $scope.oldPercolators;
-          percolatorsVM.indices = $scope.currentIndices;
-          percolatorsVM.indice = $scope.currentIndice;
+          resolve: {
+            data: function() {
+              return { indice: percolatorsVM.indice };
+            }
+          }
+        }).then(function(percolator) {
+          percolatorsVM.percolators.push(percolator);
         });
       }
 
       function cancelForm() {
         $mdDialog.cancel();
-      }
-
-      function createPercolator(indice, name, query) {
-        elastic.createPercolator(indice, name, query)
-          .success(function() {
-            $mdDialog.cancel();
-            $scope.oldPercolators.push({ '_id': name, '_source': query });
-            percolatorsVM.percolators = $scope.oldPercolators;
-            percolatorsVM.indices = $scope.currentIndices;
-            percolatorsVM.indice = $scope.currentIndice;
-          })
-          .error(function() {
-            console.error('an error occured');
-            $mdDialog.cancel();
-            percolatorsVM.percolators = $scope.oldPercolators;
-            percolatorsVM.indices = $scope.currentIndices;
-            percolatorsVM.indice = $scope.currentIndice;
-          });
       }
 
       function matchPercolator(event, indice, percolator) {

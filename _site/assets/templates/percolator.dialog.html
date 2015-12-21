@@ -4,7 +4,7 @@
       <div class="md-toolbar-tools">
         <h2>Create a percolator</h2>
         <span flex></span>
-        <md-button class="md-icon-button" ng-click="percolatorsVM.cancelForm()">
+        <md-button class="md-icon-button" ng-click="percolatorsCreateVM.cancelForm()">
           <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
         </md-button>
       </div>
@@ -13,20 +13,20 @@
       <div class="md-dialog-content">
         <md-input-container class="md-block">
           <label>Name</label>
-          <input ng-model="name">
+          <input ng-model="percolatorsCreateVM.name">
         </md-input-container>
         <md-input-container class="md-block">
           <label>Query</label>
-          <textarea ng-model="query" columns="1" md-maxlength="1000" rows="10"></textarea>
+          <textarea ng-model="percolatorsCreateVM.query" columns="1" md-maxlength="1000" rows="10"></textarea>
         </md-input-container>
       </div>
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-fill layout-align="center end">
       <span flex></span>
-      <md-button ng-click="percolatorsVM.cancelForm()">
+      <md-button ng-click="percolatorsCreateVM.cancelForm()">
        <md-icon class="material-icons">close</md-icon>&nbsp;Cancel
       </md-button>
-      <md-button ng-click="percolatorsVM.createPercolator(currentIndice, name, query)" style="margin-right:20px;">
+      <md-button ng-click="percolatorsCreateVM.createPercolator()" style="margin-right:20px;">
         <md-icon class="material-icons">done</md-icon>&nbsp;Save
       </md-button>
     </md-dialog-actions>
