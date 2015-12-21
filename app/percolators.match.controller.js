@@ -20,8 +20,9 @@
 
       function loadMappings() {
         return elastic.indiceInfo(percolatorMatchVM.indice).then(function(response) {
-          console.log('mappings: ' + angular.toJson(response));
-          percolatorMatchVM.mappings = _.keys(response.data[percolatorMatchVM.indice].mappings);
+          percolatorMatchVM.mappings = _.filter(_.keys(response.data[percolatorMatchVM.indice].mappings), function(m) {
+            return m !== '.percolator'
+          });
         });
       }
 
