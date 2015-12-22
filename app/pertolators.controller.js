@@ -4,9 +4,9 @@
   angular.module('nightwatch')
     .controller('PercolatorsCtrl', PercolatorsCtrl);
 
-    PercolatorsCtrl.$inject = ['$scope', '$mdDialog', 'elastic'];
+    PercolatorsCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'notifications'];
 
-    function PercolatorsCtrl($scope, $mdDialog, elastic) {
+    function PercolatorsCtrl($scope, $mdDialog, elastic, notifications) {
       var percolatorsVM = this;
 
       percolatorsVM.indices = null;
@@ -49,10 +49,11 @@
         $mdDialog.show(confirm).then(function() {
           elastic.deletePercolator(percolatorsVM.indice, p)
             .success(function() {
+              notifications.showSimple('The percolator with name "' + p + '" has been deleted!');
               percolatorsVM.percolators.splice(index, 1);
             })
             .error(function() {
-              console.error('an error occured');
+              notifications.showSimple('An error occured while deleting the percolator with name "' + p + '"...');
             })
         });
       }

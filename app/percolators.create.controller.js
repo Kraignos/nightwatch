@@ -4,9 +4,9 @@
   angular.module('nightwatch')
     .controller('PercolatorCreateCtrl', PercolatorCreateCtrl);
 
-    PercolatorCreateCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data'];
+    PercolatorCreateCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data', 'notifications'];
 
-    function PercolatorCreateCtrl($scope, $mdDialog, elastic, data) {
+    function PercolatorCreateCtrl($scope, $mdDialog, elastic, data, notifications) {
       var percolatorsCreateVM = this;
 
       percolatorsCreateVM.indice = data.indice;
@@ -20,10 +20,11 @@
         elastic.createPercolator(percolatorsCreateVM.indice, percolatorsCreateVM.name, percolatorsCreateVM.query)
           .success(function() {
             closeForm({ '_id': percolatorsCreateVM.name, '_source': percolatorsCreateVM.query });
+            notifications.showSimple('The percolator with name "' + percolatorsCreateVM.name + '" has been created!');
           })
           .error(function() {
-            console.error('an error occured');
             $mdDialog.cancel();
+            notifications.showSimple('An error occured while creating the percolator with name "' + percolatorsCreateVM.name + '"...');
           });
       }
 

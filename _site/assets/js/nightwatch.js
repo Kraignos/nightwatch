@@ -297,11 +297,33 @@
   'use strict';
 
   angular.module('nightwatch')
+    .factory('notifications', notifications);
+
+  notifications.$inject = ['$mdToast'];
+
+  function notifications($mdToast) {
+    return {
+      showSimple: showSimple
+    };
+
+    function showSimple(message) {
+      return $mdToast.show($mdToast.simple()
+        .textContent(message)
+        .position('top right')
+        .hideDelay(3000));
+    }
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('PercolatorCreateCtrl', PercolatorCreateCtrl);
 
-    PercolatorCreateCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data'];
+    PercolatorCreateCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data', 'notifications'];
 
-    function PercolatorCreateCtrl($scope, $mdDialog, elastic, data) {
+    function PercolatorCreateCtrl($scope, $mdDialog, elastic, data, notifications) {
       var percolatorsCreateVM = this;
 
       percolatorsCreateVM.indice = data.indice;
@@ -315,10 +337,11 @@
         elastic.createPercolator(percolatorsCreateVM.indice, percolatorsCreateVM.name, percolatorsCreateVM.query)
           .success(function() {
             closeForm({ '_id': percolatorsCreateVM.name, '_source': percolatorsCreateVM.query });
+            notifications.showSimple('The percolator with name "' + percolatorsCreateVM.name + '" has been created!');
           })
           .error(function() {
-            console.error('an error occured');
             $mdDialog.cancel();
+            notifications.showSimple('An error occured while creating the percolator with name "' + percolatorsCreateVM.name + '"...');
           });
       }
 
@@ -372,9 +395,9 @@
   angular.module('nightwatch')
     .controller('PercolatorsCtrl', PercolatorsCtrl);
 
-    PercolatorsCtrl.$inject = ['$scope', '$mdDialog', 'elastic'];
+    PercolatorsCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'notifications'];
 
-    function PercolatorsCtrl($scope, $mdDialog, elastic) {
+    function PercolatorsCtrl($scope, $mdDialog, elastic, notifications) {
       var percolatorsVM = this;
 
       percolatorsVM.indices = null;
@@ -417,10 +440,11 @@
         $mdDialog.show(confirm).then(function() {
           elastic.deletePercolator(percolatorsVM.indice, p)
             .success(function() {
+              notifications.showSimple('The percolator with name "' + p + '" has been deleted!');
               percolatorsVM.percolators.splice(index, 1);
             })
             .error(function() {
-              console.error('an error occured');
+              notifications.showSimple('An error occured while deleting the percolator with name "' + p + '"...');
             })
         });
       }
