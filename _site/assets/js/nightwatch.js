@@ -85,14 +85,39 @@
             }
         })
         .state('watch.watchers', {
-            url: '/watchers',
-            views: {
-              'watchers': {
-                templateUrl: 'assets/templates/watch.watchers.html',
-                controller: 'WatchersCtrl',
-                controllerAs: 'watchersVM'
-              }
+          abstract: true,
+          url: '/watchers',
+          views: {
+            'watchers': {
+              templateUrl: 'assets/templates/watch.watchers.html',
+              controller: 'WatchersCtrl',
+              controllerAs: 'watchersVM'
             }
+          }
+        })
+        .state('watch.watchers.input', {
+          url: '/input',
+          templateUrl: 'assets/templates/watchers.input.html',
+          controller: 'WatchersCtrl',
+          controllerAs: 'watchersVM'
+        })
+        .state('watch.watchers.trigger', {
+          url: '/trigger',
+          templateUrl: 'assets/templates/watchers.trigger.html',
+          controller: 'WatchersCtrl',
+          controllerAs: 'watchersVM'
+        })
+        .state('watch.watchers.conditions', {
+          url: '/conditions',
+          templateUrl: 'assets/templates/watchers.conditions.html',
+          controller: 'WatchersCtrl',
+          controllerAs: 'watchersVM'
+        })
+        .state('watch.watchers.actions', {
+          url: '/actions',
+          templateUrl: 'assets/templates/watchers.actions.html',
+          controller: 'WatchersCtrl',
+          controllerAs: 'watchersVM'
         })
         .state('query', {
             url: '/query',
