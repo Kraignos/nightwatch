@@ -183,8 +183,19 @@
     .constant('WatchInputType', {
       SIMPLE: 'simple',
       SEARCH: 'search',
-      HTTP: 'http',
-      CHAIN: 'chain' 
+      HTTP: 'http'
+    })
+    .constant('SimpleInputType', {
+      STRING: 'str',
+      NUMERIC: 'num',
+      OBJECT: 'obj'
+    })
+    .constant('SearchInputType', {
+      DFS_QUERY_AND_FETCH: 'dfs_query_and_fetch',
+      DFS_QUERY_THEN_FETCH: 'dfs_query_then_fetch',
+      QUERY_AND_FETCH: 'query_and_fetch',
+      QUERY_THEN_FETCH: 'query_then_fetch',
+      SCAN: 'scan'
     });
 })();
 
@@ -554,22 +565,23 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType'];
 
-  function watchers(WatchInputType) {
+  function watchers(WatchInputType, SimpleInputType) {
     var inputs = {};
 
     var service = {
       getInputTypes: getInputTypes,
-      addWatcherInput: addWatcherInput,
+      setSimpleWatcherInput: setSimpleWatcherInput,
       getWatchInputs: getWatchInputs,
-      getWatcherSummary: getWatcherSummary
+      getWatcherSummary: getWatcherSummary,
+      getSimpleInputTypes: getSimpleInputTypes
     }
 
     return service;
 
-    function addWatcherInput(input) {
-      inputs = input;
+    function setSimpleWatcherInput(input) {
+      inputs[WatchInputType.SIMPLE] = input;
     }
 
     function getWatchInputs() {
@@ -584,6 +596,10 @@
       var summary = {};
       summary['input'] = inputs;
       return summary;
+    }
+
+    function getSimpleInputTypes() {
+      return [SimpleInputType.STRING, SimpleInputType.NUMERIC, SimpleInputType.OBJECT];
     }
   }
 })();
@@ -661,18 +677,40 @@
       var watcherInputVM = this;
 
       watcherInputVM.input = {};
-      watcherInputVM.type = _.keys(watcherInputs)[0] || '';
-      watcherInputVM.getTypes = getTypes;
+      watcherInputVM.type = '';
+
       watcherInputVM.goToTrigger = goToTrigger;
+      watcherInputVM.getTypes = getTypes;
+      watcherInputVM.getSimpleTypes = getSimpleTypes;
+      watcherInputVM.addSimpleInputType = addSimpleInputType;
+      watcherInputVM.getPrettyInput = getPrettyInput;
+      watcherInputVM.hasInput = hasInput;
+
+      function goToTrigger() {
+        $state.go('watch.watchers.trigger');
+      }
 
       function getTypes() {
         return watchers.getInputTypes();
       }
 
-      function goToTrigger() {
-        watcherInputVM.input[watcherInputVM.type] = '';
-        watchers.addWatcherInput(watcherInputVM.input);
-        $state.go('watch.watchers.trigger');
+      function getSimpleTypes() {
+        return watchers.getSimpleInputTypes();
+      }
+
+      function addSimpleInputType(nature, value) {
+        var simple = watcherInputVM.input['simple'] || {};
+        simple[nature] = nature === 'obj' ? angular.fromJson(value) : value;
+        watcherInputVM.input['simple'] = simple;
+        watchers.setSimpleWatcherInput(watcherInputVM.input);
+      }
+
+      function getPrettyInput() {
+        return angular.toJson(watcherInputVM.input, true);
+      }
+
+      function hasInput() {
+        return _.size(watcherInputVM.input) > 0;
       }
     }
 })();

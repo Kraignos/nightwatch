@@ -2,6 +2,13 @@
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Define your watch input(s)</span></div>
 </md-toolbar>
 <div flex layout-padding>
+  <div layout-gt-xs="row" flex="50" ng-show="!watcherInputVM.hasInput()">
+    <md-subheader class="md-warn">You have no input defined...</md-subheader>
+  </div>
+  <div layout-gt-xs="column" flex="100" ng-show="watcherInputVM.hasInput()">
+    <md-subheader class="md-primary">Your current watcher input is:</md-subheader>
+    <code>{{ watcherInputVM.getPrettyInput() }}</code>
+  </div>
   <form name="inputForm">
     <div layout-gt-xs="row" flex="50">
       <md-input-container class="md-block" flex-gt-xs>
@@ -13,10 +20,39 @@
         </md-select>
       </md-input-container>
     </div>
+    <!-- SIMPLE INPUT TYPE -->
+    <div layout-gt-xs="row" flex-fill flex="100" flex-layout="start start" ng-show="watcherInputVM.type === 'simple'">
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Choose the static data type</label>
+        <md-select ng-model="nature">
+          <md-option ng-repeat="data in watcherInputVM.getSimpleTypes()" value="{{ data }}">
+            {{ data }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label ng-show="nature !== 'obj'">Type the value of this simple input</label>
+        <label ng-show="nature === 'obj'">Type the JSON of this simple input</label>
+        <input ng-model="value" type="text" aria-label="Type the value" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <md-button class="md-fab md-accent md-hue-2"
+                      aria-label="Add this input"
+                      ng-click="watcherInputVM.addSimpleInputType(nature, value);nature='';value='';">
+          <md-tooltip md-direction="top">Add it</md-tooltip>
+          <md-icon class="material-icons md-primary md-12">add</md-icon>
+        </md-button>
+      </md-input-container>
+    </div>
+    <!-- SEARCH INPUT TYPE -->
+    <div layout-gt-xs="row" flex-fill flex="100" flex-layout="start start" ng-show="watcherInputVM.type === 'simple'">
+      
+    </div>
+    <!-- GO TO NEXT STEP -->
     <div layout-gt-xs="row" flex-inverse>
       <div flex-offset="95"></div>
       <div flex="5">
-        <md-button class="md-fab md-accent md-hue-2" aria-label="Next" ng-click="watcherInputVM.goToTrigger()">
+        <md-button class="md-fab md-primary md-hue-2" aria-label="Next" ng-click="watcherInputVM.goToTrigger()">
           <md-tooltip md-direction="top">Go to Trigger definition</md-tooltip>
           <md-icon class="material-icons md-primary md-48">chevron_right</md-icon>
         </md-button>

@@ -4,22 +4,23 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType'];
 
-  function watchers(WatchInputType) {
+  function watchers(WatchInputType, SimpleInputType) {
     var inputs = {};
 
     var service = {
       getInputTypes: getInputTypes,
-      addWatcherInput: addWatcherInput,
+      setSimpleWatcherInput: setSimpleWatcherInput,
       getWatchInputs: getWatchInputs,
-      getWatcherSummary: getWatcherSummary
+      getWatcherSummary: getWatcherSummary,
+      getSimpleInputTypes: getSimpleInputTypes
     }
 
     return service;
 
-    function addWatcherInput(input) {
-      inputs = input;
+    function setSimpleWatcherInput(input) {
+      inputs[WatchInputType.SIMPLE] = input;
     }
 
     function getWatchInputs() {
@@ -34,6 +35,10 @@
       var summary = {};
       summary['input'] = inputs;
       return summary;
+    }
+
+    function getSimpleInputTypes() {
+      return [SimpleInputType.STRING, SimpleInputType.NUMERIC, SimpleInputType.OBJECT];
     }
   }
 })();
