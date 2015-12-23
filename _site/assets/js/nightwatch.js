@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2015-12-22
+/*! nightwatch - v1.0.0 - 2015-12-23
 * Copyright (c) 2015 ; Licensed  */
 (function() {
   'use strict';
@@ -98,26 +98,29 @@
         .state('watch.watchers.input', {
           url: '/input',
           templateUrl: 'assets/templates/watchers.input.html',
-          controller: 'WatchersCtrl',
-          controllerAs: 'watchersVM'
+          resolve: {
+            watcherInputs: watcherInputs
+          },
+          controller: 'WatcherInputCtrl',
+          controllerAs: 'watcherInputVM'
         })
         .state('watch.watchers.trigger', {
           url: '/trigger',
           templateUrl: 'assets/templates/watchers.trigger.html',
-          controller: 'WatchersCtrl',
-          controllerAs: 'watchersVM'
+          controller: 'WatcherTriggerCtrl',
+          controllerAs: 'watcherTriggerVM'
         })
         .state('watch.watchers.conditions', {
           url: '/conditions',
           templateUrl: 'assets/templates/watchers.conditions.html',
-          controller: 'WatchersCtrl',
-          controllerAs: 'watchersVM'
+          controller: 'WatcherConditionsCtrl',
+          controllerAs: 'watcherConditionsVM'
         })
         .state('watch.watchers.actions', {
           url: '/actions',
           templateUrl: 'assets/templates/watchers.actions.html',
-          controller: 'WatchersCtrl',
-          controllerAs: 'watchersVM'
+          controller: 'WatcherActionsCtrl',
+          controllerAs: 'watcherActionsVM'
         })
         .state('query', {
             url: '/query',
@@ -132,6 +135,7 @@
     clusterStatus.$inject = ['elastic'];
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
+    watcherInputs.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
@@ -150,56 +154,24 @@
         return response.data.nodes;
       });
     }
+
+    function watcherInputs(watchers) {
+      return watchers.getWatchInputs();
+    }
   }
 })();
 
-(function() {
+(function () {
   'use strict';
 
-  angular.module('nightwatch')
-    .factory('elastic', elastic);
-
-  elastic.$inject = ['$http'];
-
-  function elastic($http) {
-    return {
-      health: health,
-      indicesHealth: indicesHealth,
-      indiceInfo: indiceInfo,
-      nodesInfo: nodesInfo,
-      percolators: percolators,
-      deletePercolator: deletePercolator,
-      createPercolator: createPercolator
-    };
-
-    function health() {
-      return $http.get('http://localhost:9200/_cluster/health');
-    }
-
-    function indicesHealth() {
-      return $http.get('http://localhost:9200/_cluster/health?level=indices');
-    }
-
-    function nodesInfo() {
-      return $http.get('http://localhost:9200/_nodes');
-    }
-
-    function percolators(indice) {
-      return $http.get('http://localhost:9200/' + indice + '/.percolator/_search');
-    }
-
-    function deletePercolator(indice, p) {
-      return $http.delete('http://localhost:9200/' + indice + '/.percolator/' + p);
-    }
-
-    function createPercolator(indice, name, query) {
-      return $http.put('http://localhost:9200/' + indice + '/.percolator/' + name, query);
-    }
-
-    function indiceInfo(indice) {
-      return $http.get('http://localhost:9200/' + indice);
-    }
-  }
+  angular
+    .module('nightwatch')
+    .constant('WatchInputType', {
+      SIMPLE: 'simple',
+      SEARCH: 'search',
+      HTTP: 'http',
+      CHAIN: 'chain' 
+    });
 })();
 
 (function() {
@@ -316,28 +288,6 @@
         nightWatchVM.leftMenuOpen != nightWatchVM.leftMenuOpen;
       }
     }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('nightwatch')
-    .factory('notifications', notifications);
-
-  notifications.$inject = ['$mdToast'];
-
-  function notifications($mdToast) {
-    return {
-      showSimple: showSimple
-    };
-
-    function showSimple(message) {
-      return $mdToast.show($mdToast.simple()
-        .textContent(message)
-        .position('top right')
-        .hideDelay(3000));
-    }
-  }
 })();
 
 (function() {
@@ -517,14 +467,215 @@
   'use strict';
 
   angular.module('nightwatch')
+    .factory('elastic', elastic);
+
+  elastic.$inject = ['$http'];
+
+  function elastic($http) {
+    return {
+      health: health,
+      indicesHealth: indicesHealth,
+      indiceInfo: indiceInfo,
+      nodesInfo: nodesInfo,
+      percolators: percolators,
+      deletePercolator: deletePercolator,
+      createPercolator: createPercolator
+    };
+
+    function health() {
+      return $http.get('http://localhost:9200/_cluster/health');
+    }
+
+    function indicesHealth() {
+      return $http.get('http://localhost:9200/_cluster/health?level=indices');
+    }
+
+    function nodesInfo() {
+      return $http.get('http://localhost:9200/_nodes');
+    }
+
+    function percolators(indice) {
+      return $http.get('http://localhost:9200/' + indice + '/.percolator/_search');
+    }
+
+    function deletePercolator(indice, p) {
+      return $http.delete('http://localhost:9200/' + indice + '/.percolator/' + p);
+    }
+
+    function createPercolator(indice, name, query) {
+      return $http.put('http://localhost:9200/' + indice + '/.percolator/' + name, query);
+    }
+
+    function indiceInfo(indice) {
+      return $http.get('http://localhost:9200/' + indice);
+    }
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .factory('notifications', notifications);
+
+  notifications.$inject = ['$mdToast'];
+
+  function notifications($mdToast) {
+    return {
+      showSimple: showSimple
+    };
+
+    function showSimple(message) {
+      return $mdToast.show($mdToast.simple()
+        .textContent(message)
+        .position('top right')
+        .hideDelay(3000));
+    }
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .factory('watchers', watchers);
+
+  watchers.$inject = ['WatchInputType'];
+
+  function watchers(WatchInputType) {
+    var inputs = {};
+
+    var service = {
+      getInputTypes: getInputTypes,
+      addWatcherInput: addWatcherInput,
+      getWatchInputs: getWatchInputs
+    }
+
+    return service;
+
+    function addWatcherInput(input) {
+      inputs = input;
+    }
+
+    function getWatchInputs() {
+      return inputs;
+    }
+
+    function getInputTypes() {
+      return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP, WatchInputType.CHAIN];
+    }
+  }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherActionsCtrl', WatcherActionsCtrl);
+
+    WatcherActionsCtrl.$inject = ['$scope', '$state', 'watchers'];
+
+    function WatcherActionsCtrl($scope, $state, watchers) {
+      var watcherActionsVM = this;
+
+      watcherActionsVM.goToConditions = goToConditions;
+      watcherActionsVM.saveWatcher = saveWatcher;
+
+      function goToConditions() {
+        $state.go('watch.watchers.conditions');
+      }
+
+      function saveWatcher() {
+        console.log('check!');
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherConditionsCtrl', WatcherConditionsCtrl);
+
+    WatcherConditionsCtrl.$inject = ['$scope', '$state', 'watchers'];
+
+    function WatcherConditionsCtrl($scope, $state, watchers) {
+      var watcherConditionsVM = this;
+
+      watcherConditionsVM.goToTrigger = goToTrigger;
+      watcherConditionsVM.goToActions = goToActions;
+
+      function goToTrigger() {
+        $state.go('watch.watchers.trigger');
+      }
+
+      function goToActions() {
+        $state.go('watch.watchers.actions');
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('WatchersCtrl', WatchersCtrl);
 
-    WatchersCtrl.$inject = ['$scope'];
+    WatchersCtrl.$inject = ['$scope', 'watchers'];
 
-    function WatchersCtrl($scope) {
+    function WatchersCtrl($scope, watchers) {
       var watchersVM = this;
+    }
+})();
 
-      // Injection though resolve promise in route
-      //healthNodesVM.nodes = nodes;
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherInputCtrl', WatcherInputCtrl);
+
+    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'watcherInputs'];
+
+    function WatcherInputCtrl($scope, $state, watchers, watcherInputs) {
+      var watcherInputVM = this;
+
+      watcherInputVM.input = {};
+      watcherInputVM.type = _.keys(watcherInputs)[0] || '';
+      watcherInputVM.getTypes = getTypes;
+      watcherInputVM.goToTrigger = goToTrigger;
+
+      function getTypes() {
+        return watchers.getInputTypes();
+      }
+
+      function goToTrigger() {
+        watcherInputVM.input[watcherInputVM.type] = '';
+        watchers.addWatcherInput(watcherInputVM.input);
+        $state.go('watch.watchers.trigger');
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherTriggerCtrl', WatcherTriggerCtrl);
+
+    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers'];
+
+    function WatcherTriggerCtrl($scope, $state, watchers) {
+      var watcherTriggerVM = this;
+
+      watcherTriggerVM.goToInput = goToInput;
+      watcherTriggerVM.goToConditions = goToConditions;
+
+      function goToInput() {
+        $state.go('watch.watchers.input');
+      }
+
+      function goToConditions() {
+        $state.go('watch.watchers.conditions');
+      }
     }
 })();

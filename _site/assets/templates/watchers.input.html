@@ -2,5 +2,25 @@
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Define your watch input(s)</span></div>
 </md-toolbar>
 <div flex layout-padding>
-  input
+  <form name="inputForm">
+    <div layout-gt-xs="row" flex="50">
+      <md-input-container class="md-block" flex-gt-xs>
+        <label>Choose the type of input</label>
+        <md-select ng-model="watcherInputVM.type">
+          <md-option ng-repeat="type in watcherInputVM.getTypes()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+    <div layout-gt-xs="row" flex-inverse>
+      <div flex-offset="95"></div>
+      <div flex="5">
+        <md-button class="md-fab md-accent md-hue-2" aria-label="Next" ng-click="watcherInputVM.goToTrigger()">
+          <md-tooltip md-direction="top">Go to Trigger definition</md-tooltip>
+          <md-icon class="material-icons md-primary md-48">chevron_right</md-icon>
+        </md-button>
+      </div>
+    </div>
+  </div>
 </div>

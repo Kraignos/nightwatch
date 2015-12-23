@@ -90,26 +90,29 @@
         .state('watch.watchers.input', {
           url: '/input',
           templateUrl: 'assets/templates/watchers.input.html',
-          controller: 'WatchersCtrl',
-          controllerAs: 'watchersVM'
+          resolve: {
+            watcherInputs: watcherInputs
+          },
+          controller: 'WatcherInputCtrl',
+          controllerAs: 'watcherInputVM'
         })
         .state('watch.watchers.trigger', {
           url: '/trigger',
           templateUrl: 'assets/templates/watchers.trigger.html',
-          controller: 'WatchersCtrl',
-          controllerAs: 'watchersVM'
+          controller: 'WatcherTriggerCtrl',
+          controllerAs: 'watcherTriggerVM'
         })
         .state('watch.watchers.conditions', {
           url: '/conditions',
           templateUrl: 'assets/templates/watchers.conditions.html',
-          controller: 'WatchersCtrl',
-          controllerAs: 'watchersVM'
+          controller: 'WatcherConditionsCtrl',
+          controllerAs: 'watcherConditionsVM'
         })
         .state('watch.watchers.actions', {
           url: '/actions',
           templateUrl: 'assets/templates/watchers.actions.html',
-          controller: 'WatchersCtrl',
-          controllerAs: 'watchersVM'
+          controller: 'WatcherActionsCtrl',
+          controllerAs: 'watcherActionsVM'
         })
         .state('query', {
             url: '/query',
@@ -124,6 +127,7 @@
     clusterStatus.$inject = ['elastic'];
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
+    watcherInputs.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
@@ -141,6 +145,10 @@
       return elastic.nodesInfo().then(function(response) {
         return response.data.nodes;
       });
+    }
+
+    function watcherInputs(watchers) {
+      return watchers.getWatchInputs();
     }
   }
 })();

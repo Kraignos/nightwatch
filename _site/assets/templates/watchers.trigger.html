@@ -1,4 +1,20 @@
 <md-toolbar md-scroll-shrink>
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Define the trigger(s) of your watch</span></div>
 </md-toolbar>
-<div layout-padding>trigger</div>
+<div flex layout-padding>
+  <div layout-gt-xs="row" flex-inverse>
+    <div flex-offset="80"></div>
+    <div flex="10">
+      <md-button class="md-fab md-accent md-hue-2" aria-label="Previous" ng-click="watcherTriggerVM.goToInput()">
+        <md-tooltip md-direction="top">Go to Input definition</md-tooltip>
+        <md-icon class="material-icons md-primary md-48">chevron_left</md-icon>
+      </md-button>
+    </div>
+    <div flex="10">
+      <md-button class="md-fab md-accent md-hue-2" aria-label="Next" ng-click="watcherTriggerVM.goToConditions()">
+        <md-tooltip md-direction="top">Go to Conditions definition</md-tooltip>
+        <md-icon class="material-icons md-primary md-48">chevron_right</md-icon>
+      </md-button>
+    </div>
+  </div>
+</div>
