@@ -122,6 +122,12 @@
           controller: 'WatcherActionsCtrl',
           controllerAs: 'watcherActionsVM'
         })
+        .state('watch.watchers.summary', {
+          url: '/summary',
+          templateUrl: 'assets/templates/watchers.summary.html',
+          controller: 'WatcherSummaryCtrl',
+          controllerAs: 'watcherSummaryVM'
+        })
         .state('query', {
             url: '/query',
             template: '<h5>Query</h5>'
@@ -576,17 +582,17 @@
     WatcherActionsCtrl.$inject = ['$scope', '$state', 'watchers'];
 
     function WatcherActionsCtrl($scope, $state, watchers) {
-      var watcherActionsVM = this;
+      var watcherSummaryVM = this;
 
-      watcherActionsVM.goToConditions = goToConditions;
-      watcherActionsVM.saveWatcher = saveWatcher;
+      watcherSummaryVM.goToConditions = goToConditions;
+      watcherSummaryVM.goToSummary = goToSummary;
 
       function goToConditions() {
         $state.go('watch.watchers.conditions');
       }
 
-      function saveWatcher() {
-        console.log('check!');
+      function goToSummary() {
+        $state.go('watch.watchers.summary');
       }
     }
 })();
@@ -652,6 +658,30 @@
         watcherInputVM.input[watcherInputVM.type] = '';
         watchers.addWatcherInput(watcherInputVM.input);
         $state.go('watch.watchers.trigger');
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherSummaryCtrl', WatcherSummaryCtrl);
+
+    WatcherSummaryCtrl.$inject = ['$scope', '$state', 'watchers'];
+
+    function WatcherSummaryCtrl($scope, $state, watchers) {
+      var watcherActionsVM = this;
+
+      watcherActionsVM.goToActions = goToActions;
+      watcherActionsVM.saveWatcher = saveWatcher;
+
+      function goToActions() {
+        $state.go('watch.watchers.actions');
+      }
+
+      function saveWatcher() {
+        console.log('check!');
       }
     }
 })();

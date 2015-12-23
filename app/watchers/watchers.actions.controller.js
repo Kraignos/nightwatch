@@ -7,17 +7,17 @@
     WatcherActionsCtrl.$inject = ['$scope', '$state', 'watchers'];
 
     function WatcherActionsCtrl($scope, $state, watchers) {
-      var watcherActionsVM = this;
+      var watcherSummaryVM = this;
 
-      watcherActionsVM.goToConditions = goToConditions;
-      watcherActionsVM.saveWatcher = saveWatcher;
+      watcherSummaryVM.goToConditions = goToConditions;
+      watcherSummaryVM.goToSummary = goToSummary;
 
       function goToConditions() {
         $state.go('watch.watchers.conditions');
       }
 
-      function saveWatcher() {
-        console.log('check!');
+      function goToSummary() {
+        $state.go('watch.watchers.summary');
       }
     }
 })();

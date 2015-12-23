@@ -114,6 +114,12 @@
           controller: 'WatcherActionsCtrl',
           controllerAs: 'watcherActionsVM'
         })
+        .state('watch.watchers.summary', {
+          url: '/summary',
+          templateUrl: 'assets/templates/watchers.summary.html',
+          controller: 'WatcherSummaryCtrl',
+          controllerAs: 'watcherSummaryVM'
+        })
         .state('query', {
             url: '/query',
             template: '<h5>Query</h5>'
