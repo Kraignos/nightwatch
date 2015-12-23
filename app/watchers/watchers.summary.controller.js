@@ -4,20 +4,21 @@
   angular.module('nightwatch')
     .controller('WatcherSummaryCtrl', WatcherSummaryCtrl);
 
-    WatcherSummaryCtrl.$inject = ['$scope', '$state', 'watchers'];
+    WatcherSummaryCtrl.$inject = ['$scope', '$state', 'watchers', 'watcherSummary'];
 
-    function WatcherSummaryCtrl($scope, $state, watchers) {
-      var watcherActionsVM = this;
+    function WatcherSummaryCtrl($scope, $state, watchers, watcherSummary) {
+      var watcherSummaryVM = this;
 
-      watcherActionsVM.goToActions = goToActions;
-      watcherActionsVM.saveWatcher = saveWatcher;
+      watcherSummaryVM.summary = watcherSummary;
+      watcherSummaryVM.goToActions = goToActions;
+      watcherSummaryVM.saveWatcher = saveWatcher;
 
       function goToActions() {
         $state.go('watch.watchers.actions');
       }
 
       function saveWatcher() {
-        console.log('check!');
+        console.log('summary: ' + angular.toJson(watcherSummaryVM.summary));
       }
     }
 })();

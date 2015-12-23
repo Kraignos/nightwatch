@@ -125,6 +125,9 @@
         .state('watch.watchers.summary', {
           url: '/summary',
           templateUrl: 'assets/templates/watchers.summary.html',
+          resolve: {
+            watcherSummary: watcherSummary
+          },
           controller: 'WatcherSummaryCtrl',
           controllerAs: 'watcherSummaryVM'
         })
@@ -142,6 +145,7 @@
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
     watcherInputs.$inject = ['watchers'];
+    watcherSummary.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
@@ -163,6 +167,10 @@
 
     function watcherInputs(watchers) {
       return watchers.getWatchInputs();
+    }
+
+    function watcherSummary(watchers) {
+      return watchers.getWatcherSummary();
     }
   }
 })();
@@ -554,7 +562,8 @@
     var service = {
       getInputTypes: getInputTypes,
       addWatcherInput: addWatcherInput,
-      getWatchInputs: getWatchInputs
+      getWatchInputs: getWatchInputs,
+      getWatcherSummary: getWatcherSummary
     }
 
     return service;
@@ -570,6 +579,12 @@
     function getInputTypes() {
       return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP, WatchInputType.CHAIN];
     }
+
+    function getWatcherSummary() {
+      var summary = {};
+      summary['input'] = inputs;
+      return summary;
+    }
   }
 })();
 
@@ -582,10 +597,10 @@
     WatcherActionsCtrl.$inject = ['$scope', '$state', 'watchers'];
 
     function WatcherActionsCtrl($scope, $state, watchers) {
-      var watcherSummaryVM = this;
+      var watcherActionsVM = this;
 
-      watcherSummaryVM.goToConditions = goToConditions;
-      watcherSummaryVM.goToSummary = goToSummary;
+      watcherActionsVM.goToConditions = goToConditions;
+      watcherActionsVM.goToSummary = goToSummary;
 
       function goToConditions() {
         $state.go('watch.watchers.conditions');
@@ -668,20 +683,21 @@
   angular.module('nightwatch')
     .controller('WatcherSummaryCtrl', WatcherSummaryCtrl);
 
-    WatcherSummaryCtrl.$inject = ['$scope', '$state', 'watchers'];
+    WatcherSummaryCtrl.$inject = ['$scope', '$state', 'watchers', 'watcherSummary'];
 
-    function WatcherSummaryCtrl($scope, $state, watchers) {
-      var watcherActionsVM = this;
+    function WatcherSummaryCtrl($scope, $state, watchers, watcherSummary) {
+      var watcherSummaryVM = this;
 
-      watcherActionsVM.goToActions = goToActions;
-      watcherActionsVM.saveWatcher = saveWatcher;
+      watcherSummaryVM.summary = watcherSummary;
+      watcherSummaryVM.goToActions = goToActions;
+      watcherSummaryVM.saveWatcher = saveWatcher;
 
       function goToActions() {
         $state.go('watch.watchers.actions');
       }
 
       function saveWatcher() {
-        console.log('check!');
+        console.log('summary: ' + angular.toJson(watcherSummaryVM.summary));
       }
     }
 })();

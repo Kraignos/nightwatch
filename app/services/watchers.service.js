@@ -12,7 +12,8 @@
     var service = {
       getInputTypes: getInputTypes,
       addWatcherInput: addWatcherInput,
-      getWatchInputs: getWatchInputs
+      getWatchInputs: getWatchInputs,
+      getWatcherSummary: getWatcherSummary
     }
 
     return service;
@@ -27,6 +28,12 @@
 
     function getInputTypes() {
       return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP, WatchInputType.CHAIN];
+    }
+
+    function getWatcherSummary() {
+      var summary = {};
+      summary['input'] = inputs;
+      return summary;
     }
   }
 })();

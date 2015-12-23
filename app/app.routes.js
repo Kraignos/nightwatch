@@ -117,6 +117,9 @@
         .state('watch.watchers.summary', {
           url: '/summary',
           templateUrl: 'assets/templates/watchers.summary.html',
+          resolve: {
+            watcherSummary: watcherSummary
+          },
           controller: 'WatcherSummaryCtrl',
           controllerAs: 'watcherSummaryVM'
         })
@@ -134,6 +137,7 @@
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
     watcherInputs.$inject = ['watchers'];
+    watcherSummary.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
@@ -155,6 +159,10 @@
 
     function watcherInputs(watchers) {
       return watchers.getWatchInputs();
+    }
+
+    function watcherSummary(watchers) {
+      return watchers.getWatcherSummary();
     }
   }
 })();
