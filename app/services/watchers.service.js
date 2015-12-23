@@ -4,20 +4,22 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType) {
     var inputs = {};
 
     var service = {
       getInputTypes: getInputTypes,
       setSimpleWatcherInput: setSimpleWatcherInput,
       setSearchWatcherInput: setSearchWatcherInput,
+      setHttpWatcherInput: setHttpWatcherInput,
       getWatchInputs: getWatchInputs,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
-      getExpandWildCards: getExpandWildCards
+      getExpandWildCards: getExpandWildCards,
+      getResponseContentTypes: getResponseContentTypes
     }
 
     return service;
@@ -28,6 +30,10 @@
 
     function setSearchWatcherInput(search) {
       inputs[WatchInputType.SEARCH] = search;
+    }
+
+    function setHttpWatcherInput(http) {
+      inputs[WatchInputType.HTTP] = http;
     }
 
     function getWatchInputs() {
@@ -64,6 +70,14 @@
         ExpandWildCards.OPEN,
         ExpandWildCards.CLOSED,
         ExpandWildCards.NONE
+      ];
+    }
+
+    function getResponseContentTypes() {
+      return [
+        ResponseContentType.JSON,
+        ResponseContentType.YAML,
+        ResponseContentType.TEXT
       ];
     }
   }

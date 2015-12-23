@@ -26,5 +26,10 @@
       OPEN: 'open',
       CLOSED: 'closed',
       NONE: 'none'
+    })
+    .constant('ResponseContentType', {
+      JSON: 'json',
+      YAML: 'yaml',
+      TEXT: 'text'
     });
 })();

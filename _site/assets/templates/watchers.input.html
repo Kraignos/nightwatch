@@ -1,13 +1,9 @@
 <md-toolbar md-scroll-shrink>
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Define your watch input(s)</span></div>
 </md-toolbar>
-<div flex layout-padding>
+<div flex="100" layout-padding>
   <div layout-gt-xs="row" flex="50" ng-show="!watcherInputVM.hasInput()">
     <md-subheader class="md-warn">You have no input defined...</md-subheader>
-  </div>
-  <div layout-gt-xs="column" flex="100" ng-show="watcherInputVM.hasInput()">
-    <md-subheader class="md-primary">Your current watcher input is:</md-subheader>
-    <code>{{ watcherInputVM.getPrettyInput() }}</code>
   </div>
   <form name="inputForm">
     <div layout-gt-xs="row" flex="50">
@@ -107,9 +103,98 @@
         </div>
       </md-input-container>
     </div>
+    <!-- HTTP INPUT TYPE -->
+    <div layout-gt-xs="column" flex-fill flex="70" flex-layout="start start" ng-show="watcherInputVM.type === 'http'">
+      <md-input-container class="md-block" flex-gt-sm flex="30">
+        <label>The URL scheme</label>
+        <md-select ng-model="request.scheme">
+          <md-option ng-repeat="scheme in ['http', 'https']" value="{{ scheme }}">
+            {{ scheme }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The host to connect to</label>
+        <input ng-model="request.host" type="text" aria-label="The host to connect to" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The port the http service is listening on</label>
+        <input ng-model="request.port" type="text" aria-label="The port the http service is listening on" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The URL path</label>
+        <input ng-model="request.path" type="text" aria-label="The URL path" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm flex="30">
+        <label>The HTTP method</label>
+        <md-select ng-model="request.method">
+          <md-option ng-repeat="method in ['head', 'get', 'post', 'put', 'delete']" value="{{ method }}">
+            {{ method }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The HTTP request headers</label>
+        <input ng-model="request.headers" type="text" aria-label="The HTTP request headers" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The URL query string parameters</label>
+        <input ng-model="request.params" type="text" aria-label="The URL query string parameters" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm flex="50">
+        <label>Username</label>
+        <input ng-model="request.auth.basic.username" type="text" aria-label="Username" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm flex="50">
+        <label>Password</label>
+        <input ng-model="request.auth.basic.password" type="text" aria-label="Password" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The proxy host to use</label>
+        <input ng-model="request.proxy.host" type="text" aria-label="The proxy host to use" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The proxy port to use</label>
+        <input ng-model="request.proxy.port" type="text" aria-label="The proxy port to use" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The timeout for setting up the http connection</label>
+        <input ng-model="request.connection_timeout" type="text" aria-label="The timeout for setting up the http connection" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The timeout for reading data from http connection</label>
+        <input ng-model="request.read_timeout" type="text" aria-label="The timeout for reading data from http connection" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The HTTP request body</label>
+        <input ng-model="request.body" type="text" aria-label="The HTTP request body" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Array of JSON keys to extract from the input response</label>
+        <input ng-model="extract" type="text" aria-label="Array of JSON keys to extract from the input response" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm flex="30">
+        <label>The HTTP method</label>
+        <md-select ng-model="response_content_type">
+          <md-option ng-repeat="type in watcherInputVM.getResponseTypes()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <div flex-offset="90" flex="10">
+          <md-button class="md-fab md-accent md-hue-2"
+                        aria-label="Add this input"
+                        ng-click="watcherInputVM.addHttpInputType(request, extract, response_content_type);">
+            <md-tooltip md-direction="top">Save this input</md-tooltip>
+            <md-icon class="material-icons md-primary md-12">done_all</md-icon>
+          </md-button>
+        </div>
+      </md-input-container>
+    </div>
   </form>
     <!-- GO TO NEXT STEP -->
-    <div layout-gt-xs="row" flex-inverse>
+    <div layout-gt-xs="row">
       <div flex-offset="95"></div>
       <div flex="5">
         <md-button class="md-fab md-primary md-hue-2" aria-label="Next" ng-click="watcherInputVM.goToTrigger()">

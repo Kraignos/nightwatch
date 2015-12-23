@@ -183,7 +183,8 @@
     .constant('WatchInputType', {
       SIMPLE: 'simple',
       SEARCH: 'search',
-      HTTP: 'http'
+      HTTP: 'http',
+      CHAIN: 'chain'
     })
     .constant('SimpleInputType', {
       STRING: 'str',
@@ -202,6 +203,11 @@
       OPEN: 'open',
       CLOSED: 'closed',
       NONE: 'none'
+    })
+    .constant('ResponseContentType', {
+      JSON: 'json',
+      YAML: 'yaml',
+      TEXT: 'text'
     });
 })();
 
@@ -571,20 +577,22 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType) {
     var inputs = {};
 
     var service = {
       getInputTypes: getInputTypes,
       setSimpleWatcherInput: setSimpleWatcherInput,
       setSearchWatcherInput: setSearchWatcherInput,
+      setHttpWatcherInput: setHttpWatcherInput,
       getWatchInputs: getWatchInputs,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
-      getExpandWildCards: getExpandWildCards
+      getExpandWildCards: getExpandWildCards,
+      getResponseContentTypes: getResponseContentTypes
     }
 
     return service;
@@ -597,12 +605,16 @@
       inputs[WatchInputType.SEARCH] = search;
     }
 
+    function setHttpWatcherInput(http) {
+      inputs[WatchInputType.HTTP] = http;
+    }
+
     function getWatchInputs() {
       return inputs;
     }
 
     function getInputTypes() {
-      return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP, WatchInputType.CHAIN];
+      return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP];
     }
 
     function getWatcherSummary() {
@@ -631,6 +643,14 @@
         ExpandWildCards.OPEN,
         ExpandWildCards.CLOSED,
         ExpandWildCards.NONE
+      ];
+    }
+
+    function getResponseContentTypes() {
+      return [
+        ResponseContentType.JSON,
+        ResponseContentType.YAML,
+        ResponseContentType.TEXT
       ];
     }
   }
@@ -703,9 +723,9 @@
   angular.module('nightwatch')
     .controller('WatcherInputCtrl', WatcherInputCtrl);
 
-    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'watcherInputs'];
+    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'notifications', 'watcherInputs'];
 
-    function WatcherInputCtrl($scope, $state, watchers, watcherInputs) {
+    function WatcherInputCtrl($scope, $state, watchers, notifications, watcherInputs) {
       var watcherInputVM = this;
 
       watcherInputVM.input = {};
@@ -713,14 +733,19 @@
       watcherInputVM.request = {};
 
       watcherInputVM.goToTrigger = goToTrigger;
+      watcherInputVM.getPrettyInput = getPrettyInput;
+      watcherInputVM.hasInput = hasInput;
+
       watcherInputVM.getSearchRequestTypes = getSearchRequestTypes;
       watcherInputVM.getTypes = getTypes;
       watcherInputVM.getSimpleTypes = getSimpleTypes;
-      watcherInputVM.addSimpleInputType = addSimpleInputType;
-      watcherInputVM.getPrettyInput = getPrettyInput;
-      watcherInputVM.hasInput = hasInput;
       watcherInputVM.getExpandWildCards = getExpandWildCards;
+      watcherInputVM.getResponseTypes = getResponseTypes;
+
+      watcherInputVM.addSimpleInputType = addSimpleInputType;
       watcherInputVM.addSearchInputType = addSearchInputType;
+      watcherInputVM.addHttpInputType = addHttpInputType;
+
 
       function goToTrigger() {
         $state.go('watch.watchers.trigger');
@@ -743,6 +768,7 @@
         simple[nature] = nature === 'obj' ? angular.fromJson(value) : value;
         watcherInputVM.input['simple'] = simple;
         watchers.setSimpleWatcherInput(watcherInputVM.input);
+        notifications.showSimple('The simple input type has been saved');
       }
 
       function getPrettyInput() {
@@ -755,6 +781,10 @@
 
       function getExpandWildCards() {
         return watchers.getExpandWildCards();
+      }
+
+      function getResponseTypes() {
+        return watchers.getResponseContentTypes();
       }
 
       function addSearchInputType(search, extract, timeout) {
@@ -787,6 +817,27 @@
         }
 
         watchers.setSearchWatcherInput(watcherInputVM.input.search);
+        notifications.showSimple('The search input type has been saved');
+      }
+
+      function addHttpInputType(http, extract, responseContentType) {
+        var request = http || {};
+        var watcherInput = {};
+
+        watcherInputVM.input['http'] = {
+          request: request
+        };
+
+        if (!_.isUndefined(extract)) {
+          watcherInputVM.input['http']['extract'] = extract;
+        }
+
+        if (!_.isUndefined(responseContentType)) {
+          watcherInputVM.input['http']['responseContentType'] = responseContentType;
+        }
+
+        watchers.setHttpWatcherInput(watcherInputVM.input.http);
+        notifications.showSimple('The HTTP input type has been saved');
       }
 
       function transformToArray(values) {
