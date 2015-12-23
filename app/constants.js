@@ -6,7 +6,8 @@
     .constant('WatchInputType', {
       SIMPLE: 'simple',
       SEARCH: 'search',
-      HTTP: 'http'
+      HTTP: 'http',
+      CHAIN: 'chain'
     })
     .constant('SimpleInputType', {
       STRING: 'str',

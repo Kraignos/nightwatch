@@ -35,7 +35,7 @@
     }
 
     function getInputTypes() {
-      return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP, WatchInputType.CHAIN];
+      return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP];
     }
 
     function getWatcherSummary() {
