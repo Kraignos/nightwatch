@@ -196,6 +196,12 @@
       QUERY_AND_FETCH: 'query_and_fetch',
       QUERY_THEN_FETCH: 'query_then_fetch',
       SCAN: 'scan'
+    })
+    .constant('ExpandWildCards', {
+      ALL: 'all',
+      OPEN: 'open',
+      CLOSED: 'closed',
+      NONE: 'none'
     });
 })();
 
@@ -565,23 +571,30 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards'];
 
-  function watchers(WatchInputType, SimpleInputType) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards) {
     var inputs = {};
 
     var service = {
       getInputTypes: getInputTypes,
       setSimpleWatcherInput: setSimpleWatcherInput,
+      setSearchWatcherInput: setSearchWatcherInput,
       getWatchInputs: getWatchInputs,
       getWatcherSummary: getWatcherSummary,
-      getSimpleInputTypes: getSimpleInputTypes
+      getSimpleInputTypes: getSimpleInputTypes,
+      getSearchRequestTypes: getSearchRequestTypes,
+      getExpandWildCards: getExpandWildCards
     }
 
     return service;
 
     function setSimpleWatcherInput(input) {
       inputs[WatchInputType.SIMPLE] = input;
+    }
+
+    function setSearchWatcherInput(search) {
+      inputs[WatchInputType.SEARCH] = search;
     }
 
     function getWatchInputs() {
@@ -600,6 +613,25 @@
 
     function getSimpleInputTypes() {
       return [SimpleInputType.STRING, SimpleInputType.NUMERIC, SimpleInputType.OBJECT];
+    }
+
+    function getSearchRequestTypes() {
+      return [
+        SearchInputType.DFS_QUERY_AND_FETCH,
+        SearchInputType.DFS_QUERY_THEN_FETCH,
+        SearchInputType.QUERY_AND_FETCH,
+        SearchInputType.QUERY_THEN_FETCH,
+        SearchInputType.SCAN
+      ];
+    }
+
+    function getExpandWildCards() {
+      return [
+        ExpandWildCards.ALL,
+        ExpandWildCards.OPEN,
+        ExpandWildCards.CLOSED,
+        ExpandWildCards.NONE
+      ];
     }
   }
 })();
@@ -678,16 +710,24 @@
 
       watcherInputVM.input = {};
       watcherInputVM.type = '';
+      watcherInputVM.request = {};
 
       watcherInputVM.goToTrigger = goToTrigger;
+      watcherInputVM.getSearchRequestTypes = getSearchRequestTypes;
       watcherInputVM.getTypes = getTypes;
       watcherInputVM.getSimpleTypes = getSimpleTypes;
       watcherInputVM.addSimpleInputType = addSimpleInputType;
       watcherInputVM.getPrettyInput = getPrettyInput;
       watcherInputVM.hasInput = hasInput;
+      watcherInputVM.getExpandWildCards = getExpandWildCards;
+      watcherInputVM.addSearchInputType = addSearchInputType;
 
       function goToTrigger() {
         $state.go('watch.watchers.trigger');
+      }
+
+      function getSearchRequestTypes() {
+        return watchers.getSearchRequestTypes();
       }
 
       function getTypes() {
@@ -711,6 +751,48 @@
 
       function hasInput() {
         return _.size(watcherInputVM.input) > 0;
+      }
+
+      function getExpandWildCards() {
+        return watchers.getExpandWildCards();
+      }
+
+      function addSearchInputType(search, extract, timeout) {
+        var request = search || {};
+        var watcherInput = {};
+
+        if (_.contains(_.keys(request), 'indices')) {
+          request.indices = transformToArray(request.indices);
+        }
+        if (_.contains(_.keys(request), 'types')) {
+          request.types = transformToArray(request.types);
+        }
+        if (_.contains(_.keys(request), 'body')) {
+          request.body = angular.fromJson(request.body);
+        }
+        if (_.contains(_.keys(request), 'template')) {
+          request.template = angular.fromJson(request.template);
+        }
+
+        watcherInputVM.input['search'] = {
+          request: request
+        };
+
+        if (!_.isUndefined(extract)) {
+          watcherInputVM.input['search']['extract'] = extract;
+        }
+
+        if (!_.isUndefined(timeout)) {
+          watcherInputVM.input['search']['timeout'] = timeout;
+        }
+
+        watchers.setSearchWatcherInput(watcherInputVM.input.search);
+      }
+
+      function transformToArray(values) {
+        return _.map(values.trim().split(','), function(v) {
+          return v.trim();
+        });
       }
     }
 })();

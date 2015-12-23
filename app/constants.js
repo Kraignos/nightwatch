@@ -19,5 +19,11 @@
       QUERY_AND_FETCH: 'query_and_fetch',
       QUERY_THEN_FETCH: 'query_then_fetch',
       SCAN: 'scan'
+    })
+    .constant('ExpandWildCards', {
+      ALL: 'all',
+      OPEN: 'open',
+      CLOSED: 'closed',
+      NONE: 'none'
     });
 })();

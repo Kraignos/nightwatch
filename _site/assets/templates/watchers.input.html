@@ -45,9 +45,69 @@
       </md-input-container>
     </div>
     <!-- SEARCH INPUT TYPE -->
-    <div layout-gt-xs="row" flex-fill flex="100" flex-layout="start start" ng-show="watcherInputVM.type === 'simple'">
-      
+    <div layout-gt-xs="column" flex-fill flex="70" flex-layout="start start" ng-show="watcherInputVM.type === 'search'">
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Type of search request to perform</label>
+        <md-select ng-model="request.search_type">
+          <md-option ng-repeat="type in watcherInputVM.getSearchRequestTypes()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Indices to search</label>
+        <input ng-model="request.indices" type="text" aria-label="The indices to search" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Document types to search for</label>
+        <input ng-model="request.types" type="text" aria-label="Document types to search for" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The body of the request (JSON format)</label>
+        <textarea ng-model="request.body" columns="1" md-maxlength="1000" rows="10"></textarea>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The body of the search template (JSON format)</label>
+        <textarea ng-model="request.template" columns="1" md-maxlength="1000" rows="10"></textarea>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>How to expand wildcards</label>
+        <md-select ng-model="request.indices_options.expand_wildcards">
+          <md-option ng-repeat="type in watcherInputVM.getSearchRequestTypes()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <md-switch ng-model="request.indices_options.ignore_unavailable" aria-label="Ignore unavailable indices">
+          Ignore unavailable indices
+        </md-switch>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <md-switch ng-model="request.indices_options.allow_no_indices" aria-label="Ignore unavailable indices">
+          Allow a search where a wildcard indices expression results in no concrete indices
+        </md-switch>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Array of JSON keys to extract from the search response</label>
+        <input ng-model="extract" type="text" aria-label="Array of JSON keys to extract from the search response" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The timeout for waiting for the search api call to return</label>
+        <input ng-model="timeout" type="text" aria-label="The timeout for waiting for the search api call to return" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <div flex-offset="90" flex="10">
+          <md-button class="md-fab md-accent md-hue-2"
+                        aria-label="Add this input"
+                        ng-click="watcherInputVM.addSearchInputType(request, extract, timeout);">
+            <md-tooltip md-direction="top">Save this input</md-tooltip>
+            <md-icon class="material-icons md-primary md-12">done_all</md-icon>
+          </md-button>
+        </div>
+      </md-input-container>
     </div>
+  </form>
     <!-- GO TO NEXT STEP -->
     <div layout-gt-xs="row" flex-inverse>
       <div flex-offset="95"></div>
