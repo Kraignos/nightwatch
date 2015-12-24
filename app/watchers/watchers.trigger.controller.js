@@ -11,7 +11,8 @@
 
       watcherTriggerVM.type = '';
       watcherTriggerVM.schedule = {};
-      watcherTriggerVM.times = [];
+      watcherTriggerVM.dailyData = { times: [], hours: [], minutes: [] };
+      watcherTriggerVM.dailyTimes = true;
 
       watcherTriggerVM.goToInput = goToInput;
       watcherTriggerVM.goToConditions = goToConditions;
@@ -32,9 +33,12 @@
         if (!_.isUndefined(watcherTriggerVM.schedule.hourly)) {
           watcherTriggerVM.schedule.hourly = { minute: watchers.transformToArray(watcherTriggerVM.schedule.hourly) };
         }
-        if (!_.isEmpty(watcherTriggerVM.times)) {
-          if (watcherTriggerVM.type === 'daily') {
-            watcherTriggerVM.schedule.daily = { at: watcherTriggerVM.times };
+        if (watcherTriggerVM.type === 'daily') {
+          if (watcherTriggerVM.dailyTimes) {
+            watcherTriggerVM.schedule.daily = { at: watcherTriggerVM.dailyData.times };
+          }
+          else {
+            watcherTriggerVM.schedule.daily = { at: { hour: watcherTriggerVM.dailyData.hours, minute: watcherTriggerVM.dailyData.minutes }};
           }
         }
         watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);

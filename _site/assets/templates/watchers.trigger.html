@@ -24,11 +24,24 @@
     </md-input-container>
     </div>
     <!-- DAILY TRIGGER TYPE -->
-    <div layout-gt-xs="row" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'daily'">
-    <md-input-container class="md-block" flex-gt-sm>
-      <label>Specify the times of day (HH:mm format). You can also use "midnight" and "noon"</label>
-      <md-chips ng-model="watcherTriggerVM.times"></md-chips>
-    </md-input-container>
+    <div layout-gt-xs="column" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'daily'">
+      <md-input-container class="md-block">
+        <md-switch ng-model="watcherTriggerVM.dailyTimes" aria-label="Specify hours and minutes separately">
+          Specify hours and minutes together
+        </md-switch>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-show="watcherTriggerVM.dailyTimes">
+        <label ng-show="watcherTriggerVM.dailyTimes">Specify the times of day (HH:mm format). You can also use "midnight" and "noon".</label>
+        <md-chips ng-model="watcherTriggerVM.dailyData.times" ng-show="watcherTriggerVM.dailyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.dailyTimes">
+        <label ng-hide="watcherTriggerVM.dailyTimes">Specify the hours of the day (HH)</label>
+        <md-chips ng-model="watcherTriggerVM.dailyData.hours" ng-hide="watcherTriggerVM.dailyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.dailyTimes">
+        <label ng-hide="watcherTriggerVM.dailyTimes">Specify the minutes of the day (MM)</label>
+        <md-chips ng-model="watcherTriggerVM.dailyData.minutes" ng-hide="watcherTriggerVM.dailyTimes"></md-chips>
+      </md-input-container>
     </div>
     <!-- CRON TRIGGER TYPE -->
     <div layout-gt-xs="row" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'cron'">
