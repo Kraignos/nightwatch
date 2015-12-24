@@ -604,7 +604,8 @@
       getSearchRequestTypes: getSearchRequestTypes,
       getExpandWildCards: getExpandWildCards,
       getResponseContentTypes: getResponseContentTypes,
-      getScheduleTriggerTypes: getScheduleTriggerTypes
+      getScheduleTriggerTypes: getScheduleTriggerTypes,
+      transformToArray: transformToArray
     }
 
     return service;
@@ -682,6 +683,12 @@
         ScheduleTriggerTypes.CRON,
         ScheduleTriggerTypes.INTERVAL
       ];
+    }
+
+    function transformToArray(values) {
+      return _.map(values.trim().split(','), function(v) {
+        return v.trim();
+      });
     }
   }
 })();
@@ -914,7 +921,6 @@
     function WatcherTriggerCtrl($scope, $state, watchers) {
       var watcherTriggerVM = this;
 
-      watcherTriggerVM.trigger = {};
       watcherTriggerVM.type = '';
       watcherTriggerVM.schedule = {};
 
@@ -929,16 +935,21 @@
       }
 
       function goToConditions() {
-        watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
+        watcherTriggerVM.saveTrigger();
         $state.go('watch.watchers.conditions');
       }
 
       function saveTrigger() {
+        console.log('before: ' + watcherTriggerVM.schedule.hourly);
+        if (!_.isUndefined(watcherTriggerVM.schedule.hourly)) {
+          console.log('after: ' + watchers.transformToArray(watcherTriggerVM.schedule.hourly));
+          watcherTriggerVM.schedule.hourly = { minute: watchers.transformToArray(watcherTriggerVM.schedule.hourly) };
+        }
         watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
       }
 
       function hasTrigger() {
-        return _.size(watcherTriggerVM.trigger) > 0;
+        return _.size(watcherTriggerVM.schedule) > 0;
       }
 
       function getTriggerTypes() {

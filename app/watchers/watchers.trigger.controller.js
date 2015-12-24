@@ -23,11 +23,14 @@
       }
 
       function goToConditions() {
-        watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
+        watcherTriggerVM.saveTrigger();
         $state.go('watch.watchers.conditions');
       }
 
       function saveTrigger() {
+        if (!_.isUndefined(watcherTriggerVM.schedule.hourly)) {
+          watcherTriggerVM.schedule.hourly = { minute: watchers.transformToArray(watcherTriggerVM.schedule.hourly) };
+        }
         watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
       }
 

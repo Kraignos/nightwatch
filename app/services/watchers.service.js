@@ -22,7 +22,8 @@
       getSearchRequestTypes: getSearchRequestTypes,
       getExpandWildCards: getExpandWildCards,
       getResponseContentTypes: getResponseContentTypes,
-      getScheduleTriggerTypes: getScheduleTriggerTypes
+      getScheduleTriggerTypes: getScheduleTriggerTypes,
+      transformToArray: transformToArray
     }
 
     return service;
@@ -100,6 +101,12 @@
         ScheduleTriggerTypes.CRON,
         ScheduleTriggerTypes.INTERVAL
       ];
+    }
+
+    function transformToArray(values) {
+      return _.map(values.trim().split(','), function(v) {
+        return v.trim();
+      });
     }
   }
 })();
