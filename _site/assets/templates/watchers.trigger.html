@@ -43,6 +43,26 @@
         <md-chips ng-model="watcherTriggerVM.dailyData.minutes" ng-hide="watcherTriggerVM.dailyTimes"></md-chips>
       </md-input-container>
     </div>
+    <!-- WEEKLY TRIGGER TYPE -->
+    <div layout-gt-xs="column" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'weekly'">
+      <md-input-container class="md-block">
+        <md-switch ng-model="watcherTriggerVM.weeklyTimes" aria-label="Specify days and hours separately">
+          Specify days and times together
+        </md-switch>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-show="watcherTriggerVM.weeklyTimes">
+        <label ng-show="watcherTriggerVM.weeklyTimes">Specify the days plus the hour (day@hour, example: sunday@17:00, friday@noon)</label>
+        <md-chips ng-model="watcherTriggerVM.weeklyData.times" ng-show="watcherTriggerVM.weeklyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.weeklyTimes">
+        <label ng-hide="watcherTriggerVM.weeklyTimes">Specify all days</label>
+        <md-chips ng-model="watcherTriggerVM.weeklyData.days" ng-hide="watcherTriggerVM.weeklyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.weeklyTimes">
+        <label ng-hide="watcherTriggerVM.weeklyTimes">Specify all hours</label>
+        <md-chips ng-model="watcherTriggerVM.weeklyData.hours" ng-hide="watcherTriggerVM.weeklyTimes"></md-chips>
+      </md-input-container>
+    </div>
     <!-- CRON TRIGGER TYPE -->
     <div layout-gt-xs="row" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'cron'">
     <md-input-container class="md-block" flex-gt-sm>

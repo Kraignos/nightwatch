@@ -938,7 +938,8 @@
       watcherTriggerVM.schedule = {};
       watcherTriggerVM.hours = [];
       watcherTriggerVM.dailyData = { times: [], hours: [], minutes: [] };
-      watcherTriggerVM.dailyTimes = true;
+      watcherTriggerVM.dailyTimes = watcherTriggerVM.weeklyTimes = true;
+      watcherTriggerVM.weeklyData = { times: [], days: [], hours: [] };
 
       watcherTriggerVM.goToInput = goToInput;
       watcherTriggerVM.goToConditions = goToConditions;
@@ -969,7 +970,22 @@
             watcherTriggerVM.schedule.daily = { at: { hour: watcherTriggerVM.dailyData.hours, minute: watcherTriggerVM.dailyData.minutes }};
           }
         }
+        else if (watcherTriggerVM.type === ScheduleTriggerTypes.WEEKLY) {
+          watcherTriggerVM.schedule.weekly = transformWeeklyData(watcherTriggerVM.weeklyData);
+        }
         watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
+      }
+
+      function transformWeeklyData(data) {
+        if (watcherTriggerVM.weeklyTimes) {
+          return _.map(watcherTriggerVM.weeklyData.times, function(weekDay) {
+            var day = weekDay.split('@');
+            return { on: day[0], at: day[1] };
+          });
+        }
+        else {
+          return { on: data.days, at: data.hours };
+        }
       }
 
       function hasTrigger() {
@@ -990,16 +1006,34 @@
           else if (type === ScheduleTriggerTypes.DAILY) {
             loadDailyData(data.daily.at);
           }
+          else if (type === ScheduleTriggerTypes.WEEKLY) {
+            loadWeeklyData(data.weekly);
+          }
         }
       }
 
       function loadDailyData(trigger) {
         watcherTriggerVM.dailyTimes = _.isArray(trigger);
+
         if (watcherTriggerVM.dailyTimes) {
           watcherTriggerVM.dailyData = { times: trigger, hours: [], minutes: [] };
         }
         else {
           watcherTriggerVM.dailyData = { times: [], hours: trigger.hour, minutes: trigger.minute };
+        }
+      }
+
+      function loadWeeklyData(trigger) {
+        watcherTriggerVM.weeklyTimes = _.isArray(trigger);
+
+        if (watcherTriggerVM.weeklyTimes) {
+          watcherTriggerVM.weeklyData.times = _.map(trigger, function(day) {
+            return day.on + '@' + day.at;
+          });
+        }
+        else {
+          watcherTriggerVM.weeklyData.days = trigger.on;
+          watcherTriggerVM.weeklyData.hours = trigger.at;
         }
       }
     }
