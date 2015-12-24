@@ -19,8 +19,8 @@
     <!-- HOURLY TRIGGER TYPE -->
     <div layout-gt-xs="row" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'hourly'">
     <md-input-container class="md-block" flex-gt-sm>
-      <label>Hourly schedule (separate minutes by a comma)</label>
-      <input ng-model="watcherTriggerVM.schedule.hourly" type="text" aria-label="Hourly schedule (separate minutes by a comma)" />
+      <label>Hourly schedule</label>
+      <md-chips ng-model="watcherTriggerVM.hours" aria-label="Hourly schedules"></md-chips>
     </md-input-container>
     </div>
     <!-- DAILY TRIGGER TYPE -->
