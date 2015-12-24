@@ -31,5 +31,14 @@
       JSON: 'json',
       YAML: 'yaml',
       TEXT: 'text'
+    })
+    .constant('ScheduleTriggerTypes', {
+      HOURLY: 'hourly',
+      DAILY: 'daily',
+      WEEKLY: 'weekly',
+      MONTHLY: 'monthly',
+      YEARLY: 'yearly',
+      CRON: 'cron',
+      INTERVAL: 'interval'
     });
 })();

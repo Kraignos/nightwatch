@@ -4,22 +4,25 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes) {
     var inputs = {};
+    var trigger = {};
 
     var service = {
       getInputTypes: getInputTypes,
       setSimpleWatcherInput: setSimpleWatcherInput,
       setSearchWatcherInput: setSearchWatcherInput,
       setHttpWatcherInput: setHttpWatcherInput,
+      setWatcherScheduleTrigger: setWatcherScheduleTrigger,
       getWatchInputs: getWatchInputs,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
       getExpandWildCards: getExpandWildCards,
-      getResponseContentTypes: getResponseContentTypes
+      getResponseContentTypes: getResponseContentTypes,
+      getScheduleTriggerTypes: getScheduleTriggerTypes
     }
 
     return service;
@@ -36,6 +39,11 @@
       inputs[WatchInputType.HTTP] = http;
     }
 
+    function setWatcherScheduleTrigger(schedule) {
+      // Only schedule trigger is availale in ES so far
+      trigger = schedule;
+    }
+
     function getWatchInputs() {
       return inputs;
     }
@@ -47,6 +55,7 @@
     function getWatcherSummary() {
       var summary = {};
       summary['input'] = inputs;
+      summary['trigger'] = trigger;
       return summary;
     }
 
@@ -78,6 +87,18 @@
         ResponseContentType.JSON,
         ResponseContentType.YAML,
         ResponseContentType.TEXT
+      ];
+    }
+
+    function getScheduleTriggerTypes() {
+      return [
+        ScheduleTriggerTypes.HOURLY,
+        ScheduleTriggerTypes.DAILY,
+        ScheduleTriggerTypes.WEEKLY,
+        ScheduleTriggerTypes.MONTHLY,
+        ScheduleTriggerTypes.YEARLY,
+        ScheduleTriggerTypes.CRON,
+        ScheduleTriggerTypes.INTERVAL
       ];
     }
   }

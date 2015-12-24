@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2015-12-23
+/*! nightwatch - v1.0.0 - 2015-12-24
 * Copyright (c) 2015 ; Licensed  */
 (function() {
   'use strict';
@@ -208,6 +208,15 @@
       JSON: 'json',
       YAML: 'yaml',
       TEXT: 'text'
+    })
+    .constant('ScheduleTriggerTypes', {
+      HOURLY: 'hourly',
+      DAILY: 'daily',
+      WEEKLY: 'weekly',
+      MONTHLY: 'monthly',
+      YEARLY: 'yearly',
+      CRON: 'cron',
+      INTERVAL: 'interval'
     });
 })();
 
@@ -577,22 +586,25 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes) {
     var inputs = {};
+    var trigger = {};
 
     var service = {
       getInputTypes: getInputTypes,
       setSimpleWatcherInput: setSimpleWatcherInput,
       setSearchWatcherInput: setSearchWatcherInput,
       setHttpWatcherInput: setHttpWatcherInput,
+      setWatcherScheduleTrigger: setWatcherScheduleTrigger,
       getWatchInputs: getWatchInputs,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
       getExpandWildCards: getExpandWildCards,
-      getResponseContentTypes: getResponseContentTypes
+      getResponseContentTypes: getResponseContentTypes,
+      getScheduleTriggerTypes: getScheduleTriggerTypes
     }
 
     return service;
@@ -609,6 +621,11 @@
       inputs[WatchInputType.HTTP] = http;
     }
 
+    function setWatcherScheduleTrigger(schedule) {
+      // Only schedule trigger is availale in ES so far
+      trigger = schedule;
+    }
+
     function getWatchInputs() {
       return inputs;
     }
@@ -620,6 +637,7 @@
     function getWatcherSummary() {
       var summary = {};
       summary['input'] = inputs;
+      summary['trigger'] = trigger;
       return summary;
     }
 
@@ -651,6 +669,18 @@
         ResponseContentType.JSON,
         ResponseContentType.YAML,
         ResponseContentType.TEXT
+      ];
+    }
+
+    function getScheduleTriggerTypes() {
+      return [
+        ScheduleTriggerTypes.HOURLY,
+        ScheduleTriggerTypes.DAILY,
+        ScheduleTriggerTypes.WEEKLY,
+        ScheduleTriggerTypes.MONTHLY,
+        ScheduleTriggerTypes.YEARLY,
+        ScheduleTriggerTypes.CRON,
+        ScheduleTriggerTypes.INTERVAL
       ];
     }
   }
@@ -884,15 +914,35 @@
     function WatcherTriggerCtrl($scope, $state, watchers) {
       var watcherTriggerVM = this;
 
+      watcherTriggerVM.trigger = {};
+      watcherTriggerVM.type = '';
+      watcherTriggerVM.schedule = {};
+
       watcherTriggerVM.goToInput = goToInput;
       watcherTriggerVM.goToConditions = goToConditions;
+      watcherTriggerVM.saveTrigger = saveTrigger;
+
+      watcherTriggerVM.getTriggerTypes = getTriggerTypes;
 
       function goToInput() {
         $state.go('watch.watchers.input');
       }
 
       function goToConditions() {
+        watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
         $state.go('watch.watchers.conditions');
+      }
+
+      function saveTrigger() {
+        watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
+      }
+
+      function hasTrigger() {
+        return _.size(watcherTriggerVM.trigger) > 0;
+      }
+
+      function getTriggerTypes() {
+        return watchers.getScheduleTriggerTypes();
       }
     }
 })();
