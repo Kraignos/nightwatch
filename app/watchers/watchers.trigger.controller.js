@@ -13,8 +13,9 @@
       watcherTriggerVM.schedule = {};
       watcherTriggerVM.hours = [];
       watcherTriggerVM.dailyData = { times: [], hours: [], minutes: [] };
-      watcherTriggerVM.dailyTimes = watcherTriggerVM.weeklyTimes = true;
+      watcherTriggerVM.dailyTimes = watcherTriggerVM.weeklyTimes = watcherTriggerVM.monthlyTimes = true;
       watcherTriggerVM.weeklyData = { times: [], days: [], hours: [] };
+      watcherTriggerVM.monthlyData = { times: [], days: [], hours: [] };
 
       watcherTriggerVM.goToInput = goToInput;
       watcherTriggerVM.goToConditions = goToConditions;
@@ -48,6 +49,9 @@
         else if (watcherTriggerVM.type === ScheduleTriggerTypes.WEEKLY) {
           watcherTriggerVM.schedule.weekly = transformWeeklyData(watcherTriggerVM.weeklyData);
         }
+        else if (watcherTriggerVM.type === ScheduleTriggerTypes.MONTHLY) {
+          watcherTriggerVM.schedule.monthly = transformMonthlyData(watcherTriggerVM.monthlyData);
+        }
         watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
       }
 
@@ -55,6 +59,18 @@
         if (watcherTriggerVM.weeklyTimes) {
           return _.map(watcherTriggerVM.weeklyData.times, function(weekDay) {
             var day = weekDay.split('@');
+            return { on: day[0], at: day[1] };
+          });
+        }
+        else {
+          return { on: data.days, at: data.hours };
+        }
+      }
+
+      function transformMonthlyData(data) {
+        if (watcherTriggerVM.monthlyTimes) {
+          return _.map(watcherTriggerVM.monthlyData.times, function(monthDay) {
+            var day = monthDay.split('@');
             return { on: day[0], at: day[1] };
           });
         }
@@ -84,6 +100,9 @@
           else if (type === ScheduleTriggerTypes.WEEKLY) {
             loadWeeklyData(data.weekly);
           }
+          else if (type === ScheduleTriggerTypes.MONTHLY) {
+            loadMonthlyData(data.monthly);
+          }
         }
       }
 
@@ -109,6 +128,20 @@
         else {
           watcherTriggerVM.weeklyData.days = trigger.on;
           watcherTriggerVM.weeklyData.hours = trigger.at;
+        }
+      }
+
+      function loadMonthlyData(trigger) {
+        watcherTriggerVM.monthlyTimes = _.isArray(trigger);
+
+        if (watcherTriggerVM.monthlyTimes) {
+          watcherTriggerVM.monthlyData.times = _.map(trigger, function(day) {
+            return day.on + '@' + day.at;
+          });
+        }
+        else {
+          watcherTriggerVM.monthlyData.days = trigger.on;
+          watcherTriggerVM.monthlyData.hours = trigger.at;
         }
       }
     }

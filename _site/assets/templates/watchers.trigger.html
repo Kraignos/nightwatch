@@ -51,7 +51,7 @@
         </md-switch>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm ng-show="watcherTriggerVM.weeklyTimes">
-        <label ng-show="watcherTriggerVM.weeklyTimes">Specify the days plus the hour (day@hour, example: sunday@17:00, friday@noon)</label>
+        <label ng-show="watcherTriggerVM.weeklyTimes">Specify the days plus the hour (day@HH:mm, example: sunday@17:00, friday@noon)</label>
         <md-chips ng-model="watcherTriggerVM.weeklyData.times" ng-show="watcherTriggerVM.weeklyTimes"></md-chips>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.weeklyTimes">
@@ -61,6 +61,26 @@
       <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.weeklyTimes">
         <label ng-hide="watcherTriggerVM.weeklyTimes">Specify all hours</label>
         <md-chips ng-model="watcherTriggerVM.weeklyData.hours" ng-hide="watcherTriggerVM.weeklyTimes"></md-chips>
+      </md-input-container>
+    </div>
+    <!-- MONTHLY TRIGGER TYPE -->
+    <div layout-gt-xs="column" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'monthly'">
+      <md-input-container class="md-block">
+        <md-switch ng-model="watcherTriggerVM.monthlyTimes" aria-label="Specify days and hours separately">
+          Specify days and times together
+        </md-switch>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-show="watcherTriggerVM.monthlyTimes">
+        <label ng-show="watcherTriggerVM.monthlyTimes">Specify the days plus the hour (day@HH:mm, example: 20@17:00, 10@noon)</label>
+        <md-chips ng-model="watcherTriggerVM.monthlyData.times" ng-show="watcherTriggerVM.monthlyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.monthlyTimes">
+        <label ng-hide="watcherTriggerVM.monthlyTimes">Specify all days</label>
+        <md-chips ng-model="watcherTriggerVM.monthlyData.days" ng-hide="watcherTriggerVM.monthlyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.monthlyTimes">
+        <label ng-hide="watcherTriggerVM.monthlyTimes">Specify all hours</label>
+        <md-chips ng-model="watcherTriggerVM.monthlyData.hours" ng-hide="watcherTriggerVM.monthlyTimes"></md-chips>
       </md-input-container>
     </div>
     <!-- CRON TRIGGER TYPE -->
