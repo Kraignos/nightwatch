@@ -923,6 +923,7 @@
 
       watcherTriggerVM.type = '';
       watcherTriggerVM.schedule = {};
+      watcherTriggerVM.times = [];
 
       watcherTriggerVM.goToInput = goToInput;
       watcherTriggerVM.goToConditions = goToConditions;
@@ -940,10 +941,13 @@
       }
 
       function saveTrigger() {
-        console.log('before: ' + watcherTriggerVM.schedule.hourly);
         if (!_.isUndefined(watcherTriggerVM.schedule.hourly)) {
-          console.log('after: ' + watchers.transformToArray(watcherTriggerVM.schedule.hourly));
           watcherTriggerVM.schedule.hourly = { minute: watchers.transformToArray(watcherTriggerVM.schedule.hourly) };
+        }
+        if (!_.isEmpty(watcherTriggerVM.times)) {
+          if (watcherTriggerVM.type === 'daily') {
+            watcherTriggerVM.schedule.daily = { at: watcherTriggerVM.times };
+          }
         }
         watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
       }

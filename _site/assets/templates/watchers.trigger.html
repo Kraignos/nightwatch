@@ -23,6 +23,13 @@
       <input ng-model="watcherTriggerVM.schedule.hourly" type="text" aria-label="Hourly schedule (separate minutes by a comma)" />
     </md-input-container>
     </div>
+    <!-- DAILY TRIGGER TYPE -->
+    <div layout-gt-xs="row" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'daily'">
+    <md-input-container class="md-block" flex-gt-sm>
+      <label>Specify the times of day (HH:mm format). You can also use "midnight" and "noon"</label>
+      <md-chips ng-model="watcherTriggerVM.times"></md-chips>
+    </md-input-container>
+    </div>
     <!-- CRON TRIGGER TYPE -->
     <div layout-gt-xs="row" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'cron'">
     <md-input-container class="md-block" flex-gt-sm>
