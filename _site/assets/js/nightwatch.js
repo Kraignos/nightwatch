@@ -107,6 +107,9 @@
         .state('watch.watchers.trigger', {
           url: '/trigger',
           templateUrl: 'assets/templates/watchers.trigger.html',
+          resolve: {
+            triggersData: triggersData
+          },
           controller: 'WatcherTriggerCtrl',
           controllerAs: 'watcherTriggerVM'
         })
@@ -145,6 +148,7 @@
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
     watcherInputs.$inject = ['watchers'];
+    triggersData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
@@ -167,6 +171,10 @@
 
     function watcherInputs(watchers) {
       return watchers.getWatchInputs();
+    }
+
+    function triggersData(watchers) {
+      return watchers.getWatchTriggers();
     }
 
     function watcherSummary(watchers) {
@@ -590,7 +598,7 @@
 
   function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes) {
     var inputs = {};
-    var trigger = {};
+    var triggers = {};
 
     var service = {
       getInputTypes: getInputTypes,
@@ -599,6 +607,7 @@
       setHttpWatcherInput: setHttpWatcherInput,
       setWatcherScheduleTrigger: setWatcherScheduleTrigger,
       getWatchInputs: getWatchInputs,
+      getWatchTriggers: getWatchTriggers,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
@@ -624,11 +633,15 @@
 
     function setWatcherScheduleTrigger(schedule) {
       // Only schedule trigger is availale in ES so far
-      trigger = schedule;
+      triggers = schedule;
     }
 
     function getWatchInputs() {
       return inputs;
+    }
+
+    function getWatchTriggers() {
+      return triggers;
     }
 
     function getInputTypes() {
@@ -638,7 +651,7 @@
     function getWatcherSummary() {
       var summary = {};
       summary['input'] = inputs;
-      summary['trigger'] = trigger;
+      summary['trigger'] = triggers;
       return summary;
     }
 
@@ -916,12 +929,12 @@
   angular.module('nightwatch')
     .controller('WatcherTriggerCtrl', WatcherTriggerCtrl);
 
-    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers'];
+    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers', 'triggersData'];
 
-    function WatcherTriggerCtrl($scope, $state, watchers) {
+    function WatcherTriggerCtrl($scope, $state, watchers, triggersData) {
       var watcherTriggerVM = this;
 
-      watcherTriggerVM.type = '';
+      watcherTriggerVM.type = (_.keys(triggersData)[0]) || '';
       watcherTriggerVM.schedule = {};
       watcherTriggerVM.dailyData = { times: [], hours: [], minutes: [] };
       watcherTriggerVM.dailyTimes = true;
@@ -931,6 +944,8 @@
       watcherTriggerVM.saveTrigger = saveTrigger;
 
       watcherTriggerVM.getTriggerTypes = getTriggerTypes;
+
+      loadData(triggersData);
 
       function goToInput() {
         $state.go('watch.watchers.input');
@@ -962,6 +977,27 @@
 
       function getTriggerTypes() {
         return watchers.getScheduleTriggerTypes();
+      }
+
+      function loadData(data) {
+        console.log('data: ' + angular.toJson(data));
+        if (!_.isEmpty(_.keys(data))) {
+          var type = _.keys(data)[0];
+
+          if (type === 'daily') {
+            loadDailyData(data.daily.at);
+          }
+        }
+      }
+
+
+      function loadDailyData(trigger) {
+        if (_.isArray(trigger)) {
+          watcherTriggerVM.dailyData = { times: trigger, hours: [], minutes: [] };
+        }
+        else {
+          watcherTriggerVM.dailyData = { times: [], hours: trigger.hour, minutes: trigger.minute };
+        }
       }
     }
 })();

@@ -4,12 +4,12 @@
   angular.module('nightwatch')
     .controller('WatcherTriggerCtrl', WatcherTriggerCtrl);
 
-    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers'];
+    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers', '', 'triggersData'];
 
-    function WatcherTriggerCtrl($scope, $state, watchers) {
+    function WatcherTriggerCtrl($scope, $state, watchers, ScheduleTriggerTypes, triggersData) {
       var watcherTriggerVM = this;
 
-      watcherTriggerVM.type = '';
+      watcherTriggerVM.type = (_.keys(triggersData)[0]) || '';
       watcherTriggerVM.schedule = {};
       watcherTriggerVM.dailyData = { times: [], hours: [], minutes: [] };
       watcherTriggerVM.dailyTimes = true;
@@ -19,6 +19,8 @@
       watcherTriggerVM.saveTrigger = saveTrigger;
 
       watcherTriggerVM.getTriggerTypes = getTriggerTypes;
+
+      loadData(triggersData);
 
       function goToInput() {
         $state.go('watch.watchers.input');
@@ -50,6 +52,26 @@
 
       function getTriggerTypes() {
         return watchers.getScheduleTriggerTypes();
+      }
+
+      function loadData(data) {
+        if (!_.isEmpty(_.keys(data))) {
+          var type = _.keys(data)[0];
+
+          if (type === ScheduleTriggerTypes.DAILY) {
+            loadDailyData(data.daily.at);
+          }
+        }
+      }
+
+      function loadDailyData(trigger) {
+        watcherTriggerVM.dailyTimes = _.isArray(trigger);
+        if (watcherTriggerVM.dailyTimes) {
+          watcherTriggerVM.dailyData = { times: trigger, hours: [], minutes: [] };
+        }
+        else {
+          watcherTriggerVM.dailyData = { times: [], hours: trigger.hour, minutes: trigger.minute };
+        }
       }
     }
 })();

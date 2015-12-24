@@ -8,7 +8,7 @@
 
   function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes) {
     var inputs = {};
-    var trigger = {};
+    var triggers = {};
 
     var service = {
       getInputTypes: getInputTypes,
@@ -17,6 +17,7 @@
       setHttpWatcherInput: setHttpWatcherInput,
       setWatcherScheduleTrigger: setWatcherScheduleTrigger,
       getWatchInputs: getWatchInputs,
+      getWatchTriggers: getWatchTriggers,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
@@ -42,11 +43,15 @@
 
     function setWatcherScheduleTrigger(schedule) {
       // Only schedule trigger is availale in ES so far
-      trigger = schedule;
+      triggers = schedule;
     }
 
     function getWatchInputs() {
       return inputs;
+    }
+
+    function getWatchTriggers() {
+      return triggers;
     }
 
     function getInputTypes() {
@@ -56,7 +61,7 @@
     function getWatcherSummary() {
       var summary = {};
       summary['input'] = inputs;
-      summary['trigger'] = trigger;
+      summary['trigger'] = triggers;
       return summary;
     }
 
