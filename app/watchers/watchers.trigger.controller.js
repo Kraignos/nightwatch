@@ -13,9 +13,10 @@
       watcherTriggerVM.schedule = {};
       watcherTriggerVM.hours = [];
       watcherTriggerVM.dailyData = { times: [], hours: [], minutes: [] };
-      watcherTriggerVM.dailyTimes = watcherTriggerVM.weeklyTimes = watcherTriggerVM.monthlyTimes = true;
+      watcherTriggerVM.dailyTimes = watcherTriggerVM.weeklyTimes = watcherTriggerVM.monthlyTimes = watcherTriggerVM.yearlyTimes = true;;
       watcherTriggerVM.weeklyData = { times: [], days: [], hours: [] };
       watcherTriggerVM.monthlyData = { times: [], days: [], hours: [] };
+      watcherTriggerVM.yearlyData = { times: [], months: [], days: [], hours: [] };
 
       watcherTriggerVM.goToInput = goToInput;
       watcherTriggerVM.goToConditions = goToConditions;
@@ -52,6 +53,9 @@
         else if (watcherTriggerVM.type === ScheduleTriggerTypes.MONTHLY) {
           watcherTriggerVM.schedule.monthly = transformMonthlyData(watcherTriggerVM.monthlyData);
         }
+        else if (watcherTriggerVM.type === ScheduleTriggerTypes.YEARLY) {
+          watcherTriggerVM.schedule.yearly = transformYearlyData(watcherTriggerVM.yearlyData);
+        }
         watchers.setWatcherScheduleTrigger(watcherTriggerVM.schedule);
       }
 
@@ -79,6 +83,18 @@
         }
       }
 
+      function transformYearlyData(data) {
+        if (watcherTriggerVM.yearlyTimes) {
+          return _.map(watcherTriggerVM.yearlyData.times, function(yearDay) {
+            var day = yearDay.split('@');
+            return { in: day[0].substring(0, day[0].length - 2), on: day[0].substring(day[0].length - 2), at: day[1] };
+          });
+        }
+        else {
+          return { in: data.months, on: data.days, at: data.hours };
+        }
+      }
+
       function hasTrigger() {
         return _.size(watcherTriggerVM.schedule) > 0;
       }
@@ -102,6 +118,9 @@
           }
           else if (type === ScheduleTriggerTypes.MONTHLY) {
             loadMonthlyData(data.monthly);
+          }
+          else if (type === ScheduleTriggerTypes.YEARLY) {
+            loadYearlyData(data.yearly);
           }
         }
       }
@@ -142,6 +161,21 @@
         else {
           watcherTriggerVM.monthlyData.days = trigger.on;
           watcherTriggerVM.monthlyData.hours = trigger.at;
+        }
+      }
+
+      function loadYearlyData(trigger) {
+        watcherTriggerVM.yearlyTimes = _.isArray(trigger);
+
+        if (watcherTriggerVM.yearlyTimes) {
+          watcherTriggerVM.yearlyData.times = _.map(trigger, function(day) {
+            return day.in + day.on + '@' + day.at;
+          });
+        }
+        else {
+          watcherTriggerVM.yearlyData.months = trigger.in;
+          watcherTriggerVM.yearlyData.days = trigger.on;
+          watcherTriggerVM.yearlyData.hours = trigger.at;
         }
       }
     }

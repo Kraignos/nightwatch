@@ -83,6 +83,30 @@
         <md-chips ng-model="watcherTriggerVM.monthlyData.hours" ng-hide="watcherTriggerVM.monthlyTimes"></md-chips>
       </md-input-container>
     </div>
+    <!-- YEARLY TRIGGER TYPE -->
+    <div layout-gt-xs="column" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'yearly'">
+      <md-input-container class="md-block">
+        <md-switch ng-model="watcherTriggerVM.yearlyTimes" aria-label="Specify days and hours separately">
+          Specify months, days and times all together
+        </md-switch>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-show="watcherTriggerVM.yearlyTimes">
+        <label ng-show="watcherTriggerVM.yearlyTimes">Specify the month and day plus the hour (example: january10@noon, july20@17:00)</label>
+        <md-chips ng-model="watcherTriggerVM.yearlyData.times" ng-show="watcherTriggerVM.yearlyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.yearlyTimes">
+        <label ng-hide="watcherTriggerVM.yearlyTimes">Specify all months</label>
+        <md-chips ng-model="watcherTriggerVM.yearlyData.months" ng-hide="watcherTriggerVM.yearlyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.yearlyTimes">
+        <label ng-hide="watcherTriggerVM.yearlyTimes">Specify all days</label>
+        <md-chips ng-model="watcherTriggerVM.yearlyData.days" ng-hide="watcherTriggerVM.yearlyTimes"></md-chips>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-hide="watcherTriggerVM.yearlyTimes">
+        <label ng-hide="watcherTriggerVM.yearlyTimes">Specify all hours</label>
+        <md-chips ng-model="watcherTriggerVM.yearlyData.hours" ng-hide="watcherTriggerVM.yearlyTimes"></md-chips>
+      </md-input-container>
+    </div>
     <!-- CRON TRIGGER TYPE -->
     <div layout-gt-xs="row" flex-fill flex="80" flex-layout="start start" ng-show="watcherTriggerVM.type === 'cron'">
     <md-input-container class="md-block" flex-gt-sm>
