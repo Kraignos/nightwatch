@@ -2,9 +2,6 @@
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Define your watch input(s)</span></div>
 </md-toolbar>
 <div flex="100" layout-padding>
-  <div layout-gt-xs="row" flex="50" ng-show="!watcherInputVM.hasInput()">
-    <md-subheader class="md-warn">You have no input defined...</md-subheader>
-  </div>
   <form name="inputForm">
     <div layout-gt-xs="row" flex="50">
       <md-input-container class="md-block" flex-gt-xs>
@@ -44,7 +41,7 @@
     <div layout-gt-xs="column" flex-fill flex="70" flex-layout="start start" ng-show="watcherInputVM.type === 'search'">
       <md-input-container class="md-block" flex-gt-sm>
         <label>Type of search request to perform</label>
-        <md-select ng-model="request.search_type">
+        <md-select ng-model="watcherInputVM.search.request.search_type">
           <md-option ng-repeat="type in watcherInputVM.getSearchRequestTypes()" value="{{ type }}">
             {{ type }}
           </md-option>
@@ -52,62 +49,52 @@
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>Indices to search</label>
-        <input ng-model="request.indices" type="text" aria-label="The indices to search" />
+        <input ng-model="watcherInputVM.search.request.indices" type="text" aria-label="The indices to search" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>Document types to search for</label>
-        <input ng-model="request.types" type="text" aria-label="Document types to search for" />
+        <input ng-model="watcherInputVM.search.request.types" type="text" aria-label="Document types to search for" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The body of the request (JSON format)</label>
-        <textarea ng-model="request.body" columns="1" md-maxlength="1000" rows="10"></textarea>
+        <textarea ng-model="watcherInputVM.search.request.body" columns="1" md-maxlength="1000" rows="10"></textarea>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The body of the search template (JSON format)</label>
-        <textarea ng-model="request.template" columns="1" md-maxlength="1000" rows="10"></textarea>
+        <textarea ng-model="watcherInputVM.search.request.template" columns="1" md-maxlength="1000" rows="10"></textarea>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>How to expand wildcards</label>
-        <md-select ng-model="request.indices_options.expand_wildcards">
-          <md-option ng-repeat="type in watcherInputVM.getSearchRequestTypes()" value="{{ type }}">
+        <md-select ng-model="watcherInputVM.search.request.indices_options.expand_wildcards">
+          <md-option ng-repeat="type in watcherInputVM.getExpandWildCards()" value="{{ type }}">
             {{ type }}
           </md-option>
         </md-select>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
-        <md-switch ng-model="request.indices_options.ignore_unavailable" aria-label="Ignore unavailable indices">
+        <md-switch ng-model="watcherInputVM.search.request.indices_options.ignore_unavailable" aria-label="Ignore unavailable indices">
           Ignore unavailable indices
         </md-switch>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
-        <md-switch ng-model="request.indices_options.allow_no_indices" aria-label="Ignore unavailable indices">
+        <md-switch ng-model="watcherInputVM.search.request.indices_options.allow_no_indices" aria-label="Ignore unavailable indices">
           Allow a search where a wildcard indices expression results in no concrete indices
         </md-switch>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>Array of JSON keys to extract from the search response</label>
-        <input ng-model="extract" type="text" aria-label="Array of JSON keys to extract from the search response" />
+        <input ng-model="watcherInputVM.search.extract" type="text" aria-label="Array of JSON keys to extract from the search response" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The timeout for waiting for the search api call to return</label>
-        <input ng-model="timeout" type="text" aria-label="The timeout for waiting for the search api call to return" />
-      </md-input-container>
-      <md-input-container class="md-block" flex-gt-sm>
-        <div flex-offset="90" flex="10">
-          <md-button class="md-fab md-accent md-hue-2"
-                        aria-label="Add this input"
-                        ng-click="watcherInputVM.addSearchInputType(request, extract, timeout);">
-            <md-tooltip md-direction="top">Save this input</md-tooltip>
-            <md-icon class="material-icons md-primary md-12">done_all</md-icon>
-          </md-button>
-        </div>
+        <input ng-model="watcherInputVM.search.timeout" type="text" aria-label="The timeout for waiting for the search api call to return" />
       </md-input-container>
     </div>
     <!-- HTTP INPUT TYPE -->
     <div layout-gt-xs="column" flex-fill flex="70" flex-layout="start start" ng-show="watcherInputVM.type === 'http'">
       <md-input-container class="md-block" flex-gt-sm flex="30">
         <label>The URL scheme</label>
-        <md-select ng-model="request.scheme">
+        <md-select ng-model="watcherInputVM.http.request.scheme">
           <md-option ng-repeat="scheme in ['http', 'https']" value="{{ scheme }}">
             {{ scheme }}
           </md-option>
@@ -115,19 +102,19 @@
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The host to connect to</label>
-        <input ng-model="request.host" type="text" aria-label="The host to connect to" />
+        <input ng-model="watcherInputVM.http.request.host" type="text" aria-label="The host to connect to" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The port the http service is listening on</label>
-        <input ng-model="request.port" type="text" aria-label="The port the http service is listening on" />
+        <input ng-model="watcherInputVM.http.request.port" type="text" aria-label="The port the http service is listening on" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The URL path</label>
-        <input ng-model="request.path" type="text" aria-label="The URL path" />
+        <input ng-model="watcherInputVM.http.request.path" type="text" aria-label="The URL path" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm flex="30">
         <label>The HTTP method</label>
-        <md-select ng-model="request.method">
+        <md-select ng-model="watcherInputVM.http.request.method">
           <md-option ng-repeat="method in ['head', 'get', 'post', 'put', 'delete']" value="{{ method }}">
             {{ method }}
           </md-option>
@@ -135,61 +122,51 @@
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The HTTP request headers</label>
-        <input ng-model="request.headers" type="text" aria-label="The HTTP request headers" />
+        <input ng-model="watcherInputVM.http.request.headers" type="text" aria-label="The HTTP request headers" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The URL query string parameters</label>
-        <input ng-model="request.params" type="text" aria-label="The URL query string parameters" />
+        <input ng-model="watcherInputVM.http.request.params" type="text" aria-label="The URL query string parameters" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm flex="50">
         <label>Username</label>
-        <input ng-model="request.auth.basic.username" type="text" aria-label="Username" />
+        <input ng-model="watcherInputVM.http.request.auth.basic.username" type="text" aria-label="Username" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm flex="50">
         <label>Password</label>
-        <input ng-model="request.auth.basic.password" type="text" aria-label="Password" />
+        <input ng-model="watcherInputVM.http.request.auth.basic.password" type="text" aria-label="Password" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The proxy host to use</label>
-        <input ng-model="request.proxy.host" type="text" aria-label="The proxy host to use" />
+        <input ng-model="watcherInputVM.http.request.proxy.host" type="text" aria-label="The proxy host to use" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The proxy port to use</label>
-        <input ng-model="request.proxy.port" type="text" aria-label="The proxy port to use" />
+        <input ng-model="watcherInputVM.http.request.proxy.port" type="text" aria-label="The proxy port to use" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The timeout for setting up the http connection</label>
-        <input ng-model="request.connection_timeout" type="text" aria-label="The timeout for setting up the http connection" />
+        <input ng-model="watcherInputVM.http.request.connection_timeout" type="text" aria-label="The timeout for setting up the http connection" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The timeout for reading data from http connection</label>
-        <input ng-model="request.read_timeout" type="text" aria-label="The timeout for reading data from http connection" />
+        <input ng-model="watcherInputVM.http.request.read_timeout" type="text" aria-label="The timeout for reading data from http connection" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The HTTP request body</label>
-        <input ng-model="request.body" type="text" aria-label="The HTTP request body" />
+        <input ng-model="watcherInputVM.http.request.body" type="text" aria-label="The HTTP request body" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>Array of JSON keys to extract from the input response</label>
-        <input ng-model="extract" type="text" aria-label="Array of JSON keys to extract from the input response" />
+        <input ng-model="watcherInputVM.http.extract" type="text" aria-label="Array of JSON keys to extract from the input response" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm flex="30">
         <label>The HTTP method</label>
-        <md-select ng-model="response_content_type">
+        <md-select ng-model="watcherInputVM.http.response_content_type">
           <md-option ng-repeat="type in watcherInputVM.getResponseTypes()" value="{{ type }}">
             {{ type }}
           </md-option>
         </md-select>
-      </md-input-container>
-      <md-input-container class="md-block" flex-gt-sm>
-        <div flex-offset="90" flex="10">
-          <md-button class="md-fab md-accent md-hue-2"
-                        aria-label="Add this input"
-                        ng-click="watcherInputVM.addHttpInputType(request, extract, response_content_type);">
-            <md-tooltip md-direction="top">Save this input</md-tooltip>
-            <md-icon class="material-icons md-primary md-12">done_all</md-icon>
-          </md-button>
-        </div>
       </md-input-container>
     </div>
   </form>
@@ -197,8 +174,8 @@
     <div layout-gt-xs="row">
       <div flex-offset="95"></div>
       <div flex="5">
-        <md-button class="md-fab md-primary md-hue-2" aria-label="Next" ng-click="watcherInputVM.goToTrigger()">
-          <md-tooltip md-direction="top">Go to Trigger definition</md-tooltip>
+        <md-button class="md-fab md-accent md-hue-2" aria-label="Next" ng-click="watcherInputVM.goToTrigger()">
+          <md-tooltip md-direction="top">Save and go to Trigger definition</md-tooltip>
           <md-icon class="material-icons md-primary md-48">chevron_right</md-icon>
         </md-button>
       </div>

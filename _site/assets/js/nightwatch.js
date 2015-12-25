@@ -99,7 +99,7 @@
           url: '/input',
           templateUrl: 'assets/templates/watchers.input.html',
           resolve: {
-            watcherInputs: watcherInputs
+            inputsData: inputsData
           },
           controller: 'WatcherInputCtrl',
           controllerAs: 'watcherInputVM'
@@ -150,7 +150,7 @@
     clusterStatus.$inject = ['elastic'];
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
-    watcherInputs.$inject = ['watchers'];
+    inputsData.$inject = ['watchers'];
     triggersData.$inject = ['watchers'];
     conditionsData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
@@ -173,7 +173,7 @@
       });
     }
 
-    function watcherInputs(watchers) {
+    function inputsData(watchers) {
       return watchers.getWatchInputs();
     }
 
@@ -666,6 +666,7 @@
       setSimpleWatcherInput: setSimpleWatcherInput,
       setSearchWatcherInput: setSearchWatcherInput,
       setHttpWatcherInput: setHttpWatcherInput,
+      setWatcherInput: setWatcherInput,
       setWatcherScheduleTrigger: setWatcherScheduleTrigger,
       setWatcherCondition: setWatcherCondition,
       getWatchInputs: getWatchInputs,
@@ -695,6 +696,10 @@
 
     function setHttpWatcherInput(http) {
       inputs[WatchInputType.HTTP] = http;
+    }
+
+    function setWatcherInput(input) {
+      inputs = input;
     }
 
     function setWatcherScheduleTrigger(schedule) {
@@ -953,18 +958,17 @@
   angular.module('nightwatch')
     .controller('WatcherInputCtrl', WatcherInputCtrl);
 
-    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'notifications', 'watcherInputs'];
+    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'WatchInputType', 'inputsData'];
 
-    function WatcherInputCtrl($scope, $state, watchers, notifications, watcherInputs) {
+    function WatcherInputCtrl($scope, $state, watchers, WatchInputType, inputsData) {
       var watcherInputVM = this;
 
       watcherInputVM.input = {};
-      watcherInputVM.type = '';
-      watcherInputVM.request = {};
+      watcherInputVM.type = (_.keys(inputsData)[0]) || '';
+      watcherInputVM.simple = watcherInputVM.search = watcherInputVM.http = {};
 
       watcherInputVM.goToTrigger = goToTrigger;
       watcherInputVM.getPrettyInput = getPrettyInput;
-      watcherInputVM.hasInput = hasInput;
 
       watcherInputVM.getSearchRequestTypes = getSearchRequestTypes;
       watcherInputVM.getTypes = getTypes;
@@ -973,11 +977,13 @@
       watcherInputVM.getResponseTypes = getResponseTypes;
 
       watcherInputVM.addSimpleInputType = addSimpleInputType;
-      watcherInputVM.addSearchInputType = addSearchInputType;
-      watcherInputVM.addHttpInputType = addHttpInputType;
 
+      loadInputsData(inputsData);
 
       function goToTrigger() {
+        var input = {};
+        input[watcherInputVM.type] = watcherInputVM[watcherInputVM.type];
+        watchers.setWatcherInput(input);
         $state.go('watch.watchers.trigger');
       }
 
@@ -998,15 +1004,10 @@
         simple[nature] = nature === 'obj' ? angular.fromJson(value) : value;
         watcherInputVM.input['simple'] = simple;
         watchers.setSimpleWatcherInput(watcherInputVM.input);
-        notifications.showSimple('The simple input type has been saved');
       }
 
       function getPrettyInput() {
         return angular.toJson(watcherInputVM.input, true);
-      }
-
-      function hasInput() {
-        return _.size(watcherInputVM.input) > 0;
       }
 
       function getExpandWildCards() {
@@ -1017,57 +1018,8 @@
         return watchers.getResponseContentTypes();
       }
 
-      function addSearchInputType(search, extract, timeout) {
-        var request = search || {};
-        var watcherInput = {};
-
-        if (_.contains(_.keys(request), 'indices')) {
-          request.indices = transformToArray(request.indices);
-        }
-        if (_.contains(_.keys(request), 'types')) {
-          request.types = transformToArray(request.types);
-        }
-        if (_.contains(_.keys(request), 'body')) {
-          request.body = angular.fromJson(request.body);
-        }
-        if (_.contains(_.keys(request), 'template')) {
-          request.template = angular.fromJson(request.template);
-        }
-
-        watcherInputVM.input['search'] = {
-          request: request
-        };
-
-        if (!_.isUndefined(extract)) {
-          watcherInputVM.input['search']['extract'] = extract;
-        }
-
-        if (!_.isUndefined(timeout)) {
-          watcherInputVM.input['search']['timeout'] = timeout;
-        }
-
-        watchers.setSearchWatcherInput(watcherInputVM.input.search);
-        notifications.showSimple('The search input type has been saved');
-      }
-
-      function addHttpInputType(http, extract, responseContentType) {
-        var request = http || {};
-        var watcherInput = {};
-
-        watcherInputVM.input['http'] = {
-          request: request
-        };
-
-        if (!_.isUndefined(extract)) {
-          watcherInputVM.input['http']['extract'] = extract;
-        }
-
-        if (!_.isUndefined(responseContentType)) {
-          watcherInputVM.input['http']['responseContentType'] = responseContentType;
-        }
-
-        watchers.setHttpWatcherInput(watcherInputVM.input.http);
-        notifications.showSimple('The HTTP input type has been saved');
+      function loadInputsData(data) {
+        watcherInputVM[watcherInputVM.type] = data[watcherInputVM.type];
       }
 
       function transformToArray(values) {

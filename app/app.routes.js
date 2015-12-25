@@ -91,7 +91,7 @@
           url: '/input',
           templateUrl: 'assets/templates/watchers.input.html',
           resolve: {
-            watcherInputs: watcherInputs
+            inputsData: inputsData
           },
           controller: 'WatcherInputCtrl',
           controllerAs: 'watcherInputVM'
@@ -142,7 +142,7 @@
     clusterStatus.$inject = ['elastic'];
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
-    watcherInputs.$inject = ['watchers'];
+    inputsData.$inject = ['watchers'];
     triggersData.$inject = ['watchers'];
     conditionsData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
@@ -165,7 +165,7 @@
       });
     }
 
-    function watcherInputs(watchers) {
+    function inputsData(watchers) {
       return watchers.getWatchInputs();
     }
 

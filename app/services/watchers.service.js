@@ -16,6 +16,7 @@
       setSimpleWatcherInput: setSimpleWatcherInput,
       setSearchWatcherInput: setSearchWatcherInput,
       setHttpWatcherInput: setHttpWatcherInput,
+      setWatcherInput: setWatcherInput,
       setWatcherScheduleTrigger: setWatcherScheduleTrigger,
       setWatcherCondition: setWatcherCondition,
       getWatchInputs: getWatchInputs,
@@ -45,6 +46,10 @@
 
     function setHttpWatcherInput(http) {
       inputs[WatchInputType.HTTP] = http;
+    }
+
+    function setWatcherInput(input) {
+      inputs = input;
     }
 
     function setWatcherScheduleTrigger(schedule) {
