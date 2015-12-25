@@ -1,10 +1,55 @@
 <md-toolbar md-scroll-shrink>
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Define your watch condition(s)</span></div>
 </md-toolbar>
-<div flex layout-padding>
-  <div layout-gt-xs="row" flex-inverse>
-    <div flex-offset="80"></div>
-    <div flex="10">
+<div flex="100" layout-padding>
+  <div layout-gt-xs="row" flex="50" ng-show="!watcherConditionsVM.hasTrigger()">
+    <md-subheader class="md-warn">You have no condition defined...</md-subheader>
+  </div>
+  <form name="inputForm">
+    <div layout-gt-xs="row" flex="50">
+      <md-input-container class="md-block" flex-gt-xs>
+        <label>Choose the type of condition</label>
+        <md-select ng-model="watcherConditionsVM.type" ng-change="watcherConditionsVM.updateType()">
+          <md-option ng-repeat="type in watcherConditionsVM.getConditionTypes()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+    <!-- SCRIPT CONDITION TYPE -->
+    <div layout-gt-xs="column" ng-show="watcherConditionsVM.type === 'script'">
+      <md-input-container class="md-block" flex="33">
+        <label>Choose the type of script</label>
+        <md-select ng-model="watcherConditionsVM.scriptType" ng-change="watcherConditionsVM.updateScriptType()">
+          <md-option ng-repeat="type in watcherConditionsVM.getScriptTypes()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" ng-show="watcherConditionsVM.scriptType === 'inline'">
+        <label>Type the script</label>
+        <textarea ng-model="watcherConditionsVM.condition.script.inline" columns="1" md-maxlength="1000" rows="10"></textarea>
+      </md-input-container>
+      <md-input-container class="md-block" flex="33" ng-show="watcherConditionsVM.scriptType === 'file'">
+        <label>Type the filename of the script (without the extension)</label>
+        <input ng-model="watcherConditionsVM.condition.script.file" type="text" aria-label="Type the filename of the script (without the extension)" />
+      </md-input-container>
+      <md-input-container class="md-block" flex="33" ng-show="watcherConditionsVM.scriptType === 'id'">
+        <label>Type the id of the script</label>
+        <input ng-model="watcherConditionsVM.condition.script.id" type="text" aria-label="Type the id of the script" />
+      </md-input-container>
+      <md-input-container class="md-block" flex="33">
+        <label>Define the language</label>
+        <md-select ng-model="watcherConditionsVM.condition.script.lang">
+          <md-option ng-repeat="type in watcherConditionsVM.getScriptLanguages()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+  </form>
+  <div layout-gt-xs="row">
+    <div flex-offset="80" flex="10">
       <md-button class="md-fab md-accent md-hue-2" aria-label="Previous" ng-click="watcherConditionsVM.goToTrigger()">
         <md-tooltip md-direction="top">Go to Trigger definition</md-tooltip>
         <md-icon class="material-icons md-primary md-48">chevron_left</md-icon>

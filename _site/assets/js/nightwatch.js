@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2015-12-24
+/*! nightwatch - v1.0.0 - 2015-12-25
 * Copyright (c) 2015 ; Licensed  */
 (function() {
   'use strict';
@@ -116,6 +116,9 @@
         .state('watch.watchers.conditions', {
           url: '/conditions',
           templateUrl: 'assets/templates/watchers.conditions.html',
+          resolve: {
+            conditionsData: conditionsData
+          },
           controller: 'WatcherConditionsCtrl',
           controllerAs: 'watcherConditionsVM'
         })
@@ -149,6 +152,7 @@
     clusterNodes.$inject = ['elastic'];
     watcherInputs.$inject = ['watchers'];
     triggersData.$inject = ['watchers'];
+    conditionsData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
@@ -175,6 +179,10 @@
 
     function triggersData(watchers) {
       return watchers.getWatchTriggers();
+    }
+
+    function conditionsData(watchers) {
+      return watchers.getWatchConditions();
     }
 
     function watcherSummary(watchers) {
@@ -225,6 +233,31 @@
       YEARLY: 'yearly',
       CRON: 'cron',
       INTERVAL: 'interval'
+    })
+    .constant('ConditionTypes', {
+      ALWAYS: 'always',
+      NEVER: 'never',
+      SCRIPT: 'script',
+      COMPARE: 'compare'
+    })
+    .constant('ScriptConditionTypes', {
+      INLINE: 'inline',
+      INDEXED: 'id',
+      FILE: 'file'
+    })
+    .constant('ScriptLanguages', {
+      GROOVY: 'groovy',
+      JAVASCRIPT: 'javascript',
+      PYTHON: 'python',
+      EXPRESSION: 'expression',
+      MUSTACHE: 'mustache'
+    })
+    .constant('ScriptLanguages', {
+      GROOVY: 'groovy',
+      JAVASCRIPT: 'javascript',
+      PYTHON: 'python',
+      EXPRESSION: 'expression',
+      MUSTACHE: 'mustache'
     });
 })();
 
@@ -594,11 +627,12 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes', 'ConditionTypes', 'ScriptConditionTypes', 'ScriptLanguages'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes, ConditionTypes, ScriptConditionTypes, ScriptLanguages) {
     var inputs = {};
     var triggers = {};
+    var conditions = {};
 
     var service = {
       getInputTypes: getInputTypes,
@@ -606,14 +640,19 @@
       setSearchWatcherInput: setSearchWatcherInput,
       setHttpWatcherInput: setHttpWatcherInput,
       setWatcherScheduleTrigger: setWatcherScheduleTrigger,
+      setWatcherCondition: setWatcherCondition,
       getWatchInputs: getWatchInputs,
       getWatchTriggers: getWatchTriggers,
+      getWatchConditions: getWatchConditions,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
       getExpandWildCards: getExpandWildCards,
       getResponseContentTypes: getResponseContentTypes,
       getScheduleTriggerTypes: getScheduleTriggerTypes,
+      getConditionTypes: getConditionTypes,
+      getScriptTypes: getScriptTypes,
+      getScriptLanguages: getScriptLanguages,
       transformToArray: transformToArray
     }
 
@@ -636,12 +675,20 @@
       triggers = schedule;
     }
 
+    function setWatcherCondition(condition) {
+      conditions = condition;
+    }
+
     function getWatchInputs() {
       return inputs;
     }
 
     function getWatchTriggers() {
       return triggers;
+    }
+
+    function getWatchConditions() {
+      return conditions;
     }
 
     function getInputTypes() {
@@ -652,6 +699,7 @@
       var summary = {};
       summary['input'] = inputs;
       summary['trigger'] = triggers;
+      summary['condition'] = conditions;
       return summary;
     }
 
@@ -698,6 +746,33 @@
       ];
     }
 
+    function getConditionTypes() {
+      return [
+        ConditionTypes.ALWAYS,
+        ConditionTypes.NEVER,
+        ConditionTypes.SCRIPT,
+        ConditionTypes.COMPARE
+      ];
+    }
+
+    function getScriptTypes() {
+      return [
+        ScriptConditionTypes.INLINE,
+        ScriptConditionTypes.INDEXED,
+        ScriptConditionTypes.FILE
+      ];
+    }
+
+    function getScriptLanguages() {
+      return [
+        ScriptLanguages.GROOVY,
+        ScriptLanguages.JAVASCRIPT,
+        ScriptLanguages.PYTHON,
+        ScriptLanguages.EXPRESSION,
+        ScriptLanguages.MUSTACHE
+      ];
+    }
+
     function transformToArray(values) {
       return _.map(values.trim().split(','), function(v) {
         return v.trim();
@@ -736,20 +811,75 @@
   angular.module('nightwatch')
     .controller('WatcherConditionsCtrl', WatcherConditionsCtrl);
 
-    WatcherConditionsCtrl.$inject = ['$scope', '$state', 'watchers'];
+    WatcherConditionsCtrl.$inject = ['$scope', '$state', 'watchers', 'conditionsData'];
 
-    function WatcherConditionsCtrl($scope, $state, watchers) {
+    function WatcherConditionsCtrl($scope, $state, watchers, conditionsData) {
       var watcherConditionsVM = this;
+
+      watcherConditionsVM.type = (_.keys(conditionsData)[0]) || '';
+      watcherConditionsVM.scriptType = '';
+      watcherConditionsVM.condition = {};
 
       watcherConditionsVM.goToTrigger = goToTrigger;
       watcherConditionsVM.goToActions = goToActions;
 
+      watcherConditionsVM.getConditionTypes = getConditionTypes;
+      watcherConditionsVM.getScriptTypes = getScriptTypes;
+      watcherConditionsVM.getScriptLanguages = getScriptLanguages;
+      watcherConditionsVM.updateType = updateType;
+      watcherConditionsVM.updateScriptType = updateScriptType;
+
+      loadConditionsData(conditionsData);
+
       function goToTrigger() {
+        watchers.setWatcherCondition(watcherConditionsVM.condition);
         $state.go('watch.watchers.trigger');
       }
 
       function goToActions() {
+        watchers.setWatcherCondition(watcherConditionsVM.condition);
         $state.go('watch.watchers.actions');
+      }
+
+      function getConditionTypes() {
+        return watchers.getConditionTypes();
+      }
+
+      function getScriptTypes() {
+        return watchers.getScriptTypes();
+      }
+
+      function getScriptLanguages() {
+        return watchers.getScriptLanguages();
+      }
+
+      function updateType() {
+        watcherConditionsVM.condition = {};
+        watcherConditionsVM.condition[watcherConditionsVM.type] = {};
+      }
+
+      function updateScriptType() {
+        // We reset the script as we change its type
+        watcherConditionsVM.condition.script = {};
+        watcherConditionsVM.condition.script[watcherConditionsVM.scriptType] = '';
+      }
+
+      function loadConditionsData(data) {
+        if (!_.isEmpty(_.keys(data))) {
+          watcherConditionsVM.condition = data;
+
+          if (watcherConditionsVM.type === 'script') {
+            if (!_.isUndefined(data.script.inline)) {
+              watcherConditionsVM.scriptType = 'inline';
+            }
+            else if (!_.isUndefined(data.script.file)) {
+              watcherConditionsVM.scriptType = 'file';
+            }
+            else if (!_.isUndefined(data.script.id)) {
+              watcherConditionsVM.scriptType = 'id';
+            }
+          }
+        }
       }
     }
 })();

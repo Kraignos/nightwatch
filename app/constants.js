@@ -40,5 +40,30 @@
       YEARLY: 'yearly',
       CRON: 'cron',
       INTERVAL: 'interval'
+    })
+    .constant('ConditionTypes', {
+      ALWAYS: 'always',
+      NEVER: 'never',
+      SCRIPT: 'script',
+      COMPARE: 'compare'
+    })
+    .constant('ScriptConditionTypes', {
+      INLINE: 'inline',
+      INDEXED: 'id',
+      FILE: 'file'
+    })
+    .constant('ScriptLanguages', {
+      GROOVY: 'groovy',
+      JAVASCRIPT: 'javascript',
+      PYTHON: 'python',
+      EXPRESSION: 'expression',
+      MUSTACHE: 'mustache'
+    })
+    .constant('ScriptLanguages', {
+      GROOVY: 'groovy',
+      JAVASCRIPT: 'javascript',
+      PYTHON: 'python',
+      EXPRESSION: 'expression',
+      MUSTACHE: 'mustache'
     });
 })();

@@ -108,6 +108,9 @@
         .state('watch.watchers.conditions', {
           url: '/conditions',
           templateUrl: 'assets/templates/watchers.conditions.html',
+          resolve: {
+            conditionsData: conditionsData
+          },
           controller: 'WatcherConditionsCtrl',
           controllerAs: 'watcherConditionsVM'
         })
@@ -141,6 +144,7 @@
     clusterNodes.$inject = ['elastic'];
     watcherInputs.$inject = ['watchers'];
     triggersData.$inject = ['watchers'];
+    conditionsData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
@@ -167,6 +171,10 @@
 
     function triggersData(watchers) {
       return watchers.getWatchTriggers();
+    }
+
+    function conditionsData(watchers) {
+      return watchers.getWatchConditions();
     }
 
     function watcherSummary(watchers) {

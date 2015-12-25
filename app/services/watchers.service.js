@@ -4,11 +4,12 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes', 'ConditionTypes', 'ScriptConditionTypes', 'ScriptLanguages'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes, ConditionTypes, ScriptConditionTypes, ScriptLanguages) {
     var inputs = {};
     var triggers = {};
+    var conditions = {};
 
     var service = {
       getInputTypes: getInputTypes,
@@ -16,14 +17,19 @@
       setSearchWatcherInput: setSearchWatcherInput,
       setHttpWatcherInput: setHttpWatcherInput,
       setWatcherScheduleTrigger: setWatcherScheduleTrigger,
+      setWatcherCondition: setWatcherCondition,
       getWatchInputs: getWatchInputs,
       getWatchTriggers: getWatchTriggers,
+      getWatchConditions: getWatchConditions,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
       getExpandWildCards: getExpandWildCards,
       getResponseContentTypes: getResponseContentTypes,
       getScheduleTriggerTypes: getScheduleTriggerTypes,
+      getConditionTypes: getConditionTypes,
+      getScriptTypes: getScriptTypes,
+      getScriptLanguages: getScriptLanguages,
       transformToArray: transformToArray
     }
 
@@ -46,12 +52,20 @@
       triggers = schedule;
     }
 
+    function setWatcherCondition(condition) {
+      conditions = condition;
+    }
+
     function getWatchInputs() {
       return inputs;
     }
 
     function getWatchTriggers() {
       return triggers;
+    }
+
+    function getWatchConditions() {
+      return conditions;
     }
 
     function getInputTypes() {
@@ -62,6 +76,7 @@
       var summary = {};
       summary['input'] = inputs;
       summary['trigger'] = triggers;
+      summary['condition'] = conditions;
       return summary;
     }
 
@@ -105,6 +120,33 @@
         ScheduleTriggerTypes.YEARLY,
         ScheduleTriggerTypes.CRON,
         ScheduleTriggerTypes.INTERVAL
+      ];
+    }
+
+    function getConditionTypes() {
+      return [
+        ConditionTypes.ALWAYS,
+        ConditionTypes.NEVER,
+        ConditionTypes.SCRIPT,
+        ConditionTypes.COMPARE
+      ];
+    }
+
+    function getScriptTypes() {
+      return [
+        ScriptConditionTypes.INLINE,
+        ScriptConditionTypes.INDEXED,
+        ScriptConditionTypes.FILE
+      ];
+    }
+
+    function getScriptLanguages() {
+      return [
+        ScriptLanguages.GROOVY,
+        ScriptLanguages.JAVASCRIPT,
+        ScriptLanguages.PYTHON,
+        ScriptLanguages.EXPRESSION,
+        ScriptLanguages.MUSTACHE
       ];
     }
 
