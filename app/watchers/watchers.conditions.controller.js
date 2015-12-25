@@ -64,7 +64,6 @@
         var params = watcherConditionsVM.condition.params || {};
         params[name] = value;
         watcherConditionsVM.condition.params = params;
-        console.log('params: ' + angular.toJson(watcherConditionsVM.condition));
       }
 
       function removeParameter(name) {

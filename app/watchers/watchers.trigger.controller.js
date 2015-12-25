@@ -95,10 +95,6 @@
         }
       }
 
-      function hasTrigger() {
-        return _.size(watcherTriggerVM.schedule) > 0;
-      }
-
       function getTriggerTypes() {
         return watchers.getScheduleTriggerTypes();
       }

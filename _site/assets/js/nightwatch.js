@@ -898,7 +898,6 @@
         var params = watcherConditionsVM.condition.params || {};
         params[name] = value;
         watcherConditionsVM.condition.params = params;
-        console.log('params: ' + angular.toJson(watcherConditionsVM.condition));
       }
 
       function removeParameter(name) {
@@ -1199,10 +1198,6 @@
         else {
           return { in: data.months, on: data.days, at: data.hours };
         }
-      }
-
-      function hasTrigger() {
-        return _.size(watcherTriggerVM.schedule) > 0;
       }
 
       function getTriggerTypes() {
