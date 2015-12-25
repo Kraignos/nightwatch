@@ -978,6 +978,9 @@
       watcherInputVM.getExpandWildCards = getExpandWildCards;
       watcherInputVM.getResponseTypes = getResponseTypes;
       watcherInputVM.resetExtractData = resetExtractData;
+      watcherInputVM.addHeader = addHeader;
+      watcherInputVM.removeHeader = removeHeader;
+      watcherInputVM.getHeaders = getHeaders;
 
       watcherInputVM.addSimpleInputType = addSimpleInputType;
 
@@ -1055,6 +1058,26 @@
 
       function resetExtractData() {
         watcherInputVM.extractChipsData = [];
+      }
+
+      function addHeader(name, value) {
+        var params = watcherInputVM.http.params || {};
+        params[name] = value;
+        watcherInputVM.http.params = params;
+      }
+
+      function removeHeader(name) {
+        var parameters = {};
+        angular.forEach(_.keys(watcherInputVM.http.params), function(p) {
+          if (p !== name) {
+            parameters[p] = watcherInputVM.http.params[p];
+          }
+        });
+        watcherInputVM.http.params = parameters;
+      }
+
+      function getHeaders() {
+        return _.keys(watcherInputVM.http.params);
       }
 
       function transformToArray(values) {

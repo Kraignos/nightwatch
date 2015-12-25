@@ -121,13 +121,46 @@
         </md-select>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
-        <label>The HTTP request headers</label>
-        <input ng-model="watcherInputVM.http.request.headers" type="text" aria-label="The HTTP request headers" />
-      </md-input-container>
-      <md-input-container class="md-block" flex-gt-sm>
         <label>The URL query string parameters</label>
         <input ng-model="watcherInputVM.http.request.params" type="text" aria-label="The URL query string parameters" />
       </md-input-container>
+      <!-- HTTP headers -->
+      <div>
+        <md-subheader class="md-primary">Add a header</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start">
+        <md-input-container class="md-block" flex="40">
+          <label>Header name</label>
+          <input ng-model="name" type="text" aria-label="Define the parameter name" />
+        </md-input-container>
+          <md-input-container class="md-block" flex="40">
+            <label>Header value</label>
+            <input ng-model="value" type="text" aria-label="Define the parameter value" ng-enter="watcherInputVM.addHeader(name, value); name=''; value='';" />
+          </md-input-container>
+          <md-input-container class="md-block" flex="10">
+            <md-button class="md-fab md-accent md-hue-2" aria-label="Add this parameter" ng-click="watcherInputVM.addHeader(name, value); name=''; value='';">
+              <md-tooltip md-direction="top">Add this parameter</md-tooltip>
+              <md-icon class="material-icons md-primary md-48">add</md-icon>
+            </md-button>
+          </md-input-container>
+      </div>
+      <div>
+        <md-subheader class="md-primary" ng-show="watcherInputVM.getHeaders().length > 0">Headers</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start" ng-repeat="p in watcherInputVM.getHeaders()">
+        <md-input-container class="md-block" flex="40">
+          <input ng-model="p" type="text" aria-label="The header name" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="40">
+          <input ng-model="watcherInputVM.http.params[p]" type="text" aria-label="The header value" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="10">
+          <md-button class="md-fab md-primary md-hue-2" aria-label="Delete this header" ng-click="watcherInputVM.removeHeader(p);">
+            <md-tooltip md-direction="top">Delete this header</md-tooltip>
+            <md-icon class="material-icons md-primary md-48">clear</md-icon>
+          </md-button>
+        </md-input-container>
+      </div>
       <md-input-container class="md-block" flex-gt-sm flex="50">
         <label>Username</label>
         <input ng-model="watcherInputVM.http.request.auth.basic.username" type="text" aria-label="Username" />
