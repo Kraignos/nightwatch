@@ -12,6 +12,8 @@
       watcherInputVM.input = {};
       watcherInputVM.type = (_.keys(inputsData)[0]) || '';
       watcherInputVM.simple = watcherInputVM.search = watcherInputVM.http = {};
+      watcherInputVM.chipsData = { indices: [], types: [] };
+      watcherInputVM.extractChipsData = [];
 
       watcherInputVM.goToTrigger = goToTrigger;
       watcherInputVM.getPrettyInput = getPrettyInput;
@@ -27,9 +29,7 @@
       loadInputsData(inputsData);
 
       function goToTrigger() {
-        var input = {};
-        input[watcherInputVM.type] = watcherInputVM[watcherInputVM.type];
-        watchers.setWatcherInput(input);
+        saveInput();
         $state.go('watch.watchers.trigger');
       }
 
@@ -64,8 +64,38 @@
         return watchers.getResponseContentTypes();
       }
 
+      function saveInput() {
+        angular.forEach(_.keys(watcherInputVM.chipsData), function(data) {
+          if (!_.isEmpty(data)) {
+            if (watcherInputVM.type === WatchInputType.SEARCH) {
+              var request = watcherInputVM.search.request || {};
+              request[data] = watcherInputVM.chipsData[data];
+              watcherInputVM.search.request = request;
+            }
+          }
+        });
+        if (!_.isEmpty(watcherInputVM.extractChipsData)) {
+          watcherInputVM[watcherInputVM.type].extract = watcherInputVM.extractChipsData;
+        }
+        var input = {};
+        input[watcherInputVM.type] = watcherInputVM[watcherInputVM.type];
+        watchers.setWatcherInput(input);
+      }
+
       function loadInputsData(data) {
         watcherInputVM[watcherInputVM.type] = data[watcherInputVM.type];
+
+        if (watcherInputVM.type === WatchInputType.SEARCH) {
+          angular.forEach(_.keys(watcherInputVM.chipsData), function(data) {
+            if (!_.isUndefined(watcherInputVM.search.request[data])) {
+              watcherInputVM.chipsData[data] = watcherInputVM.search.request[data];
+            }
+          });
+        }
+
+        if (!_.isEmpty(watcherInputVM.type) && !_.isUndefined(watcherInputVM[watcherInputVM.type].extract)) {
+          watcherInputVM.extractChipsData = watcherInputVM[watcherInputVM.type].extract;
+        }
       }
 
       function transformToArray(values) {
