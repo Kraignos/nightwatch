@@ -6,7 +6,7 @@
     <div layout-gt-xs="row" flex="50">
       <md-input-container class="md-block" flex-gt-xs>
         <label>Choose the type of input</label>
-        <md-select ng-model="watcherInputVM.type">
+        <md-select ng-model="watcherInputVM.type" ng-change="watcherInputVM.resetExtractData()">
           <md-option ng-repeat="type in watcherInputVM.getTypes()" value="{{ type }}">
             {{ type }}
           </md-option>
@@ -161,12 +161,8 @@
         <md-chips ng-model="watcherInputVM.extractChipsData" type="text" aria-label="Array of JSON keys to extract from the input response"></md-chips>
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm flex="30">
-        <label>The HTTP method</label>
-        <md-select ng-model="watcherInputVM.http.response_content_type">
-          <md-option ng-repeat="type in watcherInputVM.getResponseTypes()" value="{{ type }}">
-            {{ type }}
-          </md-option>
-        </md-select>
+        <label>Response content type</label>
+        <input ng-model="watcherInputVM.http.response_content_type" type="text" aria-label="Response content type" />
       </md-input-container>
     </div>
   </form>

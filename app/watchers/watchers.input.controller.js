@@ -23,6 +23,7 @@
       watcherInputVM.getSimpleTypes = getSimpleTypes;
       watcherInputVM.getExpandWildCards = getExpandWildCards;
       watcherInputVM.getResponseTypes = getResponseTypes;
+      watcherInputVM.resetExtractData = resetExtractData;
 
       watcherInputVM.addSimpleInputType = addSimpleInputType;
 
@@ -96,6 +97,10 @@
         if (!_.isEmpty(watcherInputVM.type) && !_.isUndefined(watcherInputVM[watcherInputVM.type].extract)) {
           watcherInputVM.extractChipsData = watcherInputVM[watcherInputVM.type].extract;
         }
+      }
+
+      function resetExtractData() {
+        watcherInputVM.extractChipsData = [];
       }
 
       function transformToArray(values) {
