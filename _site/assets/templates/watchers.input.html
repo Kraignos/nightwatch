@@ -152,11 +152,47 @@
           <input ng-model="p" type="text" aria-label="The header name" />
         </md-input-container>
         <md-input-container class="md-block" flex="40">
-          <input ng-model="watcherInputVM.http.params[p]" type="text" aria-label="The header value" />
+          <input ng-model="watcherInputVM.http.headers[p]" type="text" aria-label="The header value" />
         </md-input-container>
         <md-input-container class="md-block" flex="10">
           <md-button class="md-fab md-primary md-hue-2" aria-label="Delete this header" ng-click="watcherInputVM.removeHeader(p);">
             <md-tooltip md-direction="top">Delete this header</md-tooltip>
+            <md-icon class="material-icons md-primary md-48">clear</md-icon>
+          </md-button>
+        </md-input-container>
+      </div><!-- Request paramaters -->
+      <div>
+        <md-subheader class="md-primary">Add a parameter</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start">
+        <md-input-container class="md-block" flex="40">
+          <label>Parameter name</label>
+          <input ng-model="paramName" type="text" aria-label="Define the parameter name" />
+        </md-input-container>
+          <md-input-container class="md-block" flex="40">
+            <label>Parameter value</label>
+            <input ng-model="paramValue" type="text" aria-label="Define the parameter value" ng-enter="watcherInputVM.addParameter(paramName, paramValue); paramName=''; paramValue='';" />
+          </md-input-container>
+          <md-input-container class="md-block" flex="10">
+            <md-button class="md-fab md-accent md-hue-2" aria-label="Add this parameter" ng-click="watcherInputVM.addParameter(paramName, paramValue); paramName=''; paramValue='';">
+              <md-tooltip md-direction="top">Add this parameter</md-tooltip>
+              <md-icon class="material-icons md-primary md-48">add</md-icon>
+            </md-button>
+          </md-input-container>
+      </div>
+      <div>
+        <md-subheader class="md-primary" ng-show="watcherInputVM.getParameters().length > 0">Parameters</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start" ng-repeat="p in watcherInputVM.getParameters()">
+        <md-input-container class="md-block" flex="40">
+          <input ng-model="p" type="text" aria-label="The parameter name" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="40">
+          <input ng-model="watcherInputVM.http.params[p]" type="text" aria-label="The parameter value" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="10">
+          <md-button class="md-fab md-primary md-hue-2" aria-label="Delete this parameter" ng-click="watcherInputVM.removeParameter(p);">
+            <md-tooltip md-direction="top">Delete this parameter</md-tooltip>
             <md-icon class="material-icons md-primary md-48">clear</md-icon>
           </md-button>
         </md-input-container>

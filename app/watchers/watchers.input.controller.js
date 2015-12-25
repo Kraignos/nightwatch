@@ -27,6 +27,9 @@
       watcherInputVM.addHeader = addHeader;
       watcherInputVM.removeHeader = removeHeader;
       watcherInputVM.getHeaders = getHeaders;
+      watcherInputVM.addParameter = addParameter;
+      watcherInputVM.removeParameter = removeParameter;
+      watcherInputVM.getParameters = getParameters;
 
       watcherInputVM.addSimpleInputType = addSimpleInputType;
 
@@ -107,12 +110,32 @@
       }
 
       function addHeader(name, value) {
-        var params = watcherInputVM.http.params || {};
-        params[name] = value;
-        watcherInputVM.http.params = params;
+        var headers = watcherInputVM.http.headers || {};
+        headers[name] = value;
+        watcherInputVM.http.headers = headers;
       }
 
       function removeHeader(name) {
+        var headers = {};
+        angular.forEach(_.keys(watcherInputVM.http.headers), function(p) {
+          if (p !== name) {
+            headers[p] = watcherInputVM.http.headers[p];
+          }
+        });
+        watcherInputVM.http.headers = headers;
+      }
+
+      function getHeaders() {
+        return _.keys(watcherInputVM.http.headers);
+      }
+
+      function addParameter(name, value) {
+        var parameters = watcherInputVM.http.params || {};
+        parameters[name] = value;
+        watcherInputVM.http.params = parameters;
+      }
+
+      function removeParameter(name) {
         var parameters = {};
         angular.forEach(_.keys(watcherInputVM.http.params), function(p) {
           if (p !== name) {
@@ -122,7 +145,7 @@
         watcherInputVM.http.params = parameters;
       }
 
-      function getHeaders() {
+      function getParameters() {
         return _.keys(watcherInputVM.http.params);
       }
 
