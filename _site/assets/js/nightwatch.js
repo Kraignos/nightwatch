@@ -1119,6 +1119,7 @@
       loadData(triggersData);
 
       function goToInput() {
+        watcherTriggerVM.saveTrigger();
         $state.go('watch.watchers.input');
       }
 
