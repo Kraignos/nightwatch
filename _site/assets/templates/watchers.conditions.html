@@ -46,6 +46,42 @@
           </md-option>
         </md-select>
       </md-input-container>
+      <div>
+        <md-subheader class="md-primary">Add a parameter</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start">
+        <md-input-container class="md-block" flex="30">
+          <label>Define the parameter name</label>
+          <input ng-model="name" type="text" aria-label="Define the parameter name" />
+        </md-input-container>
+          <md-input-container class="md-block" flex="30">
+            <label>Define the parameter value</label>
+            <input ng-model="value" type="text" aria-label="Define the parameter value" ng-enter="watcherConditionsVM.addParameter(name, value); name=''; value='';" />
+          </md-input-container>
+          <md-input-container class="md-block" flex="10">
+            <md-button class="md-fab md-accent md-hue-2" aria-label="Add this parameter" ng-click="watcherConditionsVM.addParameter(name, value); name=''; value='';">
+              <md-tooltip md-direction="top">Add this parameter</md-tooltip>
+              <md-icon class="material-icons md-primary md-48">add</md-icon>
+            </md-button>
+          </md-input-container>
+      </div>
+      <div>
+        <md-subheader class="md-primary" ng-show="watcherConditionsVM.getParameters().length > 0">Script parameters</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start" ng-repeat="p in watcherConditionsVM.getParameters()">
+        <md-input-container class="md-block" flex="30">
+          <input ng-model="p" type="text" aria-label="Type the id of the script" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="30">
+          <input ng-model="watcherConditionsVM.condition.params[p]" type="text" aria-label="Type the id of the script" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="10">
+          <md-button class="md-fab md-primary md-hue-2" aria-label="Delete this parameter" ng-click="watcherConditionsVM.removeParameter(p);">
+            <md-tooltip md-direction="top">Delete this parameter</md-tooltip>
+            <md-icon class="material-icons md-primary md-48">clear</md-icon>
+          </md-button>
+        </md-input-container>
+      </div>
     </div>
   </form>
   <div layout-gt-xs="row">

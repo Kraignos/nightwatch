@@ -21,6 +21,9 @@
       watcherConditionsVM.getScriptLanguages = getScriptLanguages;
       watcherConditionsVM.updateType = updateType;
       watcherConditionsVM.updateScriptType = updateScriptType;
+      watcherConditionsVM.addParameter = addParameter;
+      watcherConditionsVM.removeParameter = removeParameter;
+      watcherConditionsVM.getParameters = getParameters;
 
       loadConditionsData(conditionsData);
 
@@ -55,6 +58,27 @@
         // We reset the script as we change its type
         watcherConditionsVM.condition.script = {};
         watcherConditionsVM.condition.script[watcherConditionsVM.scriptType] = '';
+      }
+
+      function addParameter(name, value) {
+        var params = watcherConditionsVM.condition.params || {};
+        params[name] = value;
+        watcherConditionsVM.condition.params = params;
+        console.log('params: ' + angular.toJson(watcherConditionsVM.condition));
+      }
+
+      function removeParameter(name) {
+        var params = {};
+        angular.forEach(_.keys(watcherConditionsVM.condition.params), function(p) {
+          if (p !== name) {
+            params[p] = watcherConditionsVM.condition.params[p];
+          }
+        });
+        watcherConditionsVM.condition.params = params;
+      }
+
+      function getParameters() {
+        return _.keys(watcherConditionsVM.condition.params);
       }
 
       function loadConditionsData(data) {
