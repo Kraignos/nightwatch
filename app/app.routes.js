@@ -91,7 +91,8 @@
           url: '/input',
           templateUrl: 'assets/templates/watchers.input.html',
           resolve: {
-            inputsData: inputsData
+            inputsData: inputsData,
+            editable: function() { return true; }
           },
           controller: 'WatcherInputCtrl',
           controllerAs: 'watcherInputVM'
@@ -100,7 +101,8 @@
           url: '/trigger',
           templateUrl: 'assets/templates/watchers.trigger.html',
           resolve: {
-            triggersData: triggersData
+            triggersData: triggersData,
+            editable: function() { return true; }
           },
           controller: 'WatcherTriggerCtrl',
           controllerAs: 'watcherTriggerVM'
@@ -109,7 +111,8 @@
           url: '/conditions',
           templateUrl: 'assets/templates/watchers.conditions.html',
           resolve: {
-            conditionsData: conditionsData
+            conditionsData: conditionsData,
+            editable: function() { return true; }
           },
           controller: 'WatcherConditionsCtrl',
           controllerAs: 'watcherConditionsVM'
@@ -123,11 +126,48 @@
         .state('watch.watchers.summary', {
           url: '/summary',
           templateUrl: 'assets/templates/watchers.summary.html',
+          abstract: true,
           resolve: {
             watcherSummary: watcherSummary
           },
           controller: 'WatcherSummaryCtrl',
           controllerAs: 'watcherSummaryVM'
+        })
+        .state('watch.watchers.summary.pretty', {
+          url: '/pretty',
+          views: {
+            'input': {
+              templateUrl: 'assets/templates/watchers.input.html',
+              resolve: {
+                inputsData: inputsData,
+                editable: function() { return false; }
+              },
+              controller: 'WatcherInputCtrl',
+              controllerAs: 'watcherInputVM'
+            },
+            'trigger': {
+              templateUrl: 'assets/templates/watchers.trigger.html',
+              resolve: {
+                triggersData: triggersData,
+                editable: function() { return false; }
+              },
+              controller: 'WatcherTriggerCtrl',
+              controllerAs: 'watcherTriggerVM'
+            },
+            'condition': {
+              templateUrl: 'assets/templates/watchers.conditions.html',
+              resolve: {
+                conditionsData: conditionsData,
+                editable: function() { return false; }
+              },
+              controller: 'WatcherConditionsCtrl',
+              controllerAs: 'watcherConditionsVM'
+            }
+          }
+        })
+        .state('watch.watchers.summary.json', {
+          url: '/json',
+          templateUrl: 'assets/templates/watchers/watchers.summary.json.html'
         })
         .state('query', {
             url: '/query',

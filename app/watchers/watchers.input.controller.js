@@ -4,9 +4,9 @@
   angular.module('nightwatch')
     .controller('WatcherInputCtrl', WatcherInputCtrl);
 
-    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'WatchInputType', 'inputsData'];
+    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'WatchInputType', 'inputsData', 'editable'];
 
-    function WatcherInputCtrl($scope, $state, watchers, WatchInputType, inputsData) {
+    function WatcherInputCtrl($scope, $state, watchers, WatchInputType, inputsData, editable) {
       var watcherInputVM = this;
 
       watcherInputVM.input = {};
@@ -30,6 +30,7 @@
       watcherInputVM.addParameter = addParameter;
       watcherInputVM.removeParameter = removeParameter;
       watcherInputVM.getParameters = getParameters;
+      watcherInputVM.canBeEdit = editable;
 
       watcherInputVM.addSimpleInputType = addSimpleInputType;
 

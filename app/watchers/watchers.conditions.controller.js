@@ -4,9 +4,9 @@
   angular.module('nightwatch')
     .controller('WatcherConditionsCtrl', WatcherConditionsCtrl);
 
-    WatcherConditionsCtrl.$inject = ['$scope', '$state', 'watchers', 'conditionsData'];
+    WatcherConditionsCtrl.$inject = ['$scope', '$state', 'watchers', 'conditionsData', 'editable'];
 
-    function WatcherConditionsCtrl($scope, $state, watchers, conditionsData) {
+    function WatcherConditionsCtrl($scope, $state, watchers, conditionsData, editable) {
       var watcherConditionsVM = this;
 
       watcherConditionsVM.type = (_.keys(conditionsData)[0]) || '';
@@ -24,6 +24,7 @@
       watcherConditionsVM.addParameter = addParameter;
       watcherConditionsVM.removeParameter = removeParameter;
       watcherConditionsVM.getParameters = getParameters;
+      watcherConditionsVM.canBeEdit = editable;
 
       loadConditionsData(conditionsData);
 

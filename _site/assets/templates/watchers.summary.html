@@ -2,12 +2,39 @@
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Watcher definition</span></div>
 </md-toolbar>
 <div flex layout-padding>
-  <md-toolbar class="md-theme-light">
-    <h2 class="md-toolbar-tools">
-      <span>Input</span>
-    </h2>
-  </md-toolbar>
-  <div ui-view="input"></div>
+  <md-tabs md-dynamic-height md-border-bottom>
+    <md-tab>
+      <md-tab-label>
+        <md-icon class="material-icons md-primary md-48">view_list</md-icon>
+      </md-tab-label>
+      <md-tab-body>
+        <md-content class="md-padding" ui-sref="watch.watchers.summary.pretty">
+          <section>
+            <md-subheader class="md-primary">Input</md-subheader>
+            <div ui-view="input"></div>
+          </section>
+          <section>
+            <md-subheader class="md-primary">Trigger</md-subheader>
+            <div ui-view="trigger"></div>
+          </section>
+          <section>
+            <md-subheader class="md-primary">Condition</md-subheader>
+            <div ui-view="condition"></div>
+          </section>
+        </md-content>
+      </md-tab-body>
+    </md-tab>
+    <md-tab>
+      <md-tab-label>
+        <md-icon class="material-icons md-primary md-48">code</md-icon>
+      </md-tab-label>
+      <md-tab-body>
+        <md-content class="md-padding" ui-sref="watch.watchers.summary.json">
+          <div ui-view></div>
+        </md-content>
+      </md-tab-body>
+    </md-tab>
+  </md-tabs>
   <div layout-gt-xs="row" flex-inverse>
     <div flex-offset="80"></div>
     <div flex="10">

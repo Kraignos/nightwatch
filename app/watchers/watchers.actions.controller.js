@@ -17,7 +17,7 @@
       }
 
       function goToSummary() {
-        $state.go('watch.watchers.summary');
+        $state.go('watch.watchers.summary.pretty');
       }
     }
 })();

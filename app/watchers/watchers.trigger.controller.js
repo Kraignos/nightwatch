@@ -4,9 +4,9 @@
   angular.module('nightwatch')
     .controller('WatcherTriggerCtrl', WatcherTriggerCtrl);
 
-    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers', 'ScheduleTriggerTypes', 'triggersData'];
+    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers', 'ScheduleTriggerTypes', 'triggersData', 'editable'];
 
-    function WatcherTriggerCtrl($scope, $state, watchers, ScheduleTriggerTypes, triggersData) {
+    function WatcherTriggerCtrl($scope, $state, watchers, ScheduleTriggerTypes, triggersData, editable) {
       var watcherTriggerVM = this;
 
       watcherTriggerVM.type = (_.keys(triggersData)[0]) || '';
@@ -21,6 +21,7 @@
       watcherTriggerVM.goToInput = goToInput;
       watcherTriggerVM.goToConditions = goToConditions;
       watcherTriggerVM.saveTrigger = saveTrigger;
+      watcherTriggerVM.canBeEdit = editable;
 
       watcherTriggerVM.getTriggerTypes = getTriggerTypes;
 

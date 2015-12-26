@@ -1,4 +1,4 @@
-<md-toolbar md-scroll-shrink>
+<md-toolbar md-scroll-shrink ng-if="watcherConditionsVM.canBeEdit">
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Define your watch condition(s)</span></div>
 </md-toolbar>
 <div flex="100" layout-padding>
@@ -6,7 +6,7 @@
     <div layout-gt-xs="row" flex="50">
       <md-input-container class="md-block" flex-gt-xs>
         <label>Choose the type of condition</label>
-        <md-select ng-model="watcherConditionsVM.type" ng-change="watcherConditionsVM.updateType()">
+        <md-select ng-model="watcherConditionsVM.type" ng-change="watcherConditionsVM.updateType()" ng-disabled="!watcherConditionsVM.canBeEdit">
           <md-option ng-repeat="type in watcherConditionsVM.getConditionTypes()" value="{{ type }}">
             {{ type }}
           </md-option>
@@ -17,7 +17,7 @@
     <div layout-gt-xs="column" ng-show="watcherConditionsVM.type === 'script'">
       <md-input-container class="md-block" flex="33">
         <label>Choose the type of script</label>
-        <md-select ng-model="watcherConditionsVM.scriptType" ng-change="watcherConditionsVM.updateScriptType()">
+        <md-select ng-model="watcherConditionsVM.scriptType" ng-change="watcherConditionsVM.updateScriptType()" ng-disabled="!watcherConditionsVM.canBeEdit">
           <md-option ng-repeat="type in watcherConditionsVM.getScriptTypes()" value="{{ type }}">
             {{ type }}
           </md-option>
@@ -25,28 +25,28 @@
       </md-input-container>
       <md-input-container class="md-block" ng-show="watcherConditionsVM.scriptType === 'inline'">
         <label>Type the script</label>
-        <textarea ng-model="watcherConditionsVM.condition.script.inline" columns="1" md-maxlength="1000" rows="10"></textarea>
+        <textarea ng-model="watcherConditionsVM.condition.script.inline" columns="1" md-maxlength="1000" rows="10" ng-disabled="!watcherConditionsVM.canBeEdit"></textarea>
       </md-input-container>
       <md-input-container class="md-block" flex="33" ng-show="watcherConditionsVM.scriptType === 'file'">
         <label>Type the filename of the script (without the extension)</label>
-        <input ng-model="watcherConditionsVM.condition.script.file" type="text" aria-label="Type the filename of the script (without the extension)" />
+        <input ng-model="watcherConditionsVM.condition.script.file" ng-disabled="!watcherConditionsVM.canBeEdit" type="text" aria-label="Type the filename of the script (without the extension)" />
       </md-input-container>
       <md-input-container class="md-block" flex="33" ng-show="watcherConditionsVM.scriptType === 'id'">
         <label>Type the id of the script</label>
-        <input ng-model="watcherConditionsVM.condition.script.id" type="text" aria-label="Type the id of the script" />
+        <input ng-model="watcherConditionsVM.condition.script.id" ng-disabled="!watcherConditionsVM.canBeEdit" type="text" aria-label="Type the id of the script" />
       </md-input-container>
       <md-input-container class="md-block" flex="33">
         <label>Define the language</label>
-        <md-select ng-model="watcherConditionsVM.condition.script.lang">
+        <md-select ng-model="watcherConditionsVM.condition.script.lang" ng-disabled="!watcherConditionsVM.canBeEdit">
           <md-option ng-repeat="type in watcherConditionsVM.getScriptLanguages()" value="{{ type }}">
             {{ type }}
           </md-option>
         </md-select>
       </md-input-container>
-      <div>
+      <div ng-if="watcherConditionsVM.canBeEdit">
         <md-subheader class="md-primary">Add a parameter</md-subheader>
       </div>
-      <div layout-gt-xs="row" flex-layout="center start">
+      <div layout-gt-xs="row" flex-layout="center start" ng-if="watcherConditionsVM.canBeEdit">
         <md-input-container class="md-block" flex="30">
           <label>Define the parameter name</label>
           <input ng-model="name" type="text" aria-label="Define the parameter name" required />
@@ -72,7 +72,7 @@
         <md-input-container class="md-block" flex="30">
           <input ng-model="watcherConditionsVM.condition.params[p]" type="text" aria-label="The script parameter value" ng-disabled="true" />
         </md-input-container>
-        <md-input-container class="md-block" flex="10">
+        <md-input-container class="md-block" flex="10" ng-if="watcherConditionsVM.canBeEdit">
           <md-button class="md-fab md-primary md-hue-2" aria-label="Delete this parameter" ng-click="watcherConditionsVM.removeParameter(p);">
             <md-tooltip md-direction="top">Delete this parameter</md-tooltip>
             <md-icon class="material-icons md-primary md-48">clear</md-icon>
@@ -81,7 +81,7 @@
       </div>
     </div>
   </form>
-  <div layout-gt-xs="row">
+  <div layout-gt-xs="row" ng-if="watcherConditionsVM.canBeEdit">
     <div flex-offset="80" flex="10">
       <md-button class="md-fab md-accent md-hue-2" aria-label="Previous" ng-click="watcherConditionsVM.goToTrigger()">
         <md-tooltip md-direction="top">Go to Trigger definition</md-tooltip>

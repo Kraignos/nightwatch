@@ -99,7 +99,8 @@
           url: '/input',
           templateUrl: 'assets/templates/watchers.input.html',
           resolve: {
-            inputsData: inputsData
+            inputsData: inputsData,
+            editable: function() { return true; }
           },
           controller: 'WatcherInputCtrl',
           controllerAs: 'watcherInputVM'
@@ -108,7 +109,8 @@
           url: '/trigger',
           templateUrl: 'assets/templates/watchers.trigger.html',
           resolve: {
-            triggersData: triggersData
+            triggersData: triggersData,
+            editable: function() { return true; }
           },
           controller: 'WatcherTriggerCtrl',
           controllerAs: 'watcherTriggerVM'
@@ -117,7 +119,8 @@
           url: '/conditions',
           templateUrl: 'assets/templates/watchers.conditions.html',
           resolve: {
-            conditionsData: conditionsData
+            conditionsData: conditionsData,
+            editable: function() { return true; }
           },
           controller: 'WatcherConditionsCtrl',
           controllerAs: 'watcherConditionsVM'
@@ -131,21 +134,48 @@
         .state('watch.watchers.summary', {
           url: '/summary',
           templateUrl: 'assets/templates/watchers.summary.html',
+          abstract: true,
           resolve: {
             watcherSummary: watcherSummary
           },
           controller: 'WatcherSummaryCtrl',
-          controllerAs: 'watcherSummaryVM',
-          views: {
+          controllerAs: 'watcherSummaryVM'
+        })
+        .state('watch.watchers.summary.pretty', {
+          url: '/pretty',
+          views: {
             'input': {
               templateUrl: 'assets/templates/watchers.input.html',
               resolve: {
-                inputsData: inputsData
+                inputsData: inputsData,
+                editable: function() { return false; }
               },
               controller: 'WatcherInputCtrl',
               controllerAs: 'watcherInputVM'
+            },
+            'trigger': {
+              templateUrl: 'assets/templates/watchers.trigger.html',
+              resolve: {
+                triggersData: triggersData,
+                editable: function() { return false; }
+              },
+              controller: 'WatcherTriggerCtrl',
+              controllerAs: 'watcherTriggerVM'
+            },
+            'condition': {
+              templateUrl: 'assets/templates/watchers.conditions.html',
+              resolve: {
+                conditionsData: conditionsData,
+                editable: function() { return false; }
+              },
+              controller: 'WatcherConditionsCtrl',
+              controllerAs: 'watcherConditionsVM'
             }
           }
+        })
+        .state('watch.watchers.summary.json', {
+          url: '/json',
+          templateUrl: 'assets/templates/watchers/watchers.summary.json.html'
         })
         .state('query', {
             url: '/query',
@@ -844,7 +874,7 @@
       }
 
       function goToSummary() {
-        $state.go('watch.watchers.summary');
+        $state.go('watch.watchers.summary.pretty');
       }
     }
 })();
@@ -855,9 +885,9 @@
   angular.module('nightwatch')
     .controller('WatcherConditionsCtrl', WatcherConditionsCtrl);
 
-    WatcherConditionsCtrl.$inject = ['$scope', '$state', 'watchers', 'conditionsData'];
+    WatcherConditionsCtrl.$inject = ['$scope', '$state', 'watchers', 'conditionsData', 'editable'];
 
-    function WatcherConditionsCtrl($scope, $state, watchers, conditionsData) {
+    function WatcherConditionsCtrl($scope, $state, watchers, conditionsData, editable) {
       var watcherConditionsVM = this;
 
       watcherConditionsVM.type = (_.keys(conditionsData)[0]) || '';
@@ -875,6 +905,7 @@
       watcherConditionsVM.addParameter = addParameter;
       watcherConditionsVM.removeParameter = removeParameter;
       watcherConditionsVM.getParameters = getParameters;
+      watcherConditionsVM.canBeEdit = editable;
 
       loadConditionsData(conditionsData);
 
@@ -972,9 +1003,9 @@
   angular.module('nightwatch')
     .controller('WatcherInputCtrl', WatcherInputCtrl);
 
-    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'WatchInputType', 'inputsData'];
+    WatcherInputCtrl.$inject = ['$scope', '$state', 'watchers', 'WatchInputType', 'inputsData', 'editable'];
 
-    function WatcherInputCtrl($scope, $state, watchers, WatchInputType, inputsData) {
+    function WatcherInputCtrl($scope, $state, watchers, WatchInputType, inputsData, editable) {
       var watcherInputVM = this;
 
       watcherInputVM.input = {};
@@ -998,6 +1029,7 @@
       watcherInputVM.addParameter = addParameter;
       watcherInputVM.removeParameter = removeParameter;
       watcherInputVM.getParameters = getParameters;
+      watcherInputVM.canBeEdit = editable;
 
       watcherInputVM.addSimpleInputType = addSimpleInputType;
 
@@ -1160,9 +1192,9 @@
   angular.module('nightwatch')
     .controller('WatcherTriggerCtrl', WatcherTriggerCtrl);
 
-    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers', 'ScheduleTriggerTypes', 'triggersData'];
+    WatcherTriggerCtrl.$inject = ['$scope', '$state', 'watchers', 'ScheduleTriggerTypes', 'triggersData', 'editable'];
 
-    function WatcherTriggerCtrl($scope, $state, watchers, ScheduleTriggerTypes, triggersData) {
+    function WatcherTriggerCtrl($scope, $state, watchers, ScheduleTriggerTypes, triggersData, editable) {
       var watcherTriggerVM = this;
 
       watcherTriggerVM.type = (_.keys(triggersData)[0]) || '';
@@ -1177,6 +1209,7 @@
       watcherTriggerVM.goToInput = goToInput;
       watcherTriggerVM.goToConditions = goToConditions;
       watcherTriggerVM.saveTrigger = saveTrigger;
+      watcherTriggerVM.canBeEdit = editable;
 
       watcherTriggerVM.getTriggerTypes = getTriggerTypes;
 
