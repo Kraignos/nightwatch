@@ -43,8 +43,9 @@
     </md-list-item>
   </md-list>
 </div>
-<div layout="row" layout-align="center center" layout-fill ng-show="!_.isNull(percolatorsVM.indice)">
-  <md-button class="md-fab md-accent" aria-label="Create percolator" ng-click="percolatorsVM.displayForm($event, percolatorsVM.indice)">
+<div layout="row" layout-align="center center" layout-fill ng-show="percolatorsVM.indice !== null">
+  <md-button class="md-fab md-accent md-hue-2" aria-label="Create percolator" ng-click="percolatorsVM.displayForm($event, percolatorsVM.indice)">
+      <md-tooltip md-direction="top" md-visible="tooltipVisible">Create a percolator</md-tooltip>
       <md-icon class="material-icons md-primary md-48">border_color</md-icon>
   </md-button>
 </div>

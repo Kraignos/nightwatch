@@ -433,15 +433,17 @@
       percolatorsCreateVM.cancelForm = cancelForm;
 
       function createPercolator() {
-        elastic.createPercolator(percolatorsCreateVM.indice, percolatorsCreateVM.name, percolatorsCreateVM.query)
-          .success(function() {
-            closeForm({ '_id': percolatorsCreateVM.name, '_source': percolatorsCreateVM.query });
-            notifications.showSimple('The percolator with name "' + percolatorsCreateVM.name + '" has been created!');
-          })
-          .error(function() {
-            $mdDialog.cancel();
-            notifications.showSimple('An error occured while creating the percolator with name "' + percolatorsCreateVM.name + '"...');
-          });
+        if (!_.isEmpty(percolatorsCreateVM.name) && !_.isEmpty(percolatorsCreateVM.query)) {
+          elastic.createPercolator(percolatorsCreateVM.indice, percolatorsCreateVM.name, percolatorsCreateVM.query)
+            .success(function() {
+              closeForm({ '_id': percolatorsCreateVM.name, '_source': percolatorsCreateVM.query });
+              notifications.showSimple('The percolator with name "' + percolatorsCreateVM.name + '" has been created!');
+            })
+            .error(function() {
+              $mdDialog.cancel();
+              notifications.showSimple('An error occured while creating the percolator with name "' + percolatorsCreateVM.name + '"...');
+            });
+        }
       }
 
       function cancelForm() {

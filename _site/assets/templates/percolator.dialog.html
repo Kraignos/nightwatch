@@ -13,11 +13,11 @@
       <div class="md-dialog-content">
         <md-input-container class="md-block">
           <label>Name</label>
-          <input ng-model="percolatorsCreateVM.name">
+          <input ng-model="percolatorsCreateVM.name" required>
         </md-input-container>
         <md-input-container class="md-block">
           <label>Query</label>
-          <textarea ng-model="percolatorsCreateVM.query" columns="1" md-maxlength="1000" rows="10"></textarea>
+          <textarea ng-model="percolatorsCreateVM.query" columns="1" md-maxlength="1000" rows="10" required></textarea>
         </md-input-container>
       </div>
     </md-dialog-content>
