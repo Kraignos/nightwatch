@@ -110,9 +110,11 @@
       }
 
       function addHeader(name, value) {
-        var headers = watcherInputVM.http.headers || {};
-        headers[name] = value;
-        watcherInputVM.http.headers = headers;
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var headers = watcherInputVM.http.headers || {};
+          headers[name] = value;
+          watcherInputVM.http.headers = headers;
+        }
       }
 
       function removeHeader(name) {
@@ -130,9 +132,11 @@
       }
 
       function addParameter(name, value) {
-        var parameters = watcherInputVM.http.params || {};
-        parameters[name] = value;
-        watcherInputVM.http.params = parameters;
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var parameters = watcherInputVM.http.params || {};
+          parameters[name] = value;
+          watcherInputVM.http.params = parameters;
+        }
       }
 
       function removeParameter(name) {

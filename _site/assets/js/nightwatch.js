@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2015-12-25
+/*! nightwatch - v1.0.0 - 2015-12-26
 * Copyright (c) 2015 ; Licensed  */
 (function() {
   'use strict';
@@ -135,7 +135,17 @@
             watcherSummary: watcherSummary
           },
           controller: 'WatcherSummaryCtrl',
-          controllerAs: 'watcherSummaryVM'
+          controllerAs: 'watcherSummaryVM',
+          views: {
+            'input': {
+              templateUrl: 'assets/templates/watchers.input.html',
+              resolve: {
+                inputsData: inputsData
+              },
+              controller: 'WatcherInputCtrl',
+              controllerAs: 'watcherInputVM'
+            }
+          }
         })
         .state('query', {
             url: '/query',
@@ -900,9 +910,11 @@
       }
 
       function addParameter(name, value) {
-        var params = watcherConditionsVM.condition.params || {};
-        params[name] = value;
-        watcherConditionsVM.condition.params = params;
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var params = watcherConditionsVM.condition.params || {};
+          params[name] = value;
+          watcherConditionsVM.condition.params = params;
+        }
       }
 
       function removeParameter(name) {
@@ -1064,9 +1076,11 @@
       }
 
       function addHeader(name, value) {
-        var headers = watcherInputVM.http.headers || {};
-        headers[name] = value;
-        watcherInputVM.http.headers = headers;
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var headers = watcherInputVM.http.headers || {};
+          headers[name] = value;
+          watcherInputVM.http.headers = headers;
+        }
       }
 
       function removeHeader(name) {
@@ -1084,9 +1098,11 @@
       }
 
       function addParameter(name, value) {
-        var parameters = watcherInputVM.http.params || {};
-        parameters[name] = value;
-        watcherInputVM.http.params = parameters;
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var parameters = watcherInputVM.http.params || {};
+          parameters[name] = value;
+          watcherInputVM.http.params = parameters;
+        }
       }
 
       function removeParameter(name) {

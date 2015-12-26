@@ -61,9 +61,11 @@
       }
 
       function addParameter(name, value) {
-        var params = watcherConditionsVM.condition.params || {};
-        params[name] = value;
-        watcherConditionsVM.condition.params = params;
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var params = watcherConditionsVM.condition.params || {};
+          params[name] = value;
+          watcherConditionsVM.condition.params = params;
+        }
       }
 
       function removeParameter(name) {
