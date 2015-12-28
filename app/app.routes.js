@@ -120,8 +120,36 @@
         .state('watch.watchers.actions', {
           url: '/actions',
           templateUrl: 'assets/templates/watchers.actions.html',
+          abstract: true,
+          resolve: {
+            editable: function() { return true; }
+          },
           controller: 'WatcherActionsCtrl',
           controllerAs: 'watcherActionsVM'
+        })
+        .state('watch.watchers.actions.list', {
+          url: '/all',
+          views: {
+            'actions': {
+              templateUrl: 'assets/templates/watchers.actions.list.html'
+            }
+          }
+        })
+        .state('watch.watchers.actions.create', {
+          url: '/:type',
+          views: {
+            'actions': {
+              templateUrl: 'assets/templates/watchers.actions.list.html'
+            },
+            'create': {
+              templateUrl: 'assets/templates/watchers.actions.create.html',
+              resolve: {
+                type: function($stateParams) { return $stateParams.type }
+              },
+              controller: 'WatcherActionsCreateCtrl',
+              controllerAs: 'watcherActionsCreateVM'
+            }
+          }
         })
         .state('watch.watchers.summary', {
           url: '/summary',
@@ -162,6 +190,11 @@
               },
               controller: 'WatcherConditionsCtrl',
               controllerAs: 'watcherConditionsVM'
+            },
+            'action': {
+              templateUrl: 'assets/templates/watchers.actions.list.html',
+              controller: 'WatcherActionsCtrl',
+              controllerAs: 'watcherActionsVM'
             }
           }
         })

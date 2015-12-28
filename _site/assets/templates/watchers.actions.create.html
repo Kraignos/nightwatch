@@ -1,0 +1,21 @@
+<!-- EMAIL ACTION TYPE -->
+<div layout-gt-xs="column" ng-show="watcherActionsCreateVM.type === 'email'">
+  <md-input-container class="md-block">
+    <label>The account to use to send the email</label>
+    <input ng-model="watcherActionsCreateVM.email.account" type="text" aria-label="The account to use to send the email" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The email address from which the email will be sent</label>
+    <input ng-model="watcherActionsCreateVM.email.from" type="text" aria-label="The email address from which the email will be sent" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The email addresses of the to recipients</label>
+    <input ng-model="watcherActionsCreateVM.email.to" type="text" aria-label="The email addresses of the to recipients" required />
+  </md-input-container>
+</div>
+<div flex="100" flex-layout="center center">
+  <md-button class="md-fab md-accent md-hue-2" aria-label="Add" ng-click="watcherActionsCreateVM.saveAction()">
+    <md-tooltip md-direction="top">Add this action</md-tooltip>
+    <md-icon class="material-icons md-primary md-48">add</md-icon>
+  </md-button>
+</div>

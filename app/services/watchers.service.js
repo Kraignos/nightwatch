@@ -4,12 +4,13 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes', 'ConditionTypes', 'ScriptConditionTypes', 'ScriptLanguages', 'ComparisonOperators'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes', 'ConditionTypes', 'ScriptConditionTypes', 'ScriptLanguages', 'ComparisonOperators', 'ActionTypes'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes, ConditionTypes, ScriptConditionTypes, ScriptLanguages, ComparisonOperators) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes, ConditionTypes, ScriptConditionTypes, ScriptLanguages, ComparisonOperators, ActionTypes) {
     var inputs = {};
     var triggers = {};
     var conditions = {};
+    var actions = {};
 
     var service = {
       getInputTypes: getInputTypes,
@@ -19,9 +20,12 @@
       setWatcherInput: setWatcherInput,
       setWatcherScheduleTrigger: setWatcherScheduleTrigger,
       setWatcherCondition: setWatcherCondition,
+      addWatcherAction: addWatcherAction,
       getWatchInputs: getWatchInputs,
       getWatchTriggers: getWatchTriggers,
       getWatchConditions: getWatchConditions,
+      getWatchActions: getWatchActions,
+      getWatcherAction: getWatcherAction,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
@@ -32,6 +36,7 @@
       getScriptTypes: getScriptTypes,
       getScriptLanguages: getScriptLanguages,
       getComparisonOperators: getComparisonOperators,
+      getActionTypes: getActionTypes,
       transformToArray: transformToArray
     }
 
@@ -62,6 +67,10 @@
       conditions = condition;
     }
 
+    function addWatcherAction(name, action) {
+      actions[name] = action;
+    }
+
     function getWatchInputs() {
       return inputs;
     }
@@ -74,6 +83,16 @@
       return conditions;
     }
 
+    function getWatchActions() {
+      return _.map(_.keys(actions), function(a) {
+        return { name: a, action: actions[a] };
+      });
+    }
+
+    function getWatcherAction(actionName) {
+      return actions[actionName];
+    }
+
     function getInputTypes() {
       return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP];
     }
@@ -83,6 +102,7 @@
       summary['input'] = inputs;
       summary['trigger'] = triggers;
       summary['condition'] = conditions;
+      summary['action'] = actions;
       return summary;
     }
 
@@ -165,6 +185,17 @@
         ComparisonOperators.GTE,
         ComparisonOperators.LT,
         ComparisonOperators.LTE
+      ];
+    }
+
+    function getActionTypes() {
+      return [
+        ActionTypes.EMAIL,
+        ActionTypes.WEBHOOK,
+        ActionTypes.INDEX,
+        ActionTypes.LOGGING,
+        ActionTypes.HIPCHAT,
+        ActionTypes.SLACK
       ];
     }
 

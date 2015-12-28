@@ -2,7 +2,21 @@
   <div class="md-toolbar-tools"><span style="text-align: center;" flex="100">Define the action(s) to take</span></div>
 </md-toolbar>
 <div flex layout-padding>
-  <div layout-gt-xs="row" flex-inverse>
+  <div ui-view="actions"></div>
+  <form name="inputForm">
+    <div layout-gt-xs="row" flex="50">
+      <md-input-container class="md-block" flex-gt-xs>
+        <label>Choose the type of action</label>
+        <md-select ng-model="watcherActionsVM.type" ng-change="watcherActionsVM.goToCreate()">
+          <md-option ng-repeat="type in watcherActionsVM.getActionTypes()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
+    <div ui-view="create"></div>
+  </form>
+  <div layout-gt-xs="row">
     <div flex-offset="80"></div>
     <div flex="10">
       <md-button class="md-fab md-accent md-hue-2" aria-label="Previous" ng-click="watcherActionsVM.goToConditions()">

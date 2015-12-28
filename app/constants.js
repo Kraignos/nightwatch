@@ -67,5 +67,13 @@
       GTE: 'gte',
       LT: 'lt',
       LTE: 'lte'
+    })
+    .constant('ActionTypes', {
+      EMAIL: 'email',
+      WEBHOOK: 'webhook',
+      INDEX: 'index',
+      LOGGING: 'logging',
+      HIPCHAT: 'hipchat',
+      SLACK: 'slack'
     });
 })();

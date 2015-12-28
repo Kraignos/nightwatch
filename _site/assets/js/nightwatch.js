@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2015-12-28
+/*! nightwatch - v1.0.0 - 2015-12-29
 * Copyright (c) 2015 ; Licensed  */
 (function() {
   'use strict';
@@ -128,8 +128,36 @@
         .state('watch.watchers.actions', {
           url: '/actions',
           templateUrl: 'assets/templates/watchers.actions.html',
+          abstract: true,
+          resolve: {
+            editable: function() { return true; }
+          },
           controller: 'WatcherActionsCtrl',
           controllerAs: 'watcherActionsVM'
+        })
+        .state('watch.watchers.actions.list', {
+          url: '/all',
+          views: {
+            'actions': {
+              templateUrl: 'assets/templates/watchers.actions.list.html'
+            }
+          }
+        })
+        .state('watch.watchers.actions.create', {
+          url: '/:type',
+          views: {
+            'actions': {
+              templateUrl: 'assets/templates/watchers.actions.list.html'
+            },
+            'create': {
+              templateUrl: 'assets/templates/watchers.actions.create.html',
+              resolve: {
+                type: function($stateParams) { return $stateParams.type }
+              },
+              controller: 'WatcherActionsCreateCtrl',
+              controllerAs: 'watcherActionsCreateVM'
+            }
+          }
         })
         .state('watch.watchers.summary', {
           url: '/summary',
@@ -170,6 +198,11 @@
               },
               controller: 'WatcherConditionsCtrl',
               controllerAs: 'watcherConditionsVM'
+            },
+            'action': {
+              templateUrl: 'assets/templates/watchers.actions.list.html',
+              controller: 'WatcherActionsCtrl',
+              controllerAs: 'watcherActionsVM'
             }
           }
         })
@@ -300,6 +333,14 @@
       GTE: 'gte',
       LT: 'lt',
       LTE: 'lte'
+    })
+    .constant('ActionTypes', {
+      EMAIL: 'email',
+      WEBHOOK: 'webhook',
+      INDEX: 'index',
+      LOGGING: 'logging',
+      HIPCHAT: 'hipchat',
+      SLACK: 'slack'
     });
 })();
 
@@ -698,12 +739,13 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes', 'ConditionTypes', 'ScriptConditionTypes', 'ScriptLanguages', 'ComparisonOperators'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes', 'ConditionTypes', 'ScriptConditionTypes', 'ScriptLanguages', 'ComparisonOperators', 'ActionTypes'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes, ConditionTypes, ScriptConditionTypes, ScriptLanguages, ComparisonOperators) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes, ConditionTypes, ScriptConditionTypes, ScriptLanguages, ComparisonOperators, ActionTypes) {
     var inputs = {};
     var triggers = {};
     var conditions = {};
+    var actions = {};
 
     var service = {
       getInputTypes: getInputTypes,
@@ -713,9 +755,12 @@
       setWatcherInput: setWatcherInput,
       setWatcherScheduleTrigger: setWatcherScheduleTrigger,
       setWatcherCondition: setWatcherCondition,
+      addWatcherAction: addWatcherAction,
       getWatchInputs: getWatchInputs,
       getWatchTriggers: getWatchTriggers,
       getWatchConditions: getWatchConditions,
+      getWatchActions: getWatchActions,
+      getWatcherAction: getWatcherAction,
       getWatcherSummary: getWatcherSummary,
       getSimpleInputTypes: getSimpleInputTypes,
       getSearchRequestTypes: getSearchRequestTypes,
@@ -726,6 +771,7 @@
       getScriptTypes: getScriptTypes,
       getScriptLanguages: getScriptLanguages,
       getComparisonOperators: getComparisonOperators,
+      getActionTypes: getActionTypes,
       transformToArray: transformToArray
     }
 
@@ -756,6 +802,10 @@
       conditions = condition;
     }
 
+    function addWatcherAction(name, action) {
+      actions[name] = action;
+    }
+
     function getWatchInputs() {
       return inputs;
     }
@@ -768,6 +818,16 @@
       return conditions;
     }
 
+    function getWatchActions() {
+      return _.map(_.keys(actions), function(a) {
+        return { name: a, action: actions[a] };
+      });
+    }
+
+    function getWatcherAction(actionName) {
+      return actions[actionName];
+    }
+
     function getInputTypes() {
       return [WatchInputType.SIMPLE, WatchInputType.SEARCH, WatchInputType.HTTP];
     }
@@ -777,6 +837,7 @@
       summary['input'] = inputs;
       summary['trigger'] = triggers;
       summary['condition'] = conditions;
+      summary['action'] = actions;
       return summary;
     }
 
@@ -862,6 +923,17 @@
       ];
     }
 
+    function getActionTypes() {
+      return [
+        ActionTypes.EMAIL,
+        ActionTypes.WEBHOOK,
+        ActionTypes.INDEX,
+        ActionTypes.LOGGING,
+        ActionTypes.HIPCHAT,
+        ActionTypes.SLACK
+      ];
+    }
+
     function transformToArray(values) {
       return _.map(values.trim().split(','), function(v) {
         return v.trim();
@@ -881,8 +953,14 @@
     function WatcherActionsCtrl($scope, $state, watchers) {
       var watcherActionsVM = this;
 
+      watcherActionsVM.type = '';
+
       watcherActionsVM.goToConditions = goToConditions;
       watcherActionsVM.goToSummary = goToSummary;
+      watcherActionsVM.goToCreate = goToCreate;
+
+      watcherActionsVM.getWatcherActions = getWatcherActions;
+      watcherActionsVM.getActionTypes = getActionTypes;
 
       function goToConditions() {
         $state.go('watch.watchers.conditions');
@@ -890,6 +968,41 @@
 
       function goToSummary() {
         $state.go('watch.watchers.summary.pretty');
+      }
+
+      function goToCreate() {
+        $state.go('watch.watchers.actions.create', { type: watcherActionsVM.type });
+      }
+
+      function getWatcherActions() {
+        return watchers.getWatchActions();
+      }
+
+      function getActionTypes() {
+        return watchers.getActionTypes();
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherActionsCreateCtrl', WatcherActionsCreateCtrl);
+
+    WatcherActionsCreateCtrl.$inject = ['$scope', '$state', 'watchers', 'type'];
+
+    function WatcherActionsCreateCtrl($scope, $state, watchers, type) {
+      var watcherActionsCreateVM = this;
+
+      watcherActionsCreateVM.type = type;
+      watcherActionsCreateVM[type] = {};
+
+      watcherActionsCreateVM.saveAction = saveAction;
+
+      function saveAction() {
+        watchers.addWatcherAction(watcherActionsCreateVM.type, watcherActionsCreateVM[watcherActionsCreateVM.type]);
+        $state.go('watch.watchers.actions.list');
       }
     }
 })();
