@@ -4,9 +4,9 @@
   angular.module('nightwatch')
     .factory('watchers', watchers);
 
-  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes', 'ConditionTypes', 'ScriptConditionTypes', 'ScriptLanguages'];
+  watchers.$inject = ['WatchInputType', 'SimpleInputType', 'SearchInputType', 'ExpandWildCards', 'ResponseContentType', 'ScheduleTriggerTypes', 'ConditionTypes', 'ScriptConditionTypes', 'ScriptLanguages', 'ComparisonOperators'];
 
-  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes, ConditionTypes, ScriptConditionTypes, ScriptLanguages) {
+  function watchers(WatchInputType, SimpleInputType, SearchInputType, ExpandWildCards, ResponseContentType, ScheduleTriggerTypes, ConditionTypes, ScriptConditionTypes, ScriptLanguages, ComparisonOperators) {
     var inputs = {};
     var triggers = {};
     var conditions = {};
@@ -31,6 +31,7 @@
       getConditionTypes: getConditionTypes,
       getScriptTypes: getScriptTypes,
       getScriptLanguages: getScriptLanguages,
+      getComparisonOperators: getComparisonOperators,
       transformToArray: transformToArray
     }
 
@@ -133,7 +134,8 @@
         ConditionTypes.ALWAYS,
         ConditionTypes.NEVER,
         ConditionTypes.SCRIPT,
-        ConditionTypes.COMPARE
+        ConditionTypes.COMPARE,
+        ConditionTypes.ARRAY_COMPARE
       ];
     }
 
@@ -152,6 +154,17 @@
         ScriptLanguages.PYTHON,
         ScriptLanguages.EXPRESSION,
         ScriptLanguages.MUSTACHE
+      ];
+    }
+
+    function getComparisonOperators() {
+      return [
+        ComparisonOperators.EQ,
+        ComparisonOperators.NOT_EQ,
+        ComparisonOperators.GT,
+        ComparisonOperators.GTE,
+        ComparisonOperators.LT,
+        ComparisonOperators.LTE
       ];
     }
 

@@ -45,7 +45,8 @@
       ALWAYS: 'always',
       NEVER: 'never',
       SCRIPT: 'script',
-      COMPARE: 'compare'
+      COMPARE: 'compare',
+      ARRAY_COMPARE: 'array_compare'
     })
     .constant('ScriptConditionTypes', {
       INLINE: 'inline',
@@ -59,11 +60,12 @@
       EXPRESSION: 'expression',
       MUSTACHE: 'mustache'
     })
-    .constant('ScriptLanguages', {
-      GROOVY: 'groovy',
-      JAVASCRIPT: 'javascript',
-      PYTHON: 'python',
-      EXPRESSION: 'expression',
-      MUSTACHE: 'mustache'
+    .constant('ComparisonOperators', {
+      EQ: 'eq',
+      NOT_EQ: 'not_eq',
+      GT: 'gt',
+      GTE: 'gte',
+      LT: 'lt',
+      LTE: 'lte'
     });
 })();

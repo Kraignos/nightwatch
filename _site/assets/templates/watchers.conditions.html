@@ -80,6 +80,62 @@
         </md-input-container>
       </div>
     </div>
+    <!-- COMPARE CONDITION TYPE -->
+    <div layout-gt-xs="column" flex-fill flex="80" flex-layout="start start"  ng-show="watcherConditionsVM.type === 'compare'">
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Path to the execution context model (ex: ctx.payload.hits.total)</label>
+        <input ng-model="watcherConditionsVM.leftOperand" type="text" aria-label="Path to the execution context model (ex: ctx.payload.hits.total)" ng-disabled="!watcherConditionsVM.canBeEdit" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Select the operator of the comparison</label>
+        <md-select ng-model="watcherConditionsVM.operator" ng-disabled="!watcherConditionsVM.canBeEdit">
+          <md-option ng-repeat="type in watcherConditionsVM.getComparisonOperators()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm ng-show="!watcherConditionsVM.arrayCompare">
+        <label>Value to compare to</label>
+        <input ng-model="watcherConditionsVM.rightOperand" type="text" aria-label="Value to compare to" ng-disabled="!watcherConditionsVM.canBeEdit" />
+      </md-input-container>
+    </div>
+    <!-- ARRAY COMPARE CONDITION TYPE -->
+    <div layout-gt-xs="column" flex-fill flex="80" flex-layout="start start"  ng-show="watcherConditionsVM.type === 'array_compare'">
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Path to the execution context model (ex: ctx.payload.hits.total)</label>
+        <input ng-model="watcherConditionsVM.leftOperand" type="text" aria-label="Path to the execution context model (ex: ctx.payload.hits.total)" ng-disabled="!watcherConditionsVM.canBeEdit" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Select the operator of the comparison</label>
+        <md-select ng-model="watcherConditionsVM.operator" ng-disabled="!watcherConditionsVM.canBeEdit">
+          <md-option ng-repeat="type in watcherConditionsVM.getComparisonOperators()" value="{{ type }}">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Path to the value for each element of the array that the comparison operator will be applied to</label>
+        <input ng-model="watcherConditionsVM.path" type="text" aria-label="Path to the value for each element of the array that the comparison operator will be applied to" ng-disabled="!watcherConditionsVM.canBeEdit" />
+      </md-input-container>
+      <div layout="row">
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Field name to compare to</label>
+          <input ng-model="watcherConditionsVM.rightOperandName" type="text" aria-label="Field name to compare to" ng-disabled="!watcherConditionsVM.canBeEdit" />
+        </md-input-container>
+        <md-input-container class="md-block" flex-gt-sm>
+          <label>Value to compare to</label>
+          <input ng-model="watcherConditionsVM.rightOperand" type="text" aria-label="Value to compare to" ng-disabled="!watcherConditionsVM.canBeEdit" />
+        </md-input-container>
+      </div>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>Specifies whether the comparison must be true for all or for at least one of the values to evaluate the comparison to true</label>
+        <md-select ng-model="watcherConditionsVM.quantifier" ng-disabled="!watcherConditionsVM.canBeEdit">
+          <md-option ng-repeat="type in ['all', 'some']" value="{{ type }}" ng-disabled="!watcherConditionsVM.canBeEdit">
+            {{ type }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </div>
   </form>
   <div layout-gt-xs="row" ng-if="watcherConditionsVM.canBeEdit">
     <div flex-offset="80" flex="10">
