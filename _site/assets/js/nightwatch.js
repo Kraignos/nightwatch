@@ -993,11 +993,10 @@
 
       function saveCondition() {
         if (watcherConditionsVM.type === ConditionTypes.COMPARE) {
-          //if (!watcherConditionsVM.arrayCompare) {
-            watcherConditionsVM.condition['compare'] = {};
-            watcherConditionsVM.condition.compare[watcherConditionsVM.leftOperand] = {};
-            watcherConditionsVM.condition.compare[watcherConditionsVM.leftOperand][watcherConditionsVM.operator] = watcherConditionsVM.rightOperand;
-          }
+          watcherConditionsVM.condition['compare'] = {};
+          watcherConditionsVM.condition.compare[watcherConditionsVM.leftOperand] = {};
+          watcherConditionsVM.condition.compare[watcherConditionsVM.leftOperand][watcherConditionsVM.operator] = watcherConditionsVM.rightOperand;
+        }
         else if (watcherConditionsVM.type === ConditionTypes.ARRAY_COMPARE) {
           watcherConditionsVM.condition = {};
           watcherConditionsVM.condition['array_compare'] = {};
@@ -1013,7 +1012,6 @@
             watcherConditionsVM.condition.array_compare[watcherConditionsVM.leftOperand][watcherConditionsVM.operator]['quantifier'] = watcherConditionsVM.quantifier;
           }
         }
-        //}
         watchers.setWatcherCondition(watcherConditionsVM.condition);
       }
 
