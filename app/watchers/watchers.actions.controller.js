@@ -9,6 +9,7 @@
     function WatcherActionsCtrl($scope, $state, watchers) {
       var watcherActionsVM = this;
 
+      watcherActionsVM.name = '';
       watcherActionsVM.type = '';
 
       watcherActionsVM.goToConditions = goToConditions;
@@ -27,7 +28,7 @@
       }
 
       function goToCreate() {
-        $state.go('watch.watchers.actions.create', { type: watcherActionsVM.type });
+        $state.go('watch.watchers.actions.create', { name: watcherActionsVM.name, type: watcherActionsVM.type });
       }
 
       function getWatcherActions() {

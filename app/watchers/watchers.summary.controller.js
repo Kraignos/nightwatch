@@ -14,7 +14,7 @@
       watcherSummaryVM.saveWatcher = saveWatcher;
 
       function goToActions() {
-        $state.go('watch.watchers.actions');
+        $state.go('watch.watchers.actions.list');
       }
 
       function saveWatcher() {

@@ -139,20 +139,36 @@
           url: '/all',
           views: {
             'actions': {
-              templateUrl: 'assets/templates/watchers.actions.list.html'
+              templateUrl: 'assets/templates/watchers.actions.list.html',
+              resolve: {
+                actionsData: actionsData
+              },
+              controller: 'WatcherActionsListCtrl',
+              controllerAs: 'watcherActionsListVM'
             }
           }
         })
         .state('watch.watchers.actions.create', {
-          url: '/:type',
+          url: '/:type/:name',
           views: {
             'actions': {
-              templateUrl: 'assets/templates/watchers.actions.list.html'
+              templateUrl: 'assets/templates/watchers.actions.list.html',
+              resolve: {
+                actionsData: actionsData
+              },
+              controller: 'WatcherActionsListCtrl',
+              controllerAs: 'watcherActionsListVM'
             },
             'create': {
               templateUrl: 'assets/templates/watchers.actions.create.html',
               resolve: {
-                type: function($stateParams) { return $stateParams.type }
+                data: function($stateParams) {
+                  return {
+                    name: $stateParams.name,
+                    type: $stateParams.type
+                  }
+                }
+
               },
               controller: 'WatcherActionsCreateCtrl',
               controllerAs: 'watcherActionsCreateVM'
@@ -201,6 +217,9 @@
             },
             'action': {
               templateUrl: 'assets/templates/watchers.actions.list.html',
+              resolve: {
+                actionsData: actionsData
+              },
               controller: 'WatcherActionsCtrl',
               controllerAs: 'watcherActionsVM'
             }
@@ -225,6 +244,7 @@
     clusterNodes.$inject = ['elastic'];
     inputsData.$inject = ['watchers'];
     triggersData.$inject = ['watchers'];
+    actionsData.$inject = ['watchers'];
     conditionsData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
 
@@ -256,6 +276,10 @@
 
     function conditionsData(watchers) {
       return watchers.getWatchConditions();
+    }
+
+    function actionsData(watchers) {
+      return watchers.getWatchActions();
     }
 
     function watcherSummary(watchers) {
@@ -819,9 +843,11 @@
     }
 
     function getWatchActions() {
-      return _.map(_.keys(actions), function(a) {
-        return { name: a, action: actions[a] };
+      var watcherActions = _.map(_.keys(actions), function(a) {
+        return { name: a, type: _.keys(actions[a])[0], action: actions[a] };
       });
+      console.log('actions: ' + angular.toJson(watcherActions));
+      return watcherActions;
     }
 
     function getWatcherAction(actionName) {
@@ -953,6 +979,7 @@
     function WatcherActionsCtrl($scope, $state, watchers) {
       var watcherActionsVM = this;
 
+      watcherActionsVM.name = '';
       watcherActionsVM.type = '';
 
       watcherActionsVM.goToConditions = goToConditions;
@@ -971,7 +998,7 @@
       }
 
       function goToCreate() {
-        $state.go('watch.watchers.actions.create', { type: watcherActionsVM.type });
+        $state.go('watch.watchers.actions.create', { name: watcherActionsVM.name, type: watcherActionsVM.type });
       }
 
       function getWatcherActions() {
@@ -990,19 +1017,96 @@
   angular.module('nightwatch')
     .controller('WatcherActionsCreateCtrl', WatcherActionsCreateCtrl);
 
-    WatcherActionsCreateCtrl.$inject = ['$scope', '$state', 'watchers', 'type'];
+    WatcherActionsCreateCtrl.$inject = ['$scope', '$state', 'watchers', 'data'];
 
-    function WatcherActionsCreateCtrl($scope, $state, watchers, type) {
+    function WatcherActionsCreateCtrl($scope, $state, watchers, data) {
       var watcherActionsCreateVM = this;
 
-      watcherActionsCreateVM.type = type;
-      watcherActionsCreateVM[type] = {};
+      watcherActionsCreateVM.name = data.name
+      watcherActionsCreateVM.type = data.type;
+      watcherActionsCreateVM[data.type] = {};
 
       watcherActionsCreateVM.saveAction = saveAction;
 
       function saveAction() {
-        watchers.addWatcherAction(watcherActionsCreateVM.type, watcherActionsCreateVM[watcherActionsCreateVM.type]);
+        var action = {};
+        action[data.type] = watcherActionsCreateVM[data.type];
+        watchers.addWatcherAction(watcherActionsCreateVM.name, action);
+
         $state.go('watch.watchers.actions.list');
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherActionsEmailCtrl', WatcherActionsEmailCtrl);
+
+    WatcherActionsEmailCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
+
+    function WatcherActionsEmailCtrl($scope, $state, $mdDialog, watchers, data) {
+      var watcherActionsEmailVM = this;
+
+      watcherActionsEmailVM.name = data.name;
+      watcherActionsEmailVM.email = data.action;
+      watcherActionsEmailVM.cancelForm = cancelForm;
+      watcherActionsEmailVM.updateAction = updateAction;
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function updateAction() {
+        $mdDialog.hide(watcherActionsEmailVM.email);
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherActionsListCtrl', WatcherActionsListCtrl);
+
+    WatcherActionsListCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'actionsData'];
+
+    function WatcherActionsListCtrl($scope, $state, $mdDialog, watchers, actionsData) {
+      var watcherActionsListVM = this;
+      var icons = { email: 'mail' };
+
+      watcherActionsListVM.actions = actionsData;
+      watcherActionsListVM.hasActions = hasActions;
+      watcherActionsListVM.actionIcon = actionIcon;
+      watcherActionsListVM.showAction = showAction;
+
+      function hasActions() {
+        return !_.isEmpty(watcherActionsListVM.actions);
+      }
+
+      function actionIcon(type) {
+        return icons[type];
+      }
+
+      function showAction(event, name, type) {
+        $mdDialog.show({
+          controller: 'WatcherActionsEmailCtrl',
+          controllerAs: 'watcherActionsEmailVM',
+          templateUrl: 'assets/templates/actions/watchers.actions.email.html',
+          parent: angular.element(document.body),
+          targetEvent: event,
+          resolve: {
+            data: function() {
+              return {
+                name: name,
+                action: watchers.getWatcherAction(name)
+              }
+            }
+          }
+        }).then(function(action) {
+          watchers.addWatcherAction(name, action);
+        });
       }
     }
 })();
@@ -1051,7 +1155,7 @@
 
       function goToActions() {
         saveCondition();
-        $state.go('watch.watchers.actions');
+        $state.go('watch.watchers.actions.list');
       }
 
       function getConditionTypes() {
@@ -1377,7 +1481,7 @@
       watcherSummaryVM.saveWatcher = saveWatcher;
 
       function goToActions() {
-        $state.go('watch.watchers.actions');
+        $state.go('watch.watchers.actions.list');
       }
 
       function saveWatcher() {

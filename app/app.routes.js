@@ -131,20 +131,36 @@
           url: '/all',
           views: {
             'actions': {
-              templateUrl: 'assets/templates/watchers.actions.list.html'
+              templateUrl: 'assets/templates/watchers.actions.list.html',
+              resolve: {
+                actionsData: actionsData
+              },
+              controller: 'WatcherActionsListCtrl',
+              controllerAs: 'watcherActionsListVM'
             }
           }
         })
         .state('watch.watchers.actions.create', {
-          url: '/:type',
+          url: '/:type/:name',
           views: {
             'actions': {
-              templateUrl: 'assets/templates/watchers.actions.list.html'
+              templateUrl: 'assets/templates/watchers.actions.list.html',
+              resolve: {
+                actionsData: actionsData
+              },
+              controller: 'WatcherActionsListCtrl',
+              controllerAs: 'watcherActionsListVM'
             },
             'create': {
               templateUrl: 'assets/templates/watchers.actions.create.html',
               resolve: {
-                type: function($stateParams) { return $stateParams.type }
+                data: function($stateParams) {
+                  return {
+                    name: $stateParams.name,
+                    type: $stateParams.type
+                  }
+                }
+
               },
               controller: 'WatcherActionsCreateCtrl',
               controllerAs: 'watcherActionsCreateVM'
@@ -193,6 +209,9 @@
             },
             'action': {
               templateUrl: 'assets/templates/watchers.actions.list.html',
+              resolve: {
+                actionsData: actionsData
+              },
               controller: 'WatcherActionsCtrl',
               controllerAs: 'watcherActionsVM'
             }
@@ -217,6 +236,7 @@
     clusterNodes.$inject = ['elastic'];
     inputsData.$inject = ['watchers'];
     triggersData.$inject = ['watchers'];
+    actionsData.$inject = ['watchers'];
     conditionsData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
 
@@ -248,6 +268,10 @@
 
     function conditionsData(watchers) {
       return watchers.getWatchConditions();
+    }
+
+    function actionsData(watchers) {
+      return watchers.getWatchActions();
     }
 
     function watcherSummary(watchers) {

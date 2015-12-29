@@ -84,9 +84,11 @@
     }
 
     function getWatchActions() {
-      return _.map(_.keys(actions), function(a) {
-        return { name: a, action: actions[a] };
+      var watcherActions = _.map(_.keys(actions), function(a) {
+        return { name: a, type: _.keys(actions[a])[0], action: actions[a] };
       });
+      console.log('actions: ' + angular.toJson(watcherActions));
+      return watcherActions;
     }
 
     function getWatcherAction(actionName) {

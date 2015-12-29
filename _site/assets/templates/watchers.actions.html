@@ -3,11 +3,16 @@
 </md-toolbar>
 <div flex layout-padding>
   <div ui-view="actions"></div>
+  <div ui-view></div>
   <form name="inputForm">
-    <div layout-gt-xs="row" flex="50">
-      <md-input-container class="md-block" flex-gt-xs>
+    <div layout-gt-xs="column" flex="50">
+      <md-input-container class="md-block">
+        <label>Give your action a name</label>
+        <input ng-model="watcherActionsVM.name" type="text" aria-label="Give your action a name" required />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-xs ng-show="watcherActionsVM.name.length > 0">
         <label>Choose the type of action</label>
-        <md-select ng-model="watcherActionsVM.type" ng-change="watcherActionsVM.goToCreate()">
+        <md-select ng-model="watcherActionsVM.type" ng-change="watcherActionsVM.goToCreate()" required>
           <md-option ng-repeat="type in watcherActionsVM.getActionTypes()" value="{{ type }}">
             {{ type }}
           </md-option>

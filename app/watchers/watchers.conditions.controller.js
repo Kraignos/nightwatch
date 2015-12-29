@@ -42,7 +42,7 @@
 
       function goToActions() {
         saveCondition();
-        $state.go('watch.watchers.actions');
+        $state.go('watch.watchers.actions.list');
       }
 
       function getConditionTypes() {
