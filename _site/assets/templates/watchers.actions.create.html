@@ -12,7 +12,57 @@
     <label>The email addresses of the to recipients</label>
     <input ng-model="watcherActionsCreateVM.email.to" type="text" aria-label="The email addresses of the to recipients" required />
   </md-input-container>
+  <md-input-container class="md-block">
+    <label>The email addresses of the cc recipients</label>
+    <input ng-model="watcherActionsCreateVM.email.cc" type="text" aria-label="The email addresses of the cc recipients" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The email addresses of the bcc recipients</label>
+    <input ng-model="watcherActionsCreateVM.email.bcc" type="text" aria-label="The email addresses of the bcc recipients" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The email addresses that will be set on the message’s Reply-To header</label>
+    <input ng-model="watcherActionsCreateVM.email.reply_to" type="text" aria-label="The email addresses that will be set on the message’s Reply-To header" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The subject of the email</label>
+    <input ng-model="watcherActionsCreateVM.email.subject" type="text" aria-label="The subject of the email" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The body of the email</label>
+    <input ng-model="watcherActionsCreateVM.email.body" type="text" aria-label="The body of the email" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The plain text body of the email</label>
+    <input ng-model="watcherActionsCreateVM.email.body.text" type="text" aria-label="The plain text body of the email" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The html body of the email</label>
+    <input ng-model="watcherActionsCreateVM.email.body.html" type="text" aria-label="The html body of the email" />
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>The priority of this email</label>
+    <md-select ng-model="watcherActionsCreateVM.email.priority">
+      <md-option ng-repeat="type in ['lowest', 'low', 'normal', 'high', 'highest']" value="{{ type }}">
+        {{ type }}
+      </md-option>
+    </md-select>
+  </md-input-container>
+  <md-input-container class="md-block">
+    <md-switch ng-model="watcherActionsCreateVM.email.attach_data" aria-label="Indicates whether the watch execution data should be attached to the email">
+      Indicates whether the watch execution data should be attached to the email
+    </md-switch>
+  </md-input-container>
+  <md-input-container class="md-block">
+    <label>Indicates whether the watch execution data should be attached to the email</label>
+    <md-select ng-model="watcherActionsCreateVM.email.attach_data.format">
+      <md-option ng-repeat="type in ['json', 'yaml']" value="{{ type }}">
+        {{ type }}
+      </md-option>
+    </md-select>
+  </md-input-container>
 </div>
+
 <div flex="100" flex-layout="center center">
   <md-button class="md-fab md-accent md-hue-2" aria-label="Add" ng-click="watcherActionsCreateVM.saveAction()">
     <md-tooltip md-direction="top">Add this action</md-tooltip>
