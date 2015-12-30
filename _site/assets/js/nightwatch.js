@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2015-12-29
+/*! nightwatch - v1.0.0 - 2015-12-30
 * Copyright (c) 2015 ; Licensed  */
 (function() {
   'use strict';
@@ -972,6 +972,58 @@
   'use strict';
 
   angular.module('nightwatch')
+    .controller('WatcherActionsEmailCtrl', WatcherActionsEmailCtrl);
+
+    WatcherActionsEmailCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
+
+    function WatcherActionsEmailCtrl($scope, $state, $mdDialog, watchers, data) {
+      var watcherActionsEmailVM = this;
+
+      watcherActionsEmailVM.name = data.name;
+      watcherActionsEmailVM.email = data.action.email;
+      watcherActionsEmailVM.cancelForm = cancelForm;
+      watcherActionsEmailVM.updateAction = updateAction;
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function updateAction() {
+        $mdDialog.hide({ email: watcherActionsEmailVM.email });
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherActionsWebhookCtrl', WatcherActionsWebhookCtrl);
+
+    WatcherActionsWebhookCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
+
+    function WatcherActionsWebhookCtrl($scope, $state, $mdDialog, watchers, data) {
+      var watcherActionsWebhookVM = this;
+
+      watcherActionsWebhookVM.name = data.name;
+      watcherActionsWebhookVM.webhook = data.action.webhook;
+      watcherActionsWebhookVM.cancelForm = cancelForm;
+      watcherActionsWebhookVM.updateAction = updateAction;
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function updateAction() {
+        $mdDialog.hide({ webhook: watcherActionsWebhookVM.webhook });
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('WatcherActionsCtrl', WatcherActionsCtrl);
 
     WatcherActionsCtrl.$inject = ['$scope', '$state', 'watchers'];
@@ -1027,6 +1079,12 @@
       watcherActionsCreateVM[data.type] = {};
 
       watcherActionsCreateVM.saveAction = saveAction;
+      watcherActionsCreateVM.addHeader = addHeader;
+      watcherActionsCreateVM.removeHeader = removeHeader;
+      watcherActionsCreateVM.getHeaders = getHeaders;
+      watcherActionsCreateVM.addParameter = addParameter;
+      watcherActionsCreateVM.removeParameter = removeParameter;
+      watcherActionsCreateVM.getParameters = getParameters;
 
       function saveAction() {
         var action = {};
@@ -1035,31 +1093,49 @@
 
         $state.go('watch.watchers.actions.list');
       }
-    }
-})();
 
-(function() {
-  'use strict';
-
-  angular.module('nightwatch')
-    .controller('WatcherActionsEmailCtrl', WatcherActionsEmailCtrl);
-
-    WatcherActionsEmailCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
-
-    function WatcherActionsEmailCtrl($scope, $state, $mdDialog, watchers, data) {
-      var watcherActionsEmailVM = this;
-
-      watcherActionsEmailVM.name = data.name;
-      watcherActionsEmailVM.email = data.action;
-      watcherActionsEmailVM.cancelForm = cancelForm;
-      watcherActionsEmailVM.updateAction = updateAction;
-
-      function cancelForm() {
-        $mdDialog.cancel();
+      function addHeader(name, value) {
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var headers = watcherActionsCreateVM[data.type].headers || {};
+          headers[name] = value;
+          watcherActionsCreateVM[data.type].headers = headers;
+        }
       }
 
-      function updateAction() {
-        $mdDialog.hide(watcherActionsEmailVM.email);
+      function removeHeader(name) {
+        var headers = {};
+        angular.forEach(_.keys(watcherActionsCreateVM[data.type].headers), function(p) {
+          if (p !== name) {
+            headers[p] = watcherActionsCreateVM[data.type].headers[p];
+          }
+        });
+        watcherActionsCreateVM[data.type].headers = headers;
+      }
+
+      function getHeaders() {
+        return _.keys(watcherActionsCreateVM[data.type].headers);
+      }
+
+      function addParameter(name, value) {
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var parameters = watcherActionsCreateVM[data.type].params || {};
+          parameters[name] = value;
+          watcherActionsCreateVM[data.type].params = parameters;
+        }
+      }
+
+      function removeParameter(name) {
+        var parameters = {};
+        angular.forEach(_.keys(watcherActionsCreateVM[data.type].params), function(p) {
+          if (p !== name) {
+            parameters[p] = watcherActionsCreateVM[data.type].params[p];
+          }
+        });
+        watcherActionsCreateVM[data.type].params = parameters;
+      }
+
+      function getParameters() {
+        return _.keys(watcherActionsCreateVM[data.type].params);
       }
     }
 })();
@@ -1090,10 +1166,11 @@
       }
 
       function showAction(event, name, type) {
+        var info = getController(type);
         $mdDialog.show({
-          controller: 'WatcherActionsEmailCtrl',
-          controllerAs: 'watcherActionsEmailVM',
-          templateUrl: 'assets/templates/actions/watchers.actions.email.html',
+          controller: info.controller,
+          controllerAs: info.controllerAs,
+          templateUrl: info.templateUrl,
           parent: angular.element(document.body),
           targetEvent: event,
           resolve: {
@@ -1107,6 +1184,22 @@
         }).then(function(action) {
           watchers.addWatcherAction(name, action);
         });
+      }
+
+      function getController(type) {
+        var controllers = {
+          email: {
+            controller: 'WatcherActionsEmailCtrl',
+            controllerAs: 'watcherActionsEmailVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.email.html'
+          },
+          webhook: {
+            controller: 'WatcherActionsWebhookCtrl',
+            controllerAs: 'watcherActionsWebhookVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.webhook.html'
+          }
+        };
+        return controllers[type];
       }
     }
 })();

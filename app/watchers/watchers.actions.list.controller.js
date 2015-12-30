@@ -24,10 +24,11 @@
       }
 
       function showAction(event, name, type) {
+        var info = getController(type);
         $mdDialog.show({
-          controller: 'WatcherActionsEmailCtrl',
-          controllerAs: 'watcherActionsEmailVM',
-          templateUrl: 'assets/templates/actions/watchers.actions.email.html',
+          controller: info.controller,
+          controllerAs: info.controllerAs,
+          templateUrl: info.templateUrl,
           parent: angular.element(document.body),
           targetEvent: event,
           resolve: {
@@ -41,6 +42,22 @@
         }).then(function(action) {
           watchers.addWatcherAction(name, action);
         });
+      }
+
+      function getController(type) {
+        var controllers = {
+          email: {
+            controller: 'WatcherActionsEmailCtrl',
+            controllerAs: 'watcherActionsEmailVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.email.html'
+          },
+          webhook: {
+            controller: 'WatcherActionsWebhookCtrl',
+            controllerAs: 'watcherActionsWebhookVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.webhook.html'
+          }
+        };
+        return controllers[type];
       }
     }
 })();

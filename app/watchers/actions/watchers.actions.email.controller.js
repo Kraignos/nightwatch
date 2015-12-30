@@ -10,7 +10,7 @@
       var watcherActionsEmailVM = this;
 
       watcherActionsEmailVM.name = data.name;
-      watcherActionsEmailVM.email = data.action;
+      watcherActionsEmailVM.email = data.action.email;
       watcherActionsEmailVM.cancelForm = cancelForm;
       watcherActionsEmailVM.updateAction = updateAction;
 
@@ -19,7 +19,7 @@
       }
 
       function updateAction() {
-        $mdDialog.hide(watcherActionsEmailVM.email);
+        $mdDialog.hide({ email: watcherActionsEmailVM.email });
       }
     }
 })();

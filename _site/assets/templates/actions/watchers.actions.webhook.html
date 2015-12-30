@@ -1,0 +1,156 @@
+<md-dialog aria-label="Create a percolator" ng-cloak style="min-width: 50%; min-height: 75%;">
+<form>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Webhook: {{ watcherActionsWebhookVM.name }}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="watcherActionsWebhookVM.cancelForm()">
+        <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <div class="md-dialog-content">
+      <md-input-container class="md-block" flex-gt-sm flex="30">
+        <label>The URL scheme</label>
+        <md-select ng-model="watcherActionsWebhookVM.webhook.scheme">
+          <md-option ng-repeat="scheme in ['http', 'https']" value="{{ scheme }}">
+            {{ scheme }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The host to connect to</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.host" type="text" aria-label="The host to connect to" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The port the http service is listening on</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.port" type="text" aria-label="The port the http service is listening on" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The URL path</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.path" type="text" aria-label="The URL path" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm flex="30">
+        <label>The HTTP method</label>
+        <md-select ng-model="watcherActionsWebhookVM.webhook.method" >
+          <md-option ng-repeat="method in ['head', 'get', 'post', 'put', 'delete']" value="{{ method }}">
+            {{ method }}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <!-- HTTP headers -->
+      <div>
+        <md-subheader class="md-primary">Add a header</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start">
+        <md-input-container class="md-block" flex="40">
+          <label>Header name</label>
+          <input ng-model="name" type="text" aria-label="Define the parameter name" required />
+        </md-input-container>
+          <md-input-container class="md-block" flex="40">
+            <label>Header value</label>
+            <input ng-model="value" type="text" aria-label="Define the parameter value" ng-enter="watcherActionsWebhookVM.addHeader(name, value); name=''; value='';" required />
+          </md-input-container>
+          <md-input-container class="md-block" flex="10">
+            <md-button class="md-fab md-accent md-hue-2" aria-label="Add this parameter" ng-click="watcherActionsWebhookVM.addHeader(name, value); name=''; value='';">
+              <md-tooltip md-direction="top">Add this parameter</md-tooltip>
+              <md-icon class="material-icons md-primary md-48">add</md-icon>
+            </md-button>
+          </md-input-container>
+      </div>
+      <div>
+        <md-subheader class="md-primary" ng-show="watcherActionsWebhookVM.getHeaders().length > 0">Headers</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start" ng-repeat="p in watcherActionsWebhookVM.getHeaders()">
+        <md-input-container class="md-block" flex="40">
+          <input ng-model="p" type="text" aria-label="The header name" ng-disabled="true" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="40">
+          <input ng-model="watcherActionsWebhookVM.webhook.headers[p]" type="text" aria-label="The header value" ng-disabled="true" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="10">
+          <md-button class="md-fab md-primary md-hue-2" aria-label="Delete this header" ng-click="watcherActionsWebhookVM.removeHeader(p);">
+            <md-tooltip md-direction="top">Delete this header</md-tooltip>
+            <md-icon class="material-icons md-primary md-48">clear</md-icon>
+          </md-button>
+        </md-input-container>
+      </div>
+      <!-- Request paramaters -->
+      <div>
+        <md-subheader class="md-primary">Add a URL request parameter</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start">
+        <md-input-container class="md-block" flex="40">
+          <label>Parameter name</label>
+          <input ng-model="paramName" type="text" aria-label="Define the parameter name" required />
+        </md-input-container>
+          <md-input-container class="md-block" flex="40">
+            <label>Parameter value</label>
+            <input ng-model="paramValue" type="text" aria-label="Define the parameter value" ng-enter="watcherActionsWebhookVM.addParameter(paramName, paramValue); paramName=''; paramValue='';" required />
+          </md-input-container>
+          <md-input-container class="md-block" flex="10">
+            <md-button class="md-fab md-accent md-hue-2" aria-label="Add this parameter" ng-click="watcherActionsWebhookVM.addParameter(paramName, paramValue); paramName=''; paramValue='';">
+              <md-tooltip md-direction="top">Add this parameter</md-tooltip>
+              <md-icon class="material-icons md-primary md-48">add</md-icon>
+            </md-button>
+          </md-input-container>
+      </div>
+      <div>
+        <md-subheader class="md-primary" ng-show="watcherActionsWebhookVM.getParameters().length > 0">URL query string parameters</md-subheader>
+      </div>
+      <div layout-gt-xs="row" flex-layout="center start" ng-repeat="p in watcherActionsWebhookVM.getParameters()">
+        <md-input-container class="md-block" flex="40">
+          <input ng-model="p" type="text" aria-label="The parameter name" ng-disabled="true" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="40">
+          <input ng-model="watcherActionsWebhookVM.webhook.params[p]" type="text" aria-label="The parameter value" ng-disabled="true" />
+        </md-input-container>
+        <md-input-container class="md-block" flex="10">
+          <md-button class="md-fab md-primary md-hue-2" aria-label="Delete this parameter" ng-click="watcherActionsWebhookVM.removeParameter(p);">
+            <md-tooltip md-direction="top">Delete this parameter</md-tooltip>
+            <md-icon class="material-icons md-primary md-48">clear</md-icon>
+          </md-button>
+        </md-input-container>
+      </div>
+      <md-input-container class="md-block" flex-gt-sm flex="50">
+        <label>Username</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.auth.basic.username" type="text"  aria-label="Username" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm flex="50">
+        <label>Password</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.auth.basic.password" type="text"  aria-label="Password" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The HTTP request body</label>
+        <input ng-model="watcherActionsWebhookVM.body" type="text" aria-label="The HTTP request body" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The proxy host to use</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.proxy.host" type="text"  aria-label="The proxy host to use" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The proxy port to use</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.proxy.port" type="text"  aria-label="The proxy port to use" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The timeout for setting up the http connection</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.connection_timeout" type="text"  aria-label="The timeout for setting up the http connection" />
+      </md-input-container>
+      <md-input-container class="md-block" flex-gt-sm>
+        <label>The timeout for reading data from http connection</label>
+        <input ng-model="watcherActionsWebhookVM.webhook.read_timeout" type="text"  aria-label="The timeout for reading data from http connection" />
+      </md-input-container>
+    </div>
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-fill layout-align="center end">
+    <span flex></span>
+    <md-button ng-click="watcherActionsWebhookVM.cancelForm()">
+     <md-icon class="material-icons">close</md-icon>&nbsp;Cancel
+    </md-button>
+    <md-button ng-click="watcherActionsWebhookVM.updateAction()" style="margin-right:20px;">
+      <md-icon class="material-icons">done</md-icon>&nbsp;Save
+    </md-button>
+  </md-dialog-actions>
+</form>
+</md-dialog>
