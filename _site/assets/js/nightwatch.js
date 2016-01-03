@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2016-01-03
+/*! nightwatch - v1.0.0 - 2016-01-04
 * Copyright (c) 2016 ; Licensed  */
 (function() {
   'use strict';
@@ -984,6 +984,32 @@
   'use strict';
 
   angular.module('nightwatch')
+    .controller('WatcherActionsHipChatCtrl', WatcherActionsHipChatCtrl);
+
+    WatcherActionsHipChatCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
+
+    function WatcherActionsHipChatCtrl($scope, $state, $mdDialog, watchers, data) {
+      var watcherActionsHipChatVM = this;
+
+      watcherActionsHipChatVM.name = data.name;
+      watcherActionsHipChatVM.hipchat = data.action.hipchat || {};
+      watcherActionsHipChatVM.cancelForm = cancelForm;
+      watcherActionsHipChatVM.updateAction = updateAction;
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function updateAction() {
+        $mdDialog.hide({ hipchat: watcherActionsHipChatVM.hipchat });
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('WatcherActionsIndexCtrl', WatcherActionsIndexCtrl);
 
     WatcherActionsIndexCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
@@ -1191,6 +1217,11 @@
             controller: 'WatcherActionsLoggingCtrl',
             controllerAs: 'watcherActionsLoggingVM',
             templateUrl: 'assets/templates/actions/watchers.actions.logging.html'
+          },
+          hipchat: {
+            controller: 'WatcherActionsHipChatCtrl',
+            controllerAs: 'watcherActionsHipChatVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.hipchat.html'
           }
         };
         return controllers[type];
@@ -1342,6 +1373,11 @@
             controller: 'WatcherActionsLoggingCtrl',
             controllerAs: 'watcherActionsLoggingVM',
             templateUrl: 'assets/templates/actions/watchers.actions.logging.html'
+          },
+          hipchat: {
+            controller: 'WatcherActionsHipChatCtrl',
+            controllerAs: 'watcherActionsHipChatVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.hipchat.html'
           }
         };
         return controllers[type];

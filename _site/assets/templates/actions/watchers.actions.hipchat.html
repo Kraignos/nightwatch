@@ -1,0 +1,66 @@
+<md-dialog aria-label="Create an Index Action" ng-cloak style="min-width: 50%; min-height: 75%;">
+<form>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Watcher hipchat {{ watcherActionsHipChatVM.name }}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="watcherActionsHipChatVM.cancelForm()">
+        <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <div class="md-dialog-content">
+    <md-input-container class="md-block">
+      <label>The HipChat account to use to send the message</label>
+      <input ng-model="watcherActionsHipChatVM.hipchat.account" type="text" aria-label="The HipChat account to use to send the message" />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The message content. Can contain up to 1000 characters.</label>
+      <input ng-model="watcherActionsHipChatVM.hipchat.message.body" type="text" aria-label="The message content. Can contain up to 1000 characters." required />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The format of the message</label>
+      <md-select ng-model="watcherActionsHipChatVM.hipchat.message.format">
+        <md-option ng-repeat="type in ['text', 'html']" value="{{ type }}">
+          {{ type }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The background color of the notification in the room</label>
+      <md-select ng-model="watcherActionsHipChatVM.hipchat.message.color">
+        <md-option ng-repeat="type in ['gray', 'green', 'purple', 'red', 'yellow']" value="{{ type }}">
+          {{ type }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+    <md-input-container class="md-block">
+      <md-switch ng-model="watcherActionsHipChatVM.hipchat.notify" aria-label="Indicates whether people in the room should be actively notified">
+        Indicates whether people in the room should be actively notified
+      </md-switch>
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The name that appears as the notification sender</label>
+      <input ng-model="watcherActionsHipChatVM.hipchat.message.from" type="text" aria-label="The name that appears as the notification sender" />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The rooms that the notification should go to</label>
+      <input ng-model="watcherActionsHipChatVM.hipchat.message.room" type="text" aria-label="TThe rooms that the notification should go to" />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The users that the notification should go to</label>
+      <input ng-model="watcherActionsHipChatVM.hipchat.message.user" type="text" aria-label="The users that the notification should go to" />
+    </md-input-container>
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-fill layout-align="center end">
+    <span flex></span>
+    <md-button ng-click="watcherActionsHipChatVM.cancelForm()">
+     <md-icon class="material-icons">close</md-icon>&nbsp;Cancel
+    </md-button>
+    <md-button ng-click="watcherActionsHipChatVM.updateAction()" style="margin-right:20px;">
+      <md-icon class="material-icons">done</md-icon>&nbsp;Save
+    </md-button>
+  </md-dialog-actions>
+</form>
+</md-dialog>

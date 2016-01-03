@@ -65,6 +65,11 @@
             controller: 'WatcherActionsLoggingCtrl',
             controllerAs: 'watcherActionsLoggingVM',
             templateUrl: 'assets/templates/actions/watchers.actions.logging.html'
+          },
+          hipchat: {
+            controller: 'WatcherActionsHipChatCtrl',
+            controllerAs: 'watcherActionsHipChatVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.hipchat.html'
           }
         };
         return controllers[type];
