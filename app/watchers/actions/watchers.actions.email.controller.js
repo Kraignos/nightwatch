@@ -10,7 +10,7 @@
       var watcherActionsEmailVM = this;
 
       watcherActionsEmailVM.name = data.name;
-      watcherActionsEmailVM.email = data.action.email;
+      watcherActionsEmailVM.email = data.action.email || {};
       watcherActionsEmailVM.cancelForm = cancelForm;
       watcherActionsEmailVM.updateAction = updateAction;
 

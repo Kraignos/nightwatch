@@ -140,8 +140,8 @@
             }
           }
         })
-        .state('watch.watchers.actions.create', {
-          url: '/:type/:name',
+        .state('watch.watchers.actions.reload', {
+          url: '/reload',
           views: {
             'actions': {
               templateUrl: 'assets/templates/watchers.actions.list.html',
@@ -150,20 +150,6 @@
               },
               controller: 'WatcherActionsListCtrl',
               controllerAs: 'watcherActionsListVM'
-            },
-            'create': {
-              templateUrl: 'assets/templates/watchers.actions.create.html',
-              resolve: {
-                data: function($stateParams) {
-                  return {
-                    name: $stateParams.name,
-                    type: $stateParams.type
-                  }
-                }
-
-              },
-              controller: 'WatcherActionsCreateCtrl',
-              controllerAs: 'watcherActionsCreateVM'
             }
           }
         })

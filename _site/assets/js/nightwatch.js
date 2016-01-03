@@ -1,5 +1,5 @@
-/*! nightwatch - v1.0.0 - 2015-12-30
-* Copyright (c) 2015 ; Licensed  */
+/*! nightwatch - v1.0.0 - 2016-01-03
+* Copyright (c) 2016 ; Licensed  */
 (function() {
   'use strict';
 
@@ -148,8 +148,8 @@
             }
           }
         })
-        .state('watch.watchers.actions.create', {
-          url: '/:type/:name',
+        .state('watch.watchers.actions.reload', {
+          url: '/reload',
           views: {
             'actions': {
               templateUrl: 'assets/templates/watchers.actions.list.html',
@@ -158,20 +158,6 @@
               },
               controller: 'WatcherActionsListCtrl',
               controllerAs: 'watcherActionsListVM'
-            },
-            'create': {
-              templateUrl: 'assets/templates/watchers.actions.create.html',
-              resolve: {
-                data: function($stateParams) {
-                  return {
-                    name: $stateParams.name,
-                    type: $stateParams.type
-                  }
-                }
-
-              },
-              controller: 'WatcherActionsCreateCtrl',
-              controllerAs: 'watcherActionsCreateVM'
             }
           }
         })
@@ -980,7 +966,7 @@
       var watcherActionsEmailVM = this;
 
       watcherActionsEmailVM.name = data.name;
-      watcherActionsEmailVM.email = data.action.email;
+      watcherActionsEmailVM.email = data.action.email || {};
       watcherActionsEmailVM.cancelForm = cancelForm;
       watcherActionsEmailVM.updateAction = updateAction;
 
@@ -1006,9 +992,16 @@
       var watcherActionsWebhookVM = this;
 
       watcherActionsWebhookVM.name = data.name;
-      watcherActionsWebhookVM.webhook = data.action.webhook;
+      watcherActionsWebhookVM.webhook = data.action.webhook || {};
       watcherActionsWebhookVM.cancelForm = cancelForm;
       watcherActionsWebhookVM.updateAction = updateAction;
+
+      watcherActionsWebhookVM.addHeader = addHeader;
+      watcherActionsWebhookVM.removeHeader = removeHeader;
+      watcherActionsWebhookVM.getHeaders = getHeaders;
+      watcherActionsWebhookVM.addParameter = addParameter;
+      watcherActionsWebhookVM.removeParameter = removeParameter;
+      watcherActionsWebhookVM.getParameters = getParameters;
 
       function cancelForm() {
         $mdDialog.cancel();
@@ -1016,6 +1009,50 @@
 
       function updateAction() {
         $mdDialog.hide({ webhook: watcherActionsWebhookVM.webhook });
+      }
+
+      function addHeader(name, value) {
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var headers = watcherActionsWebhookVM.webhook.headers || {};
+          headers[name] = value;
+          watcherActionsWebhookVM.webhook.headers = headers;
+        }
+      }
+
+      function removeHeader(name) {
+        var headers = {};
+        angular.forEach(_.keys(watcherActionsWebhookVM.webhook.headers), function(p) {
+          if (p !== name) {
+            headers[p] = watcherActionsWebhookVM.webhook.headers[p];
+          }
+        });
+        watcherActionsWebhookVM.webhook.headers = headers;
+      }
+
+      function getHeaders() {
+        return _.keys(watcherActionsWebhookVM.webhook.headers);
+      }
+
+      function addParameter(name, value) {
+        if (!_.isEmpty(name) && !_.isEmpty(value)) {
+          var parameters = watcherActionsWebhookVM.webhook.params || {};
+          parameters[name] = value;
+          watcherActionsWebhookVM.webhook.params = parameters;
+        }
+      }
+
+      function removeParameter(name) {
+        var parameters = {};
+        angular.forEach(_.keys(watcherActionsWebhookVM.webhook.params), function(p) {
+          if (p !== name) {
+            parameters[p] = watcherActionsWebhookVM.webhook.params[p];
+          }
+        });
+        watcherActionsWebhookVM.webhook.params = parameters;
+      }
+
+      function getParameters() {
+        return _.keys(watcherActionsWebhookVM.webhook.params);
       }
     }
 })();
@@ -1026,9 +1063,9 @@
   angular.module('nightwatch')
     .controller('WatcherActionsCtrl', WatcherActionsCtrl);
 
-    WatcherActionsCtrl.$inject = ['$scope', '$state', 'watchers'];
+    WatcherActionsCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers'];
 
-    function WatcherActionsCtrl($scope, $state, watchers) {
+    function WatcherActionsCtrl($scope, $state, $mdDialog, watchers) {
       var watcherActionsVM = this;
 
       watcherActionsVM.name = '';
@@ -1036,7 +1073,7 @@
 
       watcherActionsVM.goToConditions = goToConditions;
       watcherActionsVM.goToSummary = goToSummary;
-      watcherActionsVM.goToCreate = goToCreate;
+      watcherActionsVM.displayCreateForm = displayCreateForm;
 
       watcherActionsVM.getWatcherActions = getWatcherActions;
       watcherActionsVM.getActionTypes = getActionTypes;
@@ -1049,8 +1086,28 @@
         $state.go('watch.watchers.summary.pretty');
       }
 
-      function goToCreate() {
-        $state.go('watch.watchers.actions.create', { name: watcherActionsVM.name, type: watcherActionsVM.type });
+      function displayCreateForm($event) {
+        var info = getController(watcherActionsVM.type);
+        $mdDialog.show({
+          controller: info.controller,
+          controllerAs: info.controllerAs,
+          templateUrl: info.templateUrl,
+          parent: angular.element(document.body),
+          targetEvent: event,
+          resolve: {
+            data: function() {
+              return {
+                name: watcherActionsVM.name,
+                action: {}
+              }
+            }
+          }
+        }).then(function(action) {
+          watchers.addWatcherAction(watcherActionsVM.name, action);
+          $state.go('watch.watchers.actions.reload');
+        }, function() {
+          $state.go('watch.watchers.actions.reload');
+        });
       }
 
       function getWatcherActions() {
@@ -1059,6 +1116,22 @@
 
       function getActionTypes() {
         return watchers.getActionTypes();
+      }
+
+      function getController(type) {
+        var controllers = {
+          email: {
+            controller: 'WatcherActionsEmailCtrl',
+            controllerAs: 'watcherActionsEmailVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.email.html'
+          },
+          webhook: {
+            controller: 'WatcherActionsWebhookCtrl',
+            controllerAs: 'watcherActionsWebhookVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.webhook.html'
+          }
+        };
+        return controllers[type];
       }
     }
 })();

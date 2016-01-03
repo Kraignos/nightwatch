@@ -10,14 +10,24 @@
         <label>Give your action a name</label>
         <input ng-model="watcherActionsVM.name" type="text" aria-label="Give your action a name" required />
       </md-input-container>
-      <md-input-container class="md-block" flex-gt-xs ng-show="watcherActionsVM.name.length > 0">
-        <label>Choose the type of action</label>
-        <md-select ng-model="watcherActionsVM.type" ng-change="watcherActionsVM.goToCreate()" required>
-          <md-option ng-repeat="type in watcherActionsVM.getActionTypes()" value="{{ type }}">
-            {{ type }}
-          </md-option>
-        </md-select>
-      </md-input-container>
+      <div layout-gt-xs="row">
+        <div flex="90">
+          <md-input-container class="md-block" flex-gt-xs ng-show="watcherActionsVM.name.length > 0">
+            <label>Choose the type of action</label>
+            <md-select ng-model="watcherActionsVM.type" required>
+              <md-option ng-repeat="type in watcherActionsVM.getActionTypes()" value="{{ type }}">
+                {{ type }}
+              </md-option>
+            </md-select>
+          </md-input-container>
+        </div>
+        <div flex="10">
+          <md-button class="md-fab md-accent md-hue-2" aria-label="Previous" ng-click="watcherActionsVM.displayCreateForm($event)" flex-gt-xs ng-show="watcherActionsVM.name.length > 0">
+            <md-tooltip md-direction="top">Create an action</md-tooltip>
+            <md-icon class="material-icons md-primary md-48">edit</md-icon>
+          </md-button>
+        </div>
+      </div>
     </div>
     <div ui-view="create"></div>
   </form>
