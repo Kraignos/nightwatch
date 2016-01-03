@@ -984,6 +984,58 @@
   'use strict';
 
   angular.module('nightwatch')
+    .controller('WatcherActionsIndexCtrl', WatcherActionsIndexCtrl);
+
+    WatcherActionsIndexCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
+
+    function WatcherActionsIndexCtrl($scope, $state, $mdDialog, watchers, data) {
+      var watcherActionsIndexVM = this;
+
+      watcherActionsIndexVM.name = data.name;
+      watcherActionsIndexVM.index = data.action.index || {};
+      watcherActionsIndexVM.cancelForm = cancelForm;
+      watcherActionsIndexVM.updateAction = updateAction;
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function updateAction() {
+        $mdDialog.hide({ index: watcherActionsIndexVM.index });
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherActionsLoggingCtrl', WatcherActionsLoggingCtrl);
+
+    WatcherActionsLoggingCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
+
+    function WatcherActionsLoggingCtrl($scope, $state, $mdDialog, watchers, data) {
+      var watcherActionsLoggingVM = this;
+
+      watcherActionsLoggingVM.name = data.name;
+      watcherActionsLoggingVM.logging = data.action.logging || {};
+      watcherActionsLoggingVM.cancelForm = cancelForm;
+      watcherActionsLoggingVM.updateAction = updateAction;
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function updateAction() {
+        $mdDialog.hide({ logging: watcherActionsLoggingVM.logging });
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('WatcherActionsWebhookCtrl', WatcherActionsWebhookCtrl);
 
     WatcherActionsWebhookCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'data'];
@@ -1129,6 +1181,16 @@
             controller: 'WatcherActionsWebhookCtrl',
             controllerAs: 'watcherActionsWebhookVM',
             templateUrl: 'assets/templates/actions/watchers.actions.webhook.html'
+          },
+          index: {
+            controller: 'WatcherActionsIndexCtrl',
+            controllerAs: 'watcherActionsIndexVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.index.html'
+          },
+          logging: {
+            controller: 'WatcherActionsLoggingCtrl',
+            controllerAs: 'watcherActionsLoggingVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.logging.html'
           }
         };
         return controllers[type];
@@ -1270,6 +1332,16 @@
             controller: 'WatcherActionsWebhookCtrl',
             controllerAs: 'watcherActionsWebhookVM',
             templateUrl: 'assets/templates/actions/watchers.actions.webhook.html'
+          },
+          index: {
+            controller: 'WatcherActionsIndexCtrl',
+            controllerAs: 'watcherActionsIndexVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.index.html'
+          },
+          logging: {
+            controller: 'WatcherActionsLoggingCtrl',
+            controllerAs: 'watcherActionsLoggingVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.logging.html'
           }
         };
         return controllers[type];

@@ -55,6 +55,16 @@
             controller: 'WatcherActionsWebhookCtrl',
             controllerAs: 'watcherActionsWebhookVM',
             templateUrl: 'assets/templates/actions/watchers.actions.webhook.html'
+          },
+          index: {
+            controller: 'WatcherActionsIndexCtrl',
+            controllerAs: 'watcherActionsIndexVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.index.html'
+          },
+          logging: {
+            controller: 'WatcherActionsLoggingCtrl',
+            controllerAs: 'watcherActionsLoggingVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.logging.html'
           }
         };
         return controllers[type];

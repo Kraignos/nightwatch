@@ -1,0 +1,41 @@
+<md-dialog aria-label="Create an Index Action" ng-cloak style="min-width: 50%; min-height: 75%;">
+<form>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Watcher index {{ watcherActionsIndexVM.name }}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="watcherActionsIndexVM.cancelForm()">
+        <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <div class="md-dialog-content">
+    <md-input-container class="md-block">
+      <label>The Elasticsearch index to index into</label>
+      <input ng-model="watcherActionsIndexVM.index.index" type="text" aria-label="The Elasticsearch index to index into" required />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The type of the document the data will be indexed as</label>
+      <input ng-model="watcherActionsIndexVM.index.doc_type" type="text" aria-label="The type of the document the data will be indexed as" required />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The field that will store/index the watch execution time</label>
+      <input ng-model="watcherActionsIndexVM.index.execution_time_field" type="text" aria-label="The field that will store/index the watch execution time" />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The timeout for waiting for the index api call to return</label>
+      <input ng-model="watcherActionsIndexVM.index.timeout" type="text" aria-label="The timeout for waiting for the index api call to return" />
+    </md-input-container>
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-fill layout-align="center end">
+    <span flex></span>
+    <md-button ng-click="watcherActionsIndexVM.cancelForm()">
+     <md-icon class="material-icons">close</md-icon>&nbsp;Cancel
+    </md-button>
+    <md-button ng-click="watcherActionsIndexVM.updateAction()" style="margin-right:20px;">
+      <md-icon class="material-icons">done</md-icon>&nbsp;Save
+    </md-button>
+  </md-dialog-actions>
+</form>
+</md-dialog>

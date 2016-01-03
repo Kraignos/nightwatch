@@ -1,0 +1,41 @@
+<md-dialog aria-label="Create an Index Action" ng-cloak style="min-width: 50%; min-height: 75%;">
+<form>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Watcher logging {{ watcherActionsLoggingVM.name }}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="watcherActionsLoggingVM.cancelForm()">
+        <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <div class="md-dialog-content">
+    <md-input-container class="md-block">
+      <label>The text that should be logged. Can be static text or include Mustache templates</label>
+      <input ng-model="watcherActionsLoggingVM.logging.text" type="text" aria-label="The text that should be logged. Can be static text or include Mustache templates" required />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The category under which the text will be logged</label>
+      <input ng-model="watcherActionsLoggingVM.logging.category" type="text" aria-label="The category under which the text will be logged" />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The logging level</label>
+      <md-select ng-model="watcherActionsEmailVM.logging.level">
+        <md-option ng-repeat="type in ['error', 'warn', 'info', 'debug', 'trace']" value="{{ type }}">
+          {{ type }}
+        </md-option>
+      </md-select>
+    </md-input-container>
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-fill layout-align="center end">
+    <span flex></span>
+    <md-button ng-click="watcherActionsLoggingVM.cancelForm()">
+     <md-icon class="material-icons">close</md-icon>&nbsp;Cancel
+    </md-button>
+    <md-button ng-click="watcherActionsLoggingVM.updateAction()" style="margin-right:20px;">
+      <md-icon class="material-icons">done</md-icon>&nbsp;Save
+    </md-button>
+  </md-dialog-actions>
+</form>
+</md-dialog>
