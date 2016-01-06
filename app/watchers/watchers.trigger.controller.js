@@ -120,6 +120,9 @@
           else if (type === ScheduleTriggerTypes.YEARLY) {
             loadYearlyData(data.yearly);
           }
+          else if (type === ScheduleTriggerTypes.INTERVAL) {
+            watcherTriggerVM.schedule.interval = data.interval;
+          }
         }
       }
 
