@@ -1,6 +1,5 @@
 <div flex layout-padding>
   <md-list ng-show="watcherActionsListVM.hasActions()">
-    <md-subheader class="md-no-sticky">Actions</md-subheader>
     <md-list-item class="md-2-line" ng-repeat="action in watcherActionsListVM.actions">
       <md-fab-speed-dial md-open="false" md-direction="right" class="md-fling" flex="15">
         <md-fab-trigger>
@@ -9,7 +8,7 @@
             <md-icon class="material-icons">loupe</md-icon>
           </md-button>
         </md-fab-trigger>
-        <md-fab-actions>
+        <md-fab-actions ng-if="watcherActionsListVM.canBeEdit">
           <md-button aria-label="See content" class="md-fab md-raised md-mini md-primary"  ng-click="watcherActionsListVM.showAction($event, action.name, action.type)">
             <md-tooltip md-direction="top" md-visible="tooltipVisible">Display details</md-tooltip>
             <md-icon class="material-icons" style="color: greenyellow;">create</md-icon>

@@ -196,10 +196,11 @@
             'action': {
               templateUrl: 'assets/templates/watchers.actions.list.html',
               resolve: {
-                actionsData: actionsData
+                actionsData: actionsData,
+                editable: function() { return false; }
               },
-              controller: 'WatcherActionsCtrl',
-              controllerAs: 'watcherActionsVM'
+              controller: 'WatcherActionsListCtrl',
+              controllerAs: 'watcherActionsListVM'
             }
           }
         })

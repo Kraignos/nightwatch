@@ -4,9 +4,9 @@
   angular.module('nightwatch')
     .controller('WatcherActionsListCtrl', WatcherActionsListCtrl);
 
-    WatcherActionsListCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'notifications', 'actionsData'];
+    WatcherActionsListCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'notifications', 'actionsData', 'editable'];
 
-    function WatcherActionsListCtrl($scope, $state, $mdDialog, watchers, notifications, actionsData) {
+    function WatcherActionsListCtrl($scope, $state, $mdDialog, watchers, notifications, actionsData, editable) {
       var watcherActionsListVM = this;
       var icons = { email: 'mail' };
 
@@ -15,6 +15,7 @@
       watcherActionsListVM.actionIcon = actionIcon;
       watcherActionsListVM.showAction = showAction;
       watcherActionsListVM.deleteAction = deleteAction;
+      watcherActionsListVM.canBeEdit = editable;
 
       function hasActions() {
         return !_.isEmpty(watcherActionsListVM.actions);
