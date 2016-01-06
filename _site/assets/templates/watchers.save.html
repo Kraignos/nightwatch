@@ -1,0 +1,29 @@
+<md-dialog aria-label="Create a percolator" ng-cloak style="min-width: 50%; min-height: 75%;">
+<form>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Give you watcher a name</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="watcherSaveVM.cancelForm()">
+        <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <div class="md-dialog-content">
+    <md-input-container class="md-block">
+      <label>Finally, just give you watcher a name</label>
+      <input ng-model="watcherSaveVM.name" type="text" aria-label="Finally, just give you watcher a name" required />
+    </md-input-container>
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-fill layout-align="center end">
+    <span flex></span>
+    <md-button ng-click="watcherSaveVM.cancelForm()">
+     <md-icon class="material-icons">close</md-icon>&nbsp;Cancel
+    </md-button>
+    <md-button ng-click="watcherSaveVM.save()" style="margin-right:20px;">
+      <md-icon class="material-icons">done</md-icon>&nbsp;Create
+    </md-button>
+  </md-dialog-actions>
+</form>
+</md-dialog>

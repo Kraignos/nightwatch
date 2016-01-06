@@ -55,7 +55,7 @@
             })
             .error(function() {
               notifications.showSimple('An error occured while deleting the percolator with name "' + p + '"...');
-            })
+            });
         });
       }
 

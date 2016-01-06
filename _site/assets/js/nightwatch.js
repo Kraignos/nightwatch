@@ -630,7 +630,7 @@
             })
             .error(function() {
               notifications.showSimple('An error occured while deleting the percolator with name "' + p + '"...');
-            })
+            });
         });
       }
 
@@ -693,7 +693,8 @@
       nodesInfo: nodesInfo,
       percolators: percolators,
       deletePercolator: deletePercolator,
-      createPercolator: createPercolator
+      createPercolator: createPercolator,
+      createWatcher: createWatcher
     };
 
     function health() {
@@ -722,6 +723,10 @@
 
     function indiceInfo(indice) {
       return $http.get('http://localhost:9200/' + indice);
+    }
+
+    function createWatcher(name, definition) {
+      return $http.put('http://localhost:9200/_watcher/watch/' + name, definition);
     }
   }
 })();
@@ -1103,7 +1108,7 @@
       watcherActionsSlackVM.cancelForm = cancelForm;
       watcherActionsSlackVM.updateAction = updateAction;
 
-      loadRooms();
+      loadChannels();
 
       function cancelForm() {
         $mdDialog.cancel();
@@ -1116,7 +1121,7 @@
         $mdDialog.hide({ slack: watcherActionsSlackVM.slack });
       }
 
-      function loadRooms() {
+      function loadChannels() {
         if (!_.isUndefined(watcherActionsSlackVM.slack.message) && !_.isUndefined(watcherActionsSlackVM.slack.message.to)) {
           watcherActionsSlackVM.to = watcherActionsSlackVM.slack.message.to;
         }
@@ -1835,14 +1840,39 @@
   'use strict';
 
   angular.module('nightwatch')
+    .controller('WatcherSaveCtrl', WatcherSaveCtrl);
+
+    WatcherSaveCtrl.$inject = ['$scope', '$mdDialog'];
+
+    function WatcherSaveCtrl($scope, $mdDialog) {
+      var watcherSaveVM = this;
+
+      watcherSaveVM.name = '';
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function save() {
+        if (watcherSaveVM.name.trim().length > 0) {
+          $mdDialog.hide(watcherSaveVM.name.trim());
+        }
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('WatcherSummaryCtrl', WatcherSummaryCtrl);
 
-    WatcherSummaryCtrl.$inject = ['$scope', '$state', 'watchers', 'watcherSummary'];
+    WatcherSummaryCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'elastic', 'watcherSummary'];
 
-    function WatcherSummaryCtrl($scope, $state, watchers, watcherSummary) {
+    function WatcherSummaryCtrl($scope, $state, $mdDialog, watchers, elastic, watcherSummary) {
       var watcherSummaryVM = this;
 
-      watcherSummaryVM.summary = watcherSummary;
+      watcherSummaryVM.definition = watcherSummary;
       watcherSummaryVM.goToActions = goToActions;
       watcherSummaryVM.saveWatcher = saveWatcher;
 
@@ -1851,7 +1881,21 @@
       }
 
       function saveWatcher() {
-        console.log('summary: ' + angular.toJson(watcherSummaryVM.summary));
+        $mdDialog.show({
+          controller: 'WatcherSaveCtrl',
+          controllerAs: 'watcherSaveVM',
+          templateUrl: '',
+          parent: angular.element(document.body),
+          targetEvent: event
+        }).then(function(name) {
+          elastic.createWatcher(name, watcherSummaryVM.definition)
+            .success(function() {
+              notifications.showSimple('The percolator with name "' + name + '" has successfully been created!');
+            })
+            .error(function() {
+              notifications.showSimple('An error occured while creating the watcher with name "' + name + '"...');
+            });
+        });
       }
     }
 })();

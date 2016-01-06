@@ -14,7 +14,8 @@
       nodesInfo: nodesInfo,
       percolators: percolators,
       deletePercolator: deletePercolator,
-      createPercolator: createPercolator
+      createPercolator: createPercolator,
+      createWatcher: createWatcher
     };
 
     function health() {
@@ -43,6 +44,10 @@
 
     function indiceInfo(indice) {
       return $http.get('http://localhost:9200/' + indice);
+    }
+
+    function createWatcher(name, definition) {
+      return $http.put('http://localhost:9200/_watcher/watch/' + name, definition);
     }
   }
 })();
