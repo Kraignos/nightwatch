@@ -15,7 +15,7 @@
       watcherActionsSlackVM.cancelForm = cancelForm;
       watcherActionsSlackVM.updateAction = updateAction;
 
-      loadRooms();
+      loadChannels();
 
       function cancelForm() {
         $mdDialog.cancel();
@@ -28,7 +28,7 @@
         $mdDialog.hide({ slack: watcherActionsSlackVM.slack });
       }
 
-      function loadRooms() {
+      function loadChannels() {
         if (!_.isUndefined(watcherActionsSlackVM.slack.message) && !_.isUndefined(watcherActionsSlackVM.slack.message.to)) {
           watcherActionsSlackVM.to = watcherActionsSlackVM.slack.message.to;
         }
