@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2016-01-06
+/*! nightwatch - v1.0.0 - 2016-01-07
 * Copyright (c) 2016 ; Licensed  */
 (function() {
   'use strict';
@@ -816,7 +816,7 @@
 
     function setWatcherScheduleTrigger(schedule) {
       // Only schedule trigger is availale in ES so far
-      triggers = schedule;
+      triggers['schedule'] = schedule;
     }
 
     function setWatcherCondition(condition) {
@@ -860,7 +860,7 @@
       summary['input'] = inputs;
       summary['trigger'] = triggers;
       summary['condition'] = conditions;
-      summary['action'] = actions;
+      summary['actions'] = actions;
       return summary;
     }
 
@@ -1848,12 +1848,14 @@
       var watcherSaveVM = this;
 
       watcherSaveVM.name = '';
+      watcherSaveVM.cancelForm = cancelForm;
+      watcherSaveVM.saveWatcher = saveWatcher;
 
       function cancelForm() {
         $mdDialog.cancel();
       }
 
-      function save() {
+      function saveWatcher() {
         if (watcherSaveVM.name.trim().length > 0) {
           $mdDialog.hide(watcherSaveVM.name.trim());
         }
@@ -1867,9 +1869,9 @@
   angular.module('nightwatch')
     .controller('WatcherSummaryCtrl', WatcherSummaryCtrl);
 
-    WatcherSummaryCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'elastic', 'watcherSummary'];
+    WatcherSummaryCtrl.$inject = ['$scope', '$state', '$mdDialog', 'elastic', 'notifications', 'watcherSummary'];
 
-    function WatcherSummaryCtrl($scope, $state, $mdDialog, watchers, elastic, watcherSummary) {
+    function WatcherSummaryCtrl($scope, $state, $mdDialog, elastic, notifications, watcherSummary) {
       var watcherSummaryVM = this;
 
       watcherSummaryVM.definition = watcherSummary;
@@ -1884,7 +1886,7 @@
         $mdDialog.show({
           controller: 'WatcherSaveCtrl',
           controllerAs: 'watcherSaveVM',
-          templateUrl: '',
+          templateUrl: 'assets/templates/watchers.save.html',
           parent: angular.element(document.body),
           targetEvent: event
         }).then(function(name) {
@@ -1892,7 +1894,9 @@
             .success(function() {
               notifications.showSimple('The percolator with name "' + name + '" has successfully been created!');
             })
-            .error(function() {
+            .error(function(error) {
+              console.log('Error while creating the watcher with name ' + name + ': ' + error.data || "Request failed");
+              console.log('Error status: ' + error.status);
               notifications.showSimple('An error occured while creating the watcher with name "' + name + '"...');
             });
         });
@@ -2021,6 +2025,9 @@
           }
           else if (type === ScheduleTriggerTypes.YEARLY) {
             loadYearlyData(data.yearly);
+          }
+          else if (type === ScheduleTriggerTypes.INTERVAL) {
+            watcherTriggerVM.schedule.interval = data.interval;
           }
         }
       }

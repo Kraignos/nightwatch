@@ -61,7 +61,7 @@
 
     function setWatcherScheduleTrigger(schedule) {
       // Only schedule trigger is availale in ES so far
-      triggers = schedule;
+      triggers['schedule'] = schedule;
     }
 
     function setWatcherCondition(condition) {
@@ -105,7 +105,7 @@
       summary['input'] = inputs;
       summary['trigger'] = triggers;
       summary['condition'] = conditions;
-      summary['action'] = actions;
+      summary['actions'] = actions;
       return summary;
     }
 

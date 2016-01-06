@@ -108,7 +108,7 @@
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The port the http service is listening on</label>
-        <input ng-model="watcherInputVM.http.request.port" ng-disabled="!watcherInputVM.canBeEdit" type="text" aria-label="The port the http service is listening on" />
+        <input ng-model="watcherInputVM.http.request.port" ng-disabled="!watcherInputVM.canBeEdit" type="number" aria-label="The port the http service is listening on" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The URL path</label>
@@ -210,7 +210,7 @@
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The proxy port to use</label>
-        <input ng-model="watcherInputVM.http.request.proxy.port" type="text" ng-disabled="!watcherInputVM.canBeEdit" aria-label="The proxy port to use" />
+        <input ng-model="watcherInputVM.http.request.proxy.port" type="number" ng-disabled="!watcherInputVM.canBeEdit" aria-label="The proxy port to use" />
       </md-input-container>
       <md-input-container class="md-block" flex-gt-sm>
         <label>The timeout for setting up the http connection</label>
