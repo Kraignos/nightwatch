@@ -787,6 +787,7 @@
       getScriptLanguages: getScriptLanguages,
       getComparisonOperators: getComparisonOperators,
       getActionTypes: getActionTypes,
+      deleteAction: deleteAction,
       transformToArray: transformToArray
     }
 
@@ -949,6 +950,16 @@
         ActionTypes.HIPCHAT,
         ActionTypes.SLACK
       ];
+    }
+
+    function deleteAction(action) {
+      var currentActions = _.keys(actions);
+      for (var i =0; i < currentActions.length; i++) {
+        if (actions[currentActions[i]] === action) {
+          actions.splice(i, 1);
+        }
+      }
+      return getWatchConditions();
     }
 
     function transformToArray(values) {
@@ -1372,9 +1383,9 @@
   angular.module('nightwatch')
     .controller('WatcherActionsListCtrl', WatcherActionsListCtrl);
 
-    WatcherActionsListCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'actionsData'];
+    WatcherActionsListCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'notifications', 'actionsData'];
 
-    function WatcherActionsListCtrl($scope, $state, $mdDialog, watchers, actionsData) {
+    function WatcherActionsListCtrl($scope, $state, $mdDialog, watchers, notifications, actionsData) {
       var watcherActionsListVM = this;
       var icons = { email: 'mail' };
 
@@ -1382,6 +1393,7 @@
       watcherActionsListVM.hasActions = hasActions;
       watcherActionsListVM.actionIcon = actionIcon;
       watcherActionsListVM.showAction = showAction;
+      watcherActionsListVM.deleteAction = deleteAction;
 
       function hasActions() {
         return !_.isEmpty(watcherActionsListVM.actions);
@@ -1409,6 +1421,21 @@
           }
         }).then(function(action) {
           watchers.addWatcherAction(name, action);
+        });
+      }
+
+      function deleteAction(event, name) {
+        // Appending dialog to document.body to cover sidenav in docs app
+        var confirm = $mdDialog.confirm()
+              .title('Are you sure you want to delete this action?')
+              .textContent('The action named "' + name + '" will be deleted definitively.')
+              .ariaLabel('Delete the action')
+              .targetEvent(event)
+              .ok('Yes, delete it')
+              .cancel('No, don\'t do it');
+        $mdDialog.show(confirm).then(function() {
+          watcherActionsListVM.actions = watchers.deleteAction(name);
+          notifications.showSimple('The action with name "' + name + '" has been deleted!');
         });
       }
 

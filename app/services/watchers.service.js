@@ -37,6 +37,7 @@
       getScriptLanguages: getScriptLanguages,
       getComparisonOperators: getComparisonOperators,
       getActionTypes: getActionTypes,
+      deleteAction: deleteAction,
       transformToArray: transformToArray
     }
 
@@ -199,6 +200,16 @@
         ActionTypes.HIPCHAT,
         ActionTypes.SLACK
       ];
+    }
+
+    function deleteAction(action) {
+      var currentActions = _.keys(actions);
+      for (var i =0; i < currentActions.length; i++) {
+        if (actions[currentActions[i]] === action) {
+          actions.splice(i, 1);
+        }
+      }
+      return getWatchConditions();
     }
 
     function transformToArray(values) {
