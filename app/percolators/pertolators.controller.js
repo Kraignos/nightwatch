@@ -20,6 +20,7 @@
       percolatorsVM.displayForm = displayForm;
       percolatorsVM.cancelForm = cancelForm;
       percolatorsVM.matchPercolator = matchPercolator;
+      percolatorsVM.getSummary = getSummary;
 
       function loadIndices() {
         return elastic.indicesHealth().then(function(response) {
@@ -93,6 +94,10 @@
             }
           }
         });
+      }
+
+      function getSummary(source) {
+        return source.length > 150 ? source.substring(0, 150) + '...' : source;
       }
     }
 })();
