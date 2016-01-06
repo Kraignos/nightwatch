@@ -4,9 +4,9 @@
   angular.module('nightwatch')
     .controller('WatcherSummaryCtrl', WatcherSummaryCtrl);
 
-    WatcherSummaryCtrl.$inject = ['$scope', '$state', '$mdDialog', 'elastic', 'watcherSummary'];
+    WatcherSummaryCtrl.$inject = ['$scope', '$state', '$mdDialog', 'elastic', 'notifications', 'watcherSummary'];
 
-    function WatcherSummaryCtrl($scope, $state, $mdDialog, elastic, watcherSummary) {
+    function WatcherSummaryCtrl($scope, $state, $mdDialog, elastic, notifications, watcherSummary) {
       var watcherSummaryVM = this;
 
       watcherSummaryVM.definition = watcherSummary;
@@ -29,7 +29,9 @@
             .success(function() {
               notifications.showSimple('The percolator with name "' + name + '" has successfully been created!');
             })
-            .error(function() {
+            .error(function(error) {
+              console.log('Error while creating the watcher with name ' + name + ': ' + error.data || "Request failed");
+              console.log('Error status: ' + error.status);
               notifications.showSimple('An error occured while creating the watcher with name "' + name + '"...');
             });
         });

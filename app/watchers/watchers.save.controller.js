@@ -10,12 +10,14 @@
       var watcherSaveVM = this;
 
       watcherSaveVM.name = '';
+      watcherSaveVM.cancelForm = cancelForm;
+      watcherSaveVM.saveWatcher = saveWatcher;
 
       function cancelForm() {
         $mdDialog.cancel();
       }
 
-      function save() {
+      function saveWatcher() {
         if (watcherSaveVM.name.trim().length > 0) {
           $mdDialog.hide(watcherSaveVM.name.trim());
         }
