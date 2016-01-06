@@ -1,0 +1,53 @@
+<md-dialog aria-label="Create an Index Action" ng-cloak style="min-width: 50%; min-height: 75%;">
+<form>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Slack action: {{ watcherActionsSlackVM.name }}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="watcherActionsSlackVM.cancelForm()">
+        <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <div class="md-dialog-content">
+      <md-input-container class="md-block">
+        <label>The Slack account to use</label>
+        <input ng-model="watcherActionsSlackVM.slack.account" type="text" aria-label="The Slack account to use" />
+      </md-input-container>
+    <md-input-container class="md-block">
+      <label>The sender name to display in the Slack message</label>
+      <input ng-model="watcherActionsSlackVM.slack.message.from" type="text" aria-label="The sender name to display in the Slack message" />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The channels and users you want to send the message to. Channel names must start with # and user names must start with @.</label>
+      <md-chips ng-model="watcherActionsSlackVM.to" type="text" aria-label="The channels and users you want to send the message to. Channel names must start with # and user names must start with @." required></md-chips>
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The icon to display in the Slack messages</label>
+      <input ng-model="watcherActionsSlackVM.slack.message.icon" type="text" aria-label="The icon to display in the Slack messages" />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>The message content</label>
+      <input ng-model="watcherActionsSlackVM.slack.message.text" type="text" aria-label="The message content" required />
+    </md-input-container>
+    <!--<md-input-container class="md-block">
+      <label>Slack message attachments</label>
+      <input ng-model="watcherActionsSlackVM.slack.message.attachments" type="text" aria-label="Slack message attachments" />
+    </md-input-container>
+    <md-input-container class="md-block">
+      <label>Slack message attachments that can be populated dynamically based on the current watch payload</label>
+      <input ng-model="watcherActionsSlackVM.slack.message.dynamic_attachments" type="text" aria-label="Slack message attachments that can be populated dynamically based on the current watch payload" />
+    </md-input-container>-->
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-fill layout-align="center end">
+    <span flex></span>
+    <md-button ng-click="watcherActionsSlackVM.cancelForm()">
+     <md-icon class="material-icons">close</md-icon>&nbsp;Cancel
+    </md-button>
+    <md-button ng-click="watcherActionsSlackVM.updateAction()" style="margin-right:20px;">
+      <md-icon class="material-icons">done</md-icon>&nbsp;Save
+    </md-button>
+  </md-dialog-actions>
+</form>
+</md-dialog>

@@ -85,6 +85,11 @@
             controller: 'WatcherActionsHipChatCtrl',
             controllerAs: 'watcherActionsHipChatVM',
             templateUrl: 'assets/templates/actions/watchers.actions.hipchat.html'
+          },
+          slack: {
+            controller: 'WatcherActionsSlackCtrl',
+            controllerAs: 'watcherActionsSlackVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.slack.html'
           }
         };
         return controllers[type];
