@@ -12,6 +12,7 @@
       watchersListVM.watchers = watchersListData || {};
       watchersListVM.displayWatchers = displayWatchers;
       watchersListVM.displayWatcher = displayWatcher;
+      watchersListVM.iconFor = iconFor;
       watchersListVM.goToCreate = goToCreate;
 
       function displayWatchers() {
@@ -30,7 +31,12 @@
       }
 
       function goToCreate() {
+        watchers.resetWatcher();
         $state.go('watch.watchers.create.input');
+      }
+
+      function iconFor(watcher) {
+        return watcher.active ? 'thumb_up' : 'thumb_down';
       }
     }
 })();
