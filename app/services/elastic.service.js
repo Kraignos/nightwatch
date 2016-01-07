@@ -16,6 +16,7 @@
       deletePercolator: deletePercolator,
       createPercolator: createPercolator,
       createWatcher: createWatcher,
+      getWatcher: getWatcher,
       watchers: watchers
     };
 
@@ -49,6 +50,10 @@
 
     function createWatcher(name, definition) {
       return $http.put('http://localhost:9200/_watcher/watch/' + name, definition);
+    }
+
+    function getWatcher(name) {
+      return $http.get('http://localhost:9200/_watcher/watch/' + name);
     }
 
     function watchers() {

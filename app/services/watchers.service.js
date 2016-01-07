@@ -38,6 +38,7 @@
       getComparisonOperators: getComparisonOperators,
       getActionTypes: getActionTypes,
       deleteAction: deleteAction,
+      loadWatcher: loadWatcher,
       transformToArray: transformToArray
     }
 
@@ -210,6 +211,13 @@
         }
       }
       return getWatchConditions();
+    }
+
+    function loadWatcher(watcher) {
+      inputs = watcher.watch.input || {};
+      triggers = watcher.watch.trigger || {};
+      conditions = watcher.watch.condition || {};
+      actions = watcher.watch.actions || {};
     }
 
     function transformToArray(values) {

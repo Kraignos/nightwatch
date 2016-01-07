@@ -718,6 +718,7 @@
       deletePercolator: deletePercolator,
       createPercolator: createPercolator,
       createWatcher: createWatcher,
+      getWatcher: getWatcher,
       watchers: watchers
     };
 
@@ -751,6 +752,10 @@
 
     function createWatcher(name, definition) {
       return $http.put('http://localhost:9200/_watcher/watch/' + name, definition);
+    }
+
+    function getWatcher(name) {
+      return $http.get('http://localhost:9200/_watcher/watch/' + name);
     }
 
     function watchers() {
@@ -821,6 +826,7 @@
       getComparisonOperators: getComparisonOperators,
       getActionTypes: getActionTypes,
       deleteAction: deleteAction,
+      loadWatcher: loadWatcher,
       transformToArray: transformToArray
     }
 
@@ -993,6 +999,13 @@
         }
       }
       return getWatchConditions();
+    }
+
+    function loadWatcher(watcher) {
+      inputs = watcher.watch.input || {};
+      triggers = watcher.watch.trigger || {};
+      conditions = watcher.watch.condition || {};
+      actions = watcher.watch.actions || {};
     }
 
     function transformToArray(values) {
@@ -1871,17 +1884,29 @@
   angular.module('nightwatch')
     .controller('WatchersListCtrl', WatchersListCtrl);
 
-    WatchersListCtrl.$inject = ['$scope', '$state', 'watchers', 'watchersListData'];
+    WatchersListCtrl.$inject = ['$scope', '$state', 'watchers', 'elastic', 'watchersListData'];
 
-    function WatchersListCtrl($scope, $state, watchers, watchersListData) {
+    function WatchersListCtrl($scope, $state, watchers, elastic, watchersListData) {
       var watchersListVM = this;
 
       watchersListVM.watchers = watchersListData || {};
       watchersListVM.displayWatchers = displayWatchers;
+      watchersListVM.displayWatcher = displayWatcher;
       watchersListVM.goToCreate = goToCreate;
 
       function displayWatchers() {
         return !_.isEmpty(watchersListVM.watchers);
+      }
+
+      function displayWatcher(name) {
+        elastic.getWatcher(name)
+          .success(function(w) {
+            watchers.loadWatcher(w);
+            $state.go('watch.watchers.create.summary.pretty');
+          })
+          .error(function(error) {
+
+          });
       }
 
       function goToCreate() {
@@ -1970,7 +1995,6 @@
     function WatcherTriggerCtrl($scope, $state, watchers, ScheduleTriggerTypes, triggersData, editable) {
       var watcherTriggerVM = this;
 
-      console.log('triggersData: ' + angular.toJson(triggersData));
       watcherTriggerVM.type = (_.keys(triggersData.schedule)[0]) || '';
       watcherTriggerVM.schedule = {};
       watcherTriggerVM.hours = [];
