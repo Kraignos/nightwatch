@@ -9,7 +9,7 @@
     function WatcherTriggerCtrl($scope, $state, watchers, ScheduleTriggerTypes, triggersData, editable) {
       var watcherTriggerVM = this;
 
-      watcherTriggerVM.type = (_.keys(triggersData)[0]) || '';
+      watcherTriggerVM.type = (_.keys(triggersData.schedule)[0]) || '';
       watcherTriggerVM.schedule = {};
       watcherTriggerVM.hours = [];
       watcherTriggerVM.dailyData = { times: [], hours: [], minutes: [] };
@@ -29,12 +29,12 @@
 
       function goToInput() {
         watcherTriggerVM.saveTrigger();
-        $state.go('watch.watchers.input');
+        $state.go('watch.watchers.create.input');
       }
 
       function goToConditions() {
         watcherTriggerVM.saveTrigger();
-        $state.go('watch.watchers.conditions');
+        $state.go('watch.watchers.create.conditions');
       }
 
       function saveTrigger() {
@@ -103,6 +103,7 @@
 
       function loadData(data) {
         if (!_.isEmpty(_.keys(data))) {
+          data = data.schedule;
           var type = _.keys(data)[0];
 
           if (type === ScheduleTriggerTypes.HOURLY) {

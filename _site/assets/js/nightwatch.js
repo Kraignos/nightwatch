@@ -71,7 +71,7 @@
         })
         .state('watch', {
             url: '/watch',
-            abstract: 'true',
+            abstract: true,
             templateUrl: 'assets/templates/watch.html'
         })
         .state('watch.percolators', {
@@ -85,17 +85,31 @@
             }
         })
         .state('watch.watchers', {
-          abstract: true,
           url: '/watchers',
+          abstract: true,
           views: {
             'watchers': {
-              templateUrl: 'assets/templates/watch.watchers.html',
-              controller: 'WatchersCtrl',
-              controllerAs: 'watchersVM'
+              templateUrl: 'assets/templates/watch.watchers.list.html'
             }
           }
         })
-        .state('watch.watchers.input', {
+        .state('watch.watchers.list', {
+          url: '/list',
+          templateUrl: 'assets/templates/watch.watchers.html',
+          controller: 'WatchersListCtrl',
+          controllerAs: 'watchersListVM',
+          resolve: {
+            watchersListData: watchersListData
+          }
+        })
+        .state('watch.watchers.create', {
+          abstract: true,
+          url: '/create',
+          templateUrl: 'assets/templates/watch.watchers.create.html',
+          controller: 'WatchersCtrl',
+          controllerAs: 'watchersVM'
+        })
+        .state('watch.watchers.create.input', {
           url: '/input',
           templateUrl: 'assets/templates/watchers.input.html',
           resolve: {
@@ -105,7 +119,7 @@
           controller: 'WatcherInputCtrl',
           controllerAs: 'watcherInputVM'
         })
-        .state('watch.watchers.trigger', {
+        .state('watch.watchers.create.trigger', {
           url: '/trigger',
           templateUrl: 'assets/templates/watchers.trigger.html',
           resolve: {
@@ -115,7 +129,7 @@
           controller: 'WatcherTriggerCtrl',
           controllerAs: 'watcherTriggerVM'
         })
-        .state('watch.watchers.conditions', {
+        .state('watch.watchers.create.conditions', {
           url: '/conditions',
           templateUrl: 'assets/templates/watchers.conditions.html',
           resolve: {
@@ -125,7 +139,7 @@
           controller: 'WatcherConditionsCtrl',
           controllerAs: 'watcherConditionsVM'
         })
-        .state('watch.watchers.actions', {
+        .state('watch.watchers.create.actions', {
           url: '/actions',
           templateUrl: 'assets/templates/watchers.actions.html',
           abstract: true,
@@ -135,7 +149,7 @@
           controller: 'WatcherActionsCtrl',
           controllerAs: 'watcherActionsVM'
         })
-        .state('watch.watchers.actions.list', {
+        .state('watch.watchers.create.actions.list', {
           url: '/all',
           views: {
             'actions': {
@@ -148,7 +162,7 @@
             }
           }
         })
-        .state('watch.watchers.actions.reload', {
+        .state('watch.watchers.create.actions.reload', {
           url: '/reload',
           views: {
             'actions': {
@@ -161,7 +175,7 @@
             }
           }
         })
-        .state('watch.watchers.summary', {
+        .state('watch.watchers.create.summary', {
           url: '/summary',
           templateUrl: 'assets/templates/watchers.summary.html',
           abstract: true,
@@ -171,7 +185,7 @@
           controller: 'WatcherSummaryCtrl',
           controllerAs: 'watcherSummaryVM'
         })
-        .state('watch.watchers.summary.pretty', {
+        .state('watch.watchers.create.summary.pretty', {
           url: '/pretty',
           views: {
             'input': {
@@ -212,7 +226,7 @@
             }
           }
         })
-        .state('watch.watchers.summary.json', {
+        .state('watch.watchers.create.summary.json', {
           url: '/json',
           templateUrl: 'assets/templates/watchers/watchers.summary.json.html'
         })
@@ -229,6 +243,7 @@
     clusterStatus.$inject = ['elastic'];
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
+    watchersListData.$inject = ['elastic'];
     inputsData.$inject = ['watchers'];
     triggersData.$inject = ['watchers'];
     actionsData.$inject = ['watchers'];
@@ -251,6 +266,13 @@
       return elastic.nodesInfo().then(function(response) {
         return response.data.nodes;
       });
+    }
+
+    function watchersListData(elastic) {
+      return elastic.watchers()
+        .then(function(response) {
+          return _.map(response.data.hits.hits, function(w) { return w._id; });
+        });
     }
 
     function inputsData(watchers) {
@@ -695,7 +717,8 @@
       percolators: percolators,
       deletePercolator: deletePercolator,
       createPercolator: createPercolator,
-      createWatcher: createWatcher
+      createWatcher: createWatcher,
+      watchers: watchers
     };
 
     function health() {
@@ -728,6 +751,10 @@
 
     function createWatcher(name, definition) {
       return $http.put('http://localhost:9200/_watcher/watch/' + name, definition);
+    }
+
+    function watchers() {
+      return $http.get('http://localhost:9200/.watches/_search');
     }
   }
 })();
@@ -1229,11 +1256,11 @@
       watcherActionsVM.getActionTypes = getActionTypes;
 
       function goToConditions() {
-        $state.go('watch.watchers.conditions');
+        $state.go('watch.watchers.create.conditions');
       }
 
       function goToSummary() {
-        $state.go('watch.watchers.summary.pretty');
+        $state.go('watch.watchers.create.summary.pretty');
       }
 
       function displayCreateForm($event) {
@@ -1254,9 +1281,9 @@
           }
         }).then(function(action) {
           watchers.addWatcherAction(watcherActionsVM.name, action);
-          $state.go('watch.watchers.actions.reload');
+          $state.go('watch.watchers.create.actions.reload');
         }, function() {
-          $state.go('watch.watchers.actions.reload');
+          $state.go('watch.watchers.create.actions.reload');
         });
       }
 
@@ -1334,7 +1361,7 @@
         action[data.type] = watcherActionsCreateVM[data.type];
         watchers.addWatcherAction(watcherActionsCreateVM.name, action);
 
-        $state.go('watch.watchers.actions.list');
+        $state.go('watch.watchers.create.actions.list');
       }
 
       function addHeader(name, value) {
@@ -1523,12 +1550,12 @@
 
       function goToTrigger() {
         saveCondition();
-        $state.go('watch.watchers.trigger');
+        $state.go('watch.watchers.create.trigger');
       }
 
       function goToActions() {
         saveCondition();
-        $state.go('watch.watchers.actions.list');
+        $state.go('watch.watchers.create.actions.list');
       }
 
       function getConditionTypes() {
@@ -1714,7 +1741,7 @@
 
       function goToTrigger() {
         saveInput();
-        $state.go('watch.watchers.trigger');
+        $state.go('watch.watchers.create.trigger');
       }
 
       function getSearchRequestTypes() {
@@ -1842,6 +1869,31 @@
   'use strict';
 
   angular.module('nightwatch')
+    .controller('WatchersListCtrl', WatchersListCtrl);
+
+    WatchersListCtrl.$inject = ['$scope', '$state', 'watchers', 'watchersListData'];
+
+    function WatchersListCtrl($scope, $state, watchers, watchersListData) {
+      var watchersListVM = this;
+
+      watchersListVM.watchers = watchersListData || {};
+      watchersListVM.displayWatchers = displayWatchers;
+      watchersListVM.goToCreate = goToCreate;
+
+      function displayWatchers() {
+        return !_.isEmpty(watchersListVM.watchers);
+      }
+
+      function goToCreate() {
+        $state.go('watch.watchers.create.input');
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('WatcherSaveCtrl', WatcherSaveCtrl);
 
     WatcherSaveCtrl.$inject = ['$scope', '$mdDialog'];
@@ -1881,7 +1933,7 @@
       watcherSummaryVM.saveWatcher = saveWatcher;
 
       function goToActions() {
-        $state.go('watch.watchers.actions.list');
+        $state.go('watch.watchers.create.actions.list');
       }
 
       function saveWatcher() {
@@ -1895,6 +1947,7 @@
           elastic.createWatcher(name, watcherSummaryVM.definition)
             .success(function() {
               notifications.showSimple('The percolator with name "' + name + '" has successfully been created!');
+              $state.go('watch.watchers.list');
             })
             .error(function(error) {
               console.log('Error while creating the watcher with name ' + name + ': ' + error.data || "Request failed");
@@ -1917,7 +1970,8 @@
     function WatcherTriggerCtrl($scope, $state, watchers, ScheduleTriggerTypes, triggersData, editable) {
       var watcherTriggerVM = this;
 
-      watcherTriggerVM.type = (_.keys(triggersData)[0]) || '';
+      console.log('triggersData: ' + angular.toJson(triggersData));
+      watcherTriggerVM.type = (_.keys(triggersData.schedule)[0]) || '';
       watcherTriggerVM.schedule = {};
       watcherTriggerVM.hours = [];
       watcherTriggerVM.dailyData = { times: [], hours: [], minutes: [] };
@@ -1937,12 +1991,12 @@
 
       function goToInput() {
         watcherTriggerVM.saveTrigger();
-        $state.go('watch.watchers.input');
+        $state.go('watch.watchers.create.input');
       }
 
       function goToConditions() {
         watcherTriggerVM.saveTrigger();
-        $state.go('watch.watchers.conditions');
+        $state.go('watch.watchers.create.conditions');
       }
 
       function saveTrigger() {
@@ -2011,6 +2065,7 @@
 
       function loadData(data) {
         if (!_.isEmpty(_.keys(data))) {
+          data = data.schedule;
           var type = _.keys(data)[0];
 
           if (type === ScheduleTriggerTypes.HOURLY) {

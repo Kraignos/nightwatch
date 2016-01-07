@@ -14,7 +14,7 @@
       watcherSummaryVM.saveWatcher = saveWatcher;
 
       function goToActions() {
-        $state.go('watch.watchers.actions.list');
+        $state.go('watch.watchers.create.actions.list');
       }
 
       function saveWatcher() {
@@ -28,6 +28,7 @@
           elastic.createWatcher(name, watcherSummaryVM.definition)
             .success(function() {
               notifications.showSimple('The percolator with name "' + name + '" has successfully been created!');
+              $state.go('watch.watchers.list');
             })
             .error(function(error) {
               console.log('Error while creating the watcher with name ' + name + ': ' + error.data || "Request failed");

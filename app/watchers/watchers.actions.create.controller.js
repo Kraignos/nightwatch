@@ -26,7 +26,7 @@
         action[data.type] = watcherActionsCreateVM[data.type];
         watchers.addWatcherAction(watcherActionsCreateVM.name, action);
 
-        $state.go('watch.watchers.actions.list');
+        $state.go('watch.watchers.create.actions.list');
       }
 
       function addHeader(name, value) {

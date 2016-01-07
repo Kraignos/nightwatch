@@ -38,7 +38,7 @@
 
       function goToTrigger() {
         saveInput();
-        $state.go('watch.watchers.trigger');
+        $state.go('watch.watchers.create.trigger');
       }
 
       function getSearchRequestTypes() {

@@ -15,7 +15,8 @@
       percolators: percolators,
       deletePercolator: deletePercolator,
       createPercolator: createPercolator,
-      createWatcher: createWatcher
+      createWatcher: createWatcher,
+      watchers: watchers
     };
 
     function health() {
@@ -48,6 +49,10 @@
 
     function createWatcher(name, definition) {
       return $http.put('http://localhost:9200/_watcher/watch/' + name, definition);
+    }
+
+    function watchers() {
+      return $http.get('http://localhost:9200/.watches/_search');
     }
   }
 })();

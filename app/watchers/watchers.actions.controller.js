@@ -20,11 +20,11 @@
       watcherActionsVM.getActionTypes = getActionTypes;
 
       function goToConditions() {
-        $state.go('watch.watchers.conditions');
+        $state.go('watch.watchers.create.conditions');
       }
 
       function goToSummary() {
-        $state.go('watch.watchers.summary.pretty');
+        $state.go('watch.watchers.create.summary.pretty');
       }
 
       function displayCreateForm($event) {
@@ -45,9 +45,9 @@
           }
         }).then(function(action) {
           watchers.addWatcherAction(watcherActionsVM.name, action);
-          $state.go('watch.watchers.actions.reload');
+          $state.go('watch.watchers.create.actions.reload');
         }, function() {
-          $state.go('watch.watchers.actions.reload');
+          $state.go('watch.watchers.create.actions.reload');
         });
       }
 

@@ -37,12 +37,12 @@
 
       function goToTrigger() {
         saveCondition();
-        $state.go('watch.watchers.trigger');
+        $state.go('watch.watchers.create.trigger');
       }
 
       function goToActions() {
         saveCondition();
-        $state.go('watch.watchers.actions.list');
+        $state.go('watch.watchers.create.actions.list');
       }
 
       function getConditionTypes() {

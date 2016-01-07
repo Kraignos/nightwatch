@@ -1,29 +1,16 @@
-<div layout="row" layout-align="center start" layout-wrap layout-fill>
-  <md-sidenav class="md-sidenav-left" md-component-id="left" flex="20" md-is-locked-open="$mdMedia('gt-md')">
-    <md-toolbar class="md-theme-indigo">
-    </md-toolbar>
-    <md-divider></md-divider>
-    <md-toolbar class="md-theme-indigo">
-      <a ui-sref="watch.watchers.input" class="item" ui-sref-active="item-active"><h1 class="md-toolbar-tools">Input</h1></a>
-    </md-toolbar>
-    <md-divider></md-divider>
-    <md-toolbar class="md-theme-indigo">
-      <a ui-sref="watch.watchers.trigger" class="item" ui-sref-active="item-active"><h1 class="md-toolbar-tools">Trigger</h1></a>
-    </md-toolbar>
-    <md-divider></md-divider>
-    <md-toolbar class="md-theme-indigo">
-      <a ui-sref="watch.watchers.conditions" class="item" ui-sref-active="item-active"><h1 class="md-toolbar-tools">Condition</h1></a>
-    </md-toolbar>
-    <md-divider></md-divider>
-    <md-toolbar class="md-theme-indigo">
-      <a ui-sref="watch.watchers.actions.list" class="item" ui-sref-active="item-active"><h1 class="md-toolbar-tools">Actions</h1></a>
-    </md-toolbar>
-    <md-divider></md-divider>
-    <md-toolbar class="md-theme-indigo">
-      <a ui-sref="watch.watchers.summary.pretty" class="item" ui-sref-active="item-active"><h1 class="md-toolbar-tools">Summary</h1></a>
-    </md-toolbar>
-  </md-sidenav>
-  <md-content flex="80">
-    <div ui-view></div>
-  </md-content>
+<div layout="column" layout-align="center center">
+  <md-list ng-show="watchersListVM.displayWatchers()">
+    <md-subheader class="md-no-sticky">{{ watchersListVM.watchers.length }} watchers defined so far</md-subheader>
+    <md-list-item ng-repeat="watcher in watchersListVM.watchers">
+      <div class="md-list-item-text" layout="column" flex="85">
+        <h3>{{ watcher }}</h3>
+      </div>
+    </md-list-item>
+  </md-list>
+</div>
+<div layout="row" layout-align="center center" layout-fill>
+  <md-button class="md-fab md-accent md-hue-2" aria-label="Create a watcher" ng-click="watchersListVM.goToCreate()">
+      <md-tooltip md-direction="top" md-visible="tooltipVisible">Create a watcher</md-tooltip>
+      <md-icon class="material-icons md-primary md-48">border_color</md-icon>
+  </md-button>
 </div>

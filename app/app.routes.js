@@ -63,7 +63,7 @@
         })
         .state('watch', {
             url: '/watch',
-            abstract: 'true',
+            abstract: true,
             templateUrl: 'assets/templates/watch.html'
         })
         .state('watch.percolators', {
@@ -77,17 +77,31 @@
             }
         })
         .state('watch.watchers', {
-          abstract: true,
           url: '/watchers',
+          abstract: true,
           views: {
             'watchers': {
-              templateUrl: 'assets/templates/watch.watchers.html',
-              controller: 'WatchersCtrl',
-              controllerAs: 'watchersVM'
+              templateUrl: 'assets/templates/watch.watchers.list.html'
             }
           }
         })
-        .state('watch.watchers.input', {
+        .state('watch.watchers.list', {
+          url: '/list',
+          templateUrl: 'assets/templates/watch.watchers.html',
+          controller: 'WatchersListCtrl',
+          controllerAs: 'watchersListVM',
+          resolve: {
+            watchersListData: watchersListData
+          }
+        })
+        .state('watch.watchers.create', {
+          abstract: true,
+          url: '/create',
+          templateUrl: 'assets/templates/watch.watchers.create.html',
+          controller: 'WatchersCtrl',
+          controllerAs: 'watchersVM'
+        })
+        .state('watch.watchers.create.input', {
           url: '/input',
           templateUrl: 'assets/templates/watchers.input.html',
           resolve: {
@@ -97,7 +111,7 @@
           controller: 'WatcherInputCtrl',
           controllerAs: 'watcherInputVM'
         })
-        .state('watch.watchers.trigger', {
+        .state('watch.watchers.create.trigger', {
           url: '/trigger',
           templateUrl: 'assets/templates/watchers.trigger.html',
           resolve: {
@@ -107,7 +121,7 @@
           controller: 'WatcherTriggerCtrl',
           controllerAs: 'watcherTriggerVM'
         })
-        .state('watch.watchers.conditions', {
+        .state('watch.watchers.create.conditions', {
           url: '/conditions',
           templateUrl: 'assets/templates/watchers.conditions.html',
           resolve: {
@@ -117,7 +131,7 @@
           controller: 'WatcherConditionsCtrl',
           controllerAs: 'watcherConditionsVM'
         })
-        .state('watch.watchers.actions', {
+        .state('watch.watchers.create.actions', {
           url: '/actions',
           templateUrl: 'assets/templates/watchers.actions.html',
           abstract: true,
@@ -127,7 +141,7 @@
           controller: 'WatcherActionsCtrl',
           controllerAs: 'watcherActionsVM'
         })
-        .state('watch.watchers.actions.list', {
+        .state('watch.watchers.create.actions.list', {
           url: '/all',
           views: {
             'actions': {
@@ -140,7 +154,7 @@
             }
           }
         })
-        .state('watch.watchers.actions.reload', {
+        .state('watch.watchers.create.actions.reload', {
           url: '/reload',
           views: {
             'actions': {
@@ -153,7 +167,7 @@
             }
           }
         })
-        .state('watch.watchers.summary', {
+        .state('watch.watchers.create.summary', {
           url: '/summary',
           templateUrl: 'assets/templates/watchers.summary.html',
           abstract: true,
@@ -163,7 +177,7 @@
           controller: 'WatcherSummaryCtrl',
           controllerAs: 'watcherSummaryVM'
         })
-        .state('watch.watchers.summary.pretty', {
+        .state('watch.watchers.create.summary.pretty', {
           url: '/pretty',
           views: {
             'input': {
@@ -204,7 +218,7 @@
             }
           }
         })
-        .state('watch.watchers.summary.json', {
+        .state('watch.watchers.create.summary.json', {
           url: '/json',
           templateUrl: 'assets/templates/watchers/watchers.summary.json.html'
         })
@@ -221,6 +235,7 @@
     clusterStatus.$inject = ['elastic'];
     clusterIndices.$inject = ['elastic'];
     clusterNodes.$inject = ['elastic'];
+    watchersListData.$inject = ['elastic'];
     inputsData.$inject = ['watchers'];
     triggersData.$inject = ['watchers'];
     actionsData.$inject = ['watchers'];
@@ -243,6 +258,13 @@
       return elastic.nodesInfo().then(function(response) {
         return response.data.nodes;
       });
+    }
+
+    function watchersListData(elastic) {
+      return elastic.watchers()
+        .then(function(response) {
+          return _.map(response.data.hits.hits, function(w) { return w._id; });
+        });
     }
 
     function inputsData(watchers) {
