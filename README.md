@@ -1,11 +1,7 @@
 # Nightwatch
-Nightwatch is an Elastic Search plugin which allows you to deal with Percolator and Watcher features on your Elastic Search cluster.
+Manage your Watcher definitions in a beautiful way.
 
-You can:
-* Create, edit and delete percolators
-* Create and delete watchers
-
-Nightwatch is based on Angular & Angular Material.
+Nightwatch is an Elastic Search plugin which runs on your cluster and is based on Angular & Angular Material.
 
 ## Installation
 
@@ -22,6 +18,7 @@ Here are the features not supported by this plugin:
 * chain input
 * transform process
 * Slack attachments
+* execute a watcher outside of its triggering logic
 
 ## License
 
