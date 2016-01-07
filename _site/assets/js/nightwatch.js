@@ -1,9 +1,9 @@
-/*! nightwatch - v1.0.0 - 2016-01-07
+/*! nightwatch - v1.0.0 - 2016-01-08
 * Copyright (c) 2016 ; Licensed  */
 (function() {
   'use strict';
 
-  angular.module('nightwatch', ['ngMaterial', 'ui.router']);
+  angular.module('nightwatch', ['ngSanitize', 'ngMaterial', 'ui.router']);
 })();
 
 (function() {
@@ -228,7 +228,16 @@
         })
         .state('watch.watchers.create.summary.json', {
           url: '/json',
-          templateUrl: 'assets/templates/watchers/watchers.summary.json.html'
+          views: {
+            'json': {
+              templateUrl: 'assets/templates/watchers.summary.json.html',
+              resolve: {
+                jsonData: jsonData
+              },
+              controller: 'WatcherSummaryRawCtrl',
+              controllerAs: 'watcherSummaryRawVM'
+            }
+          }
         })
         .state('query', {
             url: '/query',
@@ -249,6 +258,7 @@
     actionsData.$inject = ['watchers'];
     conditionsData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
+    jsonData.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
@@ -271,7 +281,7 @@
     function watchersListData(elastic) {
       return elastic.watchers()
         .then(function(response) {
-          return _.map(response.data.hits.hits, function(w) { return w._id; });
+          return _.map(response.data.hits.hits, function(w) { return { id: w._id, active: w._source._status.state.active }; });
         });
     }
 
@@ -293,6 +303,11 @@
 
     function watcherSummary(watchers) {
       return watchers.getWatcherSummary();
+    }
+
+    function jsonData(watchers) {
+      var json = watchers.getWatcherSummary() || {};
+      return angular.toJson(angular.fromJson(json), true);
     }
   }
 })();
@@ -1289,6 +1304,34 @@
     }
 })();
 
+(function () {
+    'use strict';
+
+    angular.module('nightwatch')
+        .filter('prettify', prettify);
+
+    function prettify() {
+        return function (json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        };
+    }
+})();
+
 (function() {
   'use strict';
 
@@ -1870,6 +1913,7 @@
       watchersListVM.watchers = watchersListData || {};
       watchersListVM.displayWatchers = displayWatchers;
       watchersListVM.displayWatcher = displayWatcher;
+      watchersListVM.iconFor = iconFor;
       watchersListVM.goToCreate = goToCreate;
 
       function displayWatchers() {
@@ -1890,6 +1934,10 @@
       function goToCreate() {
         watchers.resetWatcher();
         $state.go('watch.watchers.create.input');
+      }
+
+      function iconFor(watcher) {
+        return watcher.active ? 'thumb_up' : 'thumb_down';
       }
     }
 })();
@@ -1960,6 +2008,21 @@
             });
         });
       }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('WatcherSummaryRawCtrl', WatcherSummaryRawCtrl);
+
+    WatcherSummaryRawCtrl.$inject = ['$scope', 'jsonData'];
+
+    function WatcherSummaryRawCtrl($scope, jsonData) {
+      var watcherSummaryRawVM = this;
+
+      watcherSummaryRawVM.json = jsonData;
     }
 })();
 

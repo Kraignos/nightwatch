@@ -220,7 +220,16 @@
         })
         .state('watch.watchers.create.summary.json', {
           url: '/json',
-          templateUrl: 'assets/templates/watchers/watchers.summary.json.html'
+          views: {
+            'json': {
+              templateUrl: 'assets/templates/watchers.summary.json.html',
+              resolve: {
+                jsonData: jsonData
+              },
+              controller: 'WatcherSummaryRawCtrl',
+              controllerAs: 'watcherSummaryRawVM'
+            }
+          }
         })
         .state('query', {
             url: '/query',
@@ -241,6 +250,7 @@
     actionsData.$inject = ['watchers'];
     conditionsData.$inject = ['watchers'];
     watcherSummary.$inject = ['watchers'];
+    jsonData.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
       return elastic.health().then(function(response) {
@@ -263,7 +273,7 @@
     function watchersListData(elastic) {
       return elastic.watchers()
         .then(function(response) {
-          return _.map(response.data.hits.hits, function(w) { return w._id; });
+          return _.map(response.data.hits.hits, function(w) { return { id: w._id, active: w._source._status.state.active }; });
         });
     }
 
@@ -285,6 +295,11 @@
 
     function watcherSummary(watchers) {
       return watchers.getWatcherSummary();
+    }
+
+    function jsonData(watchers) {
+      var json = watchers.getWatcherSummary() || {};
+      return angular.toJson(angular.fromJson(json), true);
     }
   }
 })();

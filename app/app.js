@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('nightwatch', ['ngMaterial', 'ui.router']);
+  angular.module('nightwatch', ['ngSanitize', 'ngMaterial', 'ui.router']);
 })();
