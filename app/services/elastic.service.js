@@ -21,43 +21,43 @@
     };
 
     function health() {
-      return $http.get('http://localhost:9200/_cluster/health');
+      return $http.get('/_cluster/health');
     }
 
     function indicesHealth() {
-      return $http.get('http://localhost:9200/_cluster/health?level=indices');
+      return $http.get('/_cluster/health?level=indices');
     }
 
     function nodesInfo() {
-      return $http.get('http://localhost:9200/_nodes');
+      return $http.get('/_nodes');
     }
 
     function percolators(indice) {
-      return $http.get('http://localhost:9200/' + indice + '/.percolator/_search');
+      return $http.get('/' + indice + '/.percolator/_search');
     }
 
     function deletePercolator(indice, p) {
-      return $http.delete('http://localhost:9200/' + indice + '/.percolator/' + p);
+      return $http.delete('/' + indice + '/.percolator/' + p);
     }
 
     function createPercolator(indice, name, query) {
-      return $http.put('http://localhost:9200/' + indice + '/.percolator/' + name, query);
+      return $http.put('/' + indice + '/.percolator/' + name, query);
     }
 
     function indiceInfo(indice) {
-      return $http.get('http://localhost:9200/' + indice);
+      return $http.get('/' + indice);
     }
 
     function createWatcher(name, definition) {
-      return $http.put('http://localhost:9200/_watcher/watch/' + name, definition);
+      return $http.put('/_watcher/watch/' + name, definition);
     }
 
     function getWatcher(name) {
-      return $http.get('http://localhost:9200/_watcher/watch/' + name);
+      return $http.get('/_watcher/watch/' + name);
     }
 
     function watchers() {
-      return $http.get('http://localhost:9200/.watches/_search');
+      return $http.get('/.watches/_search');
     }
   }
 })();

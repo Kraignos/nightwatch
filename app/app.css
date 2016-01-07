@@ -2,12 +2,12 @@
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(/assets/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: url(/_plugin/nightwatch/assets/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
   src: local('Material Icons'),
        local('MaterialIcons-Regular'),
-       url(http://localhost:9200/_plugin/nightwatch/assets/fonts/MaterialIcons-Regular.woff2) format('woff2'),
-       url(http://localhost:9200/_plugin/nightwatch/assets/fonts/MaterialIcons-Regular.woff) format('woff'),
-       url(http://localhost:9200/_plugin/nightwatch/assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
+       url(/_plugin/nightwatch/assets/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+       url(/_plugin/nightwatch/assets/fonts/MaterialIcons-Regular.woff) format('woff'),
+       url(/_plugin/nightwatch/assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
 
 .material-icons {
