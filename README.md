@@ -10,6 +10,7 @@ Nightwatch is based on Angular & Angular Material.
 ## Installation
 
 > sudo elasticsearch/bin/plugin install kraignos/nightwatch
+
 > open http://localhost:9200/_plugin/nightwatch
 
 ## Limitation
