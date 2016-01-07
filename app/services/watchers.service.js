@@ -39,6 +39,8 @@
       getActionTypes: getActionTypes,
       deleteAction: deleteAction,
       loadWatcher: loadWatcher,
+      resetWatcher: resetWatcher,
+      getControllerForWatcherType: getControllerForWatcherType,
       transformToArray: transformToArray
     }
 
@@ -218,6 +220,46 @@
       triggers = watcher.watch.trigger || {};
       conditions = watcher.watch.condition || {};
       actions = watcher.watch.actions || {};
+    }
+
+    function resetWatcher() {
+      inputs = triggers = conditions = actions = {};
+    }
+
+    function getControllerForWatcherType(type) {
+      var controllers = {
+          email: {
+            controller: 'WatcherActionsEmailCtrl',
+            controllerAs: 'watcherActionsEmailVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.email.html'
+          },
+          webhook: {
+            controller: 'WatcherActionsWebhookCtrl',
+            controllerAs: 'watcherActionsWebhookVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.webhook.html'
+          },
+          index: {
+            controller: 'WatcherActionsIndexCtrl',
+            controllerAs: 'watcherActionsIndexVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.index.html'
+          },
+          logging: {
+            controller: 'WatcherActionsLoggingCtrl',
+            controllerAs: 'watcherActionsLoggingVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.logging.html'
+          },
+          hipchat: {
+            controller: 'WatcherActionsHipChatCtrl',
+            controllerAs: 'watcherActionsHipChatVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.hipchat.html'
+          },
+          slack: {
+            controller: 'WatcherActionsSlackCtrl',
+            controllerAs: 'watcherActionsSlackVM',
+            templateUrl: 'assets/templates/actions/watchers.actions.slack.html'
+          }
+        };
+        return controllers[type];
     }
 
     function transformToArray(values) {

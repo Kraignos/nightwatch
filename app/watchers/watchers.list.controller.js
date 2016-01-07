@@ -30,6 +30,7 @@
       }
 
       function goToCreate() {
+        watchers.resetWatcher();
         $state.go('watch.watchers.create.input');
       }
     }
