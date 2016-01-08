@@ -223,12 +223,7 @@
               },
               controller: 'WatcherActionsListCtrl',
               controllerAs: 'watcherActionsListVM'
-            }
-          }
-        })
-        .state('watch.watchers.create.summary.json', {
-          url: '/json',
-          views: {
+            },
             'json': {
               templateUrl: 'assets/templates/watchers.summary.json.html',
               resolve: {
@@ -894,7 +889,6 @@
       var watcherActions = _.map(_.keys(actions), function(a) {
         return { name: a, type: _.keys(actions[a])[0], action: actions[a] };
       });
-      console.log('actions: ' + angular.toJson(watcherActions));
       return watcherActions;
     }
 
@@ -2015,14 +2009,53 @@
   'use strict';
 
   angular.module('nightwatch')
+    .controller('WatcherSummaryJsonController', WatcherSummaryJsonController);
+
+    WatcherSummaryJsonController.$inject = ['$scope', '$mdDialog', 'jsonData'];
+
+    function WatcherSummaryJsonController($scope, $mdDialog, jsonData) {
+      var watcherJsonVM = this;
+
+      watcherJsonVM.json = jsonData;
+      watcherJsonVM.cancelForm = cancelForm;
+      watcherJsonVM.close = close;
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function close() {
+        $mdDialog.hide();
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
     .controller('WatcherSummaryRawCtrl', WatcherSummaryRawCtrl);
 
-    WatcherSummaryRawCtrl.$inject = ['$scope', 'jsonData'];
+    WatcherSummaryRawCtrl.$inject = ['$scope', '$mdDialog', 'jsonData'];
 
-    function WatcherSummaryRawCtrl($scope, jsonData) {
+    function WatcherSummaryRawCtrl($scope, $mdDialog, jsonData) {
       var watcherSummaryRawVM = this;
 
       watcherSummaryRawVM.json = jsonData;
+      watcherSummaryRawVM.show = show;
+
+      function show($event) {
+        $mdDialog.show({
+          controller: 'WatcherSummaryJsonController',
+          controllerAs: 'watcherJsonVM',
+          templateUrl: 'assets/templates/watchers.summary.json.dialog.html',
+          parent: angular.element(document.body),
+          resolve: {
+            jsonData: function() { return watcherSummaryRawVM.json; }
+          },
+          targetEvent: event
+        });
+      }
     }
 })();
 

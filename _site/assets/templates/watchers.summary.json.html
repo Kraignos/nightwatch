@@ -1,3 +1,6 @@
-<div flex="100" layout-padding style="margin-top: 20px;">
-  <pre ng-bind-html="watcherSummaryRawVM.json | prettify"></pre>
+<div flex="100" flex-layout="center center">
+  <md-button class="md-fab md-mini md-primary md-hue-2" aria-label="Add" ng-click="watcherSummaryRawVM.show($event)">
+    <md-tooltip md-direction="top">Show definition as JSON</md-tooltip>
+    <md-icon class="material-icons md-primary md-48">code</md-icon>
+  </md-button>
 </div>
