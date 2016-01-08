@@ -1,0 +1,23 @@
+<md-dialog aria-label="Here is the JSON of your watcher definition" ng-cloak style="min-width: 60%; min-height: 100%;">
+<form>
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2>Here is the JSON of your watcher definition</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="watcherJsonVM.cancelForm()">
+        <md-icon class="material-icons md-48" aria-label="Close dialog">close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-dialog-content>
+    <div class="md-dialog-content">
+    <pre ng-bind-html="watcherJsonVM.json | prettify"></pre>
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-fill layout-align="center end">
+    <span flex></span>
+    <md-button ng-click="watcherJsonVM.close()" style="margin-right:20px;">
+      <md-icon class="material-icons">done</md-icon>&nbsp;Got it
+    </md-button>
+  </md-dialog-actions>
+</form>
+</md-dialog>

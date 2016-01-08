@@ -215,12 +215,7 @@
               },
               controller: 'WatcherActionsListCtrl',
               controllerAs: 'watcherActionsListVM'
-            }
-          }
-        })
-        .state('watch.watchers.create.summary.json', {
-          url: '/json',
-          views: {
+            },
             'json': {
               templateUrl: 'assets/templates/watchers.summary.json.html',
               resolve: {
