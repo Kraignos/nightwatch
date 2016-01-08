@@ -248,27 +248,38 @@
     jsonData.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
-      return elastic.health().then(function(response) {
-        return response.data;
-      });
+      return elastic.health()
+        .then(function(response) {
+          return response.data;
+        }, function(error) {
+          return {};
+        });
     }
 
     function clusterIndices(elastic) {
-      return elastic.indicesHealth().then(function(response) {
-        return response.data.indices;
-      });
+      return elastic.indicesHealth()
+        .then(function(response) {
+          return response.data.indices;
+        }, function(error) {
+          return {};
+        });
     }
 
     function clusterNodes(elastic) {
-      return elastic.nodesInfo().then(function(response) {
-        return response.data.nodes;
-      });
+      return elastic.nodesInfo()
+        .then(function(response) {
+          return response.data.nodes;
+        }, function(error) {
+          return {};
+        });
     }
 
     function watchersListData(elastic) {
       return elastic.watchers()
         .then(function(response) {
           return _.map(response.data.hits.hits, function(w) { return { id: w._id, active: w._source._status.state.active }; });
+        }, function(error) {
+          return {};
         });
     }
 
