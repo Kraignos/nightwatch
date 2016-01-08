@@ -9,6 +9,14 @@ Nightwatch is an Elastic Search plugin which runs on your cluster and is based o
 
 > open http://localhost:9200/_plugin/nightwatch
 
+## Docker
+
+> docker pull kraignos/nightwatch
+
+> docker run -p 9200:9200 -d kraignos/nightwatch
+
+Open http://YOUR_DOCKER_IP:9200/_plugin/nightwatch
+
 ## Limitation
 
 You have to have the Watcher plugin and the licence plugin installed on your cluster in order to use this plugin.
