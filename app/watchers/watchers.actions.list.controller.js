@@ -9,8 +9,8 @@
     function WatcherActionsListCtrl($scope, $state, $mdDialog, watchers, notifications, actionsData, editable) {
       var watcherActionsListVM = this;
       var icons = { email: 'mail' };
-
-      watcherActionsListVM.actions = actionsData;
+      
+      watcherActionsListVM.actions = actionsData || {};
       watcherActionsListVM.hasActions = hasActions;
       watcherActionsListVM.actionIcon = actionIcon;
       watcherActionsListVM.showAction = showAction;

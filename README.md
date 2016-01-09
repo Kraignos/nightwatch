@@ -11,9 +11,9 @@ Nightwatch is an Elastic Search plugin which runs on your cluster and is based o
 
 ## Docker
 
-> docker pull kraignos/nightwatch
+> docker pull kraignos/elastic-nightwatch
 
-> docker run -p 9200:9200 -d kraignos/nightwatch
+> docker run -p 9200:9200 -d kraignos/elastic-nightwatch
 
 Open http://YOUR_DOCKER_IP:9200/_plugin/nightwatch
 

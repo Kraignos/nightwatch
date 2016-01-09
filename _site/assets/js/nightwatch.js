@@ -871,9 +871,9 @@
       inputs = input;
     }
 
-    function setWatcherScheduleTrigger(schedule) {
+    function setWatcherScheduleTrigger(trigger) {
       // Only schedule trigger is availale in ES so far
-      triggers['schedule'] = schedule;
+      triggers['schedule'] = trigger;
     }
 
     function setWatcherCondition(condition) {
@@ -1031,7 +1031,10 @@
     }
 
     function resetWatcher() {
-      inputs = triggers = conditions = actions = {};
+      inputs = {};
+      triggers = {};
+      conditions = {};
+      actions = {};
     }
 
     function getControllerForWatcherType(type) {
@@ -1492,8 +1495,8 @@
     function WatcherActionsListCtrl($scope, $state, $mdDialog, watchers, notifications, actionsData, editable) {
       var watcherActionsListVM = this;
       var icons = { email: 'mail' };
-
-      watcherActionsListVM.actions = actionsData;
+      
+      watcherActionsListVM.actions = actionsData || {};
       watcherActionsListVM.hasActions = hasActions;
       watcherActionsListVM.actionIcon = actionIcon;
       watcherActionsListVM.showAction = showAction;

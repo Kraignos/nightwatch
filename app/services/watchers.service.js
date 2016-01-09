@@ -62,9 +62,9 @@
       inputs = input;
     }
 
-    function setWatcherScheduleTrigger(schedule) {
+    function setWatcherScheduleTrigger(trigger) {
       // Only schedule trigger is availale in ES so far
-      triggers['schedule'] = schedule;
+      triggers['schedule'] = trigger;
     }
 
     function setWatcherCondition(condition) {
@@ -222,7 +222,10 @@
     }
 
     function resetWatcher() {
-      inputs = triggers = conditions = actions = {};
+      inputs = {};
+      triggers = {};
+      conditions = {};
+      actions = {};
     }
 
     function getControllerForWatcherType(type) {
