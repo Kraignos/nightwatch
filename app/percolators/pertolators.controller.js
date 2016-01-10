@@ -24,7 +24,7 @@
 
       function loadIndices() {
         return elastic.indicesHealth().then(function(response) {
-          percolatorsVM.indices = _.keys(response.data.indices);
+          percolatorsVM.indices = _.filter(_.keys(response.data.indices), function(indice) { return indice.substring(0, 1) !== '.'; });
         });
       }
 
