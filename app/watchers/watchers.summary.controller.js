@@ -27,7 +27,7 @@
         }).then(function(name) {
           elastic.createWatcher(name, watcherSummaryVM.definition)
             .success(function() {
-              notifications.showSimple('The percolator with name "' + name + '" has successfully been created!');
+              notifications.showSimple('The watcher with name "' + name + '" has successfully been created!');
               $state.go('watch.watchers.list');
             })
             .error(function(error) {
