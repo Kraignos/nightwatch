@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2016-01-09
+/*! nightwatch - v1.0.0 - 2016-01-10
 * Copyright (c) 2016 ; Licensed  */
 (function() {
   'use strict';
@@ -233,14 +233,6 @@
               controllerAs: 'watcherSummaryRawVM'
             }
           }
-        })
-        .state('query', {
-            url: '/query',
-            template: '<h5>Query</h5>'
-        })
-        .state('settings', {
-            url: '/settings',
-            template: '<h5>Settings</h5>'
         });
     }
 
@@ -2006,7 +1998,7 @@
         }).then(function(name) {
           elastic.createWatcher(name, watcherSummaryVM.definition)
             .success(function() {
-              notifications.showSimple('The percolator with name "' + name + '" has successfully been created!');
+              notifications.showSimple('The watcher with name "' + name + '" has successfully been created!');
               $state.go('watch.watchers.list');
             })
             .error(function(error) {

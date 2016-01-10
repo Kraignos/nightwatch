@@ -225,14 +225,6 @@
               controllerAs: 'watcherSummaryRawVM'
             }
           }
-        })
-        .state('query', {
-            url: '/query',
-            template: '<h5>Query</h5>'
-        })
-        .state('settings', {
-            url: '/settings',
-            template: '<h5>Settings</h5>'
         });
     }
 
