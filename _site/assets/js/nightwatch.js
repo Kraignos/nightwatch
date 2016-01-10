@@ -537,82 +537,6 @@
   'use strict';
 
   angular.module('nightwatch')
-    .controller('PercolatorCreateCtrl', PercolatorCreateCtrl);
-
-    PercolatorCreateCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data', 'notifications'];
-
-    function PercolatorCreateCtrl($scope, $mdDialog, elastic, data, notifications) {
-      var percolatorsCreateVM = this;
-
-      percolatorsCreateVM.indice = data.indice;
-      percolatorsCreateVM.name = null;
-      percolatorsCreateVM.query = null;
-
-      percolatorsCreateVM.createPercolator = createPercolator;
-      percolatorsCreateVM.cancelForm = cancelForm;
-
-      function createPercolator() {
-        if (!_.isEmpty(percolatorsCreateVM.name) && !_.isEmpty(percolatorsCreateVM.query)) {
-          elastic.createPercolator(percolatorsCreateVM.indice, percolatorsCreateVM.name, percolatorsCreateVM.query)
-            .success(function() {
-              closeForm({ '_id': percolatorsCreateVM.name, '_source': percolatorsCreateVM.query });
-              notifications.showSimple('The percolator with name "' + percolatorsCreateVM.name + '" has been created!');
-            })
-            .error(function() {
-              $mdDialog.cancel();
-              notifications.showSimple('An error occured while creating the percolator with name "' + percolatorsCreateVM.name + '"...');
-            });
-        }
-      }
-
-      function cancelForm() {
-        $mdDialog.cancel();
-      }
-
-      function closeForm(percolator) {
-        $mdDialog.hide(percolator);
-      }
-    }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('nightwatch')
-    .controller('PercolatorMatchCtrl', PercolatorMatchCtrl);
-
-    PercolatorMatchCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data'];
-
-    function PercolatorMatchCtrl($scope, $mdDialog, elastic, data) {
-      var percolatorMatchVM = this;
-
-      percolatorMatchVM.indice = data.indice;
-      percolatorMatchVM.percolator = data.percolator;
-      percolatorMatchVM.document = '';
-      percolatorMatchVM.mappings = null;
-      percolatorMatchVM.mapping = null;
-
-      percolatorMatchVM.loadMappings = loadMappings;
-      percolatorMatchVM.cancelForm = cancelForm;
-
-      function loadMappings() {
-        return elastic.indiceInfo(percolatorMatchVM.indice).then(function(response) {
-          percolatorMatchVM.mappings = _.filter(_.keys(response.data[percolatorMatchVM.indice].mappings), function(m) {
-            return m !== '.percolator'
-          });
-        });
-      }
-
-      function cancelForm() {
-        $mdDialog.cancel();
-      }
-    }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('nightwatch')
     .controller('PercolatorsCtrl', PercolatorsCtrl);
 
     PercolatorsCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'notifications'];
@@ -628,6 +552,7 @@
       percolatorsVM.loadIndices = loadIndices;
       percolatorsVM.loadPercolators = loadPercolators;
       percolatorsVM.deletePercolator = deletePercolator;
+      percolatorsVM.displayJson = displayJson;
       percolatorsVM.displayForm = displayForm;
       percolatorsVM.cancelForm = cancelForm;
       percolatorsVM.matchPercolator = matchPercolator;
@@ -670,6 +595,19 @@
         });
       }
 
+      function displayJson(event, json) {
+        $mdDialog.show({
+          controller: 'PercolatorDetailsCtrl',
+          controllerAs: 'percolatorsDetailsVM',
+          templateUrl: 'assets/templates/percolator.json.dialog.html',
+          parent: angular.element(document.body),
+          resolve: {
+            percolatorJsonData: function() { return angular.toJson(angular.fromJson(json), true); }
+          },
+          targetEvent: event
+        });
+      }
+
       function displayForm(event, indice) {
         $mdDialog.show({
           controller: 'PercolatorCreateCtrl',
@@ -709,6 +647,107 @@
 
       function getSummary(source) {
         return source.length > 150 ? source.substring(0, 150) + '...' : source;
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('PercolatorCreateCtrl', PercolatorCreateCtrl);
+
+    PercolatorCreateCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data', 'notifications'];
+
+    function PercolatorCreateCtrl($scope, $mdDialog, elastic, data, notifications) {
+      var percolatorsCreateVM = this;
+
+      percolatorsCreateVM.indice = data.indice;
+      percolatorsCreateVM.name = null;
+      percolatorsCreateVM.query = null;
+
+      percolatorsCreateVM.createPercolator = createPercolator;
+      percolatorsCreateVM.cancelForm = cancelForm;
+
+      function createPercolator() {
+        if (!_.isEmpty(percolatorsCreateVM.name) && !_.isEmpty(percolatorsCreateVM.query)) {
+          elastic.createPercolator(percolatorsCreateVM.indice, percolatorsCreateVM.name, percolatorsCreateVM.query)
+            .success(function() {
+              closeForm({ '_id': percolatorsCreateVM.name, '_source': percolatorsCreateVM.query });
+              notifications.showSimple('The percolator with name "' + percolatorsCreateVM.name + '" has been created!');
+            })
+            .error(function() {
+              $mdDialog.cancel();
+              notifications.showSimple('An error occured while creating the percolator with name "' + percolatorsCreateVM.name + '"...');
+            });
+        }
+      }
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function closeForm(percolator) {
+        $mdDialog.hide(percolator);
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('PercolatorDetailsCtrl', PercolatorDetailsCtrl);
+
+    PercolatorDetailsCtrl.$inject = ['$scope', '$mdDialog', 'percolatorJsonData'];
+
+    function PercolatorDetailsCtrl($scope, $mdDialog, percolatorJsonData) {
+      var percolatorsDetailsVM = this;
+
+      percolatorsDetailsVM.json = percolatorJsonData;
+      percolatorsDetailsVM.cancelForm = cancelForm;
+      percolatorsDetailsVM.close = close;
+
+      function cancelForm() {
+        $mdDialog.cancel();
+      }
+
+      function close() {
+        $mdDialog.hide();
+      }
+    }
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('nightwatch')
+    .controller('PercolatorMatchCtrl', PercolatorMatchCtrl);
+
+    PercolatorMatchCtrl.$inject = ['$scope', '$mdDialog', 'elastic', 'data'];
+
+    function PercolatorMatchCtrl($scope, $mdDialog, elastic, data) {
+      var percolatorMatchVM = this;
+
+      percolatorMatchVM.indice = data.indice;
+      percolatorMatchVM.percolator = data.percolator;
+      percolatorMatchVM.document = '';
+      percolatorMatchVM.mappings = null;
+      percolatorMatchVM.mapping = null;
+
+      percolatorMatchVM.loadMappings = loadMappings;
+      percolatorMatchVM.cancelForm = cancelForm;
+
+      function loadMappings() {
+        return elastic.indiceInfo(percolatorMatchVM.indice).then(function(response) {
+          percolatorMatchVM.mappings = _.filter(_.keys(response.data[percolatorMatchVM.indice].mappings), function(m) {
+            return m !== '.percolator'
+          });
+        });
+      }
+
+      function cancelForm() {
+        $mdDialog.cancel();
       }
     }
 })();

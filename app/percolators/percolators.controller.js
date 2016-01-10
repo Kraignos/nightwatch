@@ -17,6 +17,7 @@
       percolatorsVM.loadIndices = loadIndices;
       percolatorsVM.loadPercolators = loadPercolators;
       percolatorsVM.deletePercolator = deletePercolator;
+      percolatorsVM.displayJson = displayJson;
       percolatorsVM.displayForm = displayForm;
       percolatorsVM.cancelForm = cancelForm;
       percolatorsVM.matchPercolator = matchPercolator;
@@ -56,6 +57,19 @@
             .error(function() {
               notifications.showSimple('An error occured while deleting the percolator with name "' + p + '"...');
             });
+        });
+      }
+
+      function displayJson(event, json) {
+        $mdDialog.show({
+          controller: 'PercolatorDetailsCtrl',
+          controllerAs: 'percolatorsDetailsVM',
+          templateUrl: 'assets/templates/percolator.json.dialog.html',
+          parent: angular.element(document.body),
+          resolve: {
+            percolatorJsonData: function() { return angular.toJson(angular.fromJson(json), true); }
+          },
+          targetEvent: event
         });
       }
 
