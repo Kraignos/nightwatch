@@ -16,6 +16,7 @@
       deletePercolator: deletePercolator,
       createPercolator: createPercolator,
       createWatcher: createWatcher,
+      deleteWatcher: deleteWatcher,
       getWatcher: getWatcher,
       watchers: watchers,
       updateWatcherState: updateWatcherState
@@ -51,6 +52,10 @@
 
     function createWatcher(name, definition) {
       return $http.put('/_watcher/watch/' + name, definition);
+    }
+
+    function deleteWatcher(name) {
+      return $http.delete('/_watcher/watch/' + name);
     }
 
     function getWatcher(name) {

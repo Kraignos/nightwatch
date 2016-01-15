@@ -661,7 +661,7 @@
         // Appending dialog to document.body to cover sidenav in docs app
         var confirm = $mdDialog.confirm()
               .title('Are you sure you want to delete this percolator?')
-              .textContent('The percolator named "' + p + '" will be deleted definitively.')
+              .textContent('The percolator called "' + p + '" will be deleted definitively. This action is irreversible!')
               .ariaLabel('Delete the percolator')
               .targetEvent(event)
               .ok('Yes, delete it')
@@ -716,7 +716,8 @@
       }
 
       function getSummary(source) {
-        return source.length > 150 ? source.substring(0, 150) + '...' : source;
+        var json = angular.toJson(source);
+        return json.length > 100 ? json.substring(0, 100) + ' [...]' : json;
       }
     }
 })();
@@ -739,6 +740,7 @@
       deletePercolator: deletePercolator,
       createPercolator: createPercolator,
       createWatcher: createWatcher,
+      deleteWatcher: deleteWatcher,
       getWatcher: getWatcher,
       watchers: watchers,
       updateWatcherState: updateWatcherState
@@ -774,6 +776,10 @@
 
     function createWatcher(name, definition) {
       return $http.put('/_watcher/watch/' + name, definition);
+    }
+
+    function deleteWatcher(name) {
+      return $http.delete('/_watcher/watch/' + name);
     }
 
     function getWatcher(name) {
@@ -1915,15 +1921,16 @@
   angular.module('nightwatch')
     .controller('WatchersListCtrl', WatchersListCtrl);
 
-    WatchersListCtrl.$inject = ['$scope', '$state', 'watchers', 'elastic', 'notifications', 'watchersListData'];
+    WatchersListCtrl.$inject = ['$scope', '$state', '$mdDialog', 'watchers', 'elastic', 'notifications', 'watchersListData'];
 
-    function WatchersListCtrl($scope, $state, watchers, elastic, notifications, watchersListData) {
+    function WatchersListCtrl($scope, $state, $mdDialog, watchers, elastic, notifications, watchersListData) {
       var watchersListVM = this;
 
       watchersListVM.watchers = watchersListData || {};
       watchersListVM.displayWatchers = displayWatchers;
       watchersListVM.displayWatcher = displayWatcher;
       watchersListVM.updateState = updateState;
+      watchersListVM.deleteWatcher = deleteWatcher;
       watchersListVM.iconFor = iconFor;
       watchersListVM.goToCreate = goToCreate;
 
@@ -1951,6 +1958,26 @@
           .error(function(error) {
             notifications.showSimple('An error occured while updating watcher with name: "' + watcher.id + '"...');
           });
+      }
+
+      function deleteWatcher(event, name, i) {
+        var confirm = $mdDialog.confirm()
+              .title('Are you sure you want to delete this watcher?')
+              .textContent('The watched called "' + name + '" will be deleted definitively. This action is irreversible!')
+              .ariaLabel('Delete the watcher')
+              .targetEvent(event)
+              .ok('Yes, delete it')
+              .cancel('No, don\'t do it');
+        $mdDialog.show(confirm).then(function() {
+          elastic.deleteWatcher(name)
+            .success(function(w) {
+              watchersListVM.watchers.splice(i, 1);
+              notifications.showSimple('Watcher with name: "' + name + '" has been deleted!');
+            })
+            .error(function(error) {
+              notifications.showSimple('An error occured while deleting watcher with name: "' + name + '"...');
+            });
+        });
       }
 
       function goToCreate() {
