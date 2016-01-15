@@ -17,7 +17,8 @@
       createPercolator: createPercolator,
       createWatcher: createWatcher,
       getWatcher: getWatcher,
-      watchers: watchers
+      watchers: watchers,
+      updateWatcherState: updateWatcherState
     };
 
     function health() {
@@ -58,6 +59,10 @@
 
     function watchers() {
       return $http.get('/.watches/_search');
+    }
+
+    function updateWatcherState(name, state) {
+      return $http.put('/_watcher/watch/' + name + '/' + (state ? '_activate' : '_deactivate'));
     }
   }
 })();

@@ -4,14 +4,15 @@
   angular.module('nightwatch')
     .controller('WatchersListCtrl', WatchersListCtrl);
 
-    WatchersListCtrl.$inject = ['$scope', '$state', 'watchers', 'elastic', 'watchersListData'];
+    WatchersListCtrl.$inject = ['$scope', '$state', 'watchers', 'elastic', 'notifications', 'watchersListData'];
 
-    function WatchersListCtrl($scope, $state, watchers, elastic, watchersListData) {
+    function WatchersListCtrl($scope, $state, watchers, elastic, notifications, watchersListData) {
       var watchersListVM = this;
 
       watchersListVM.watchers = watchersListData || {};
       watchersListVM.displayWatchers = displayWatchers;
       watchersListVM.displayWatcher = displayWatcher;
+      watchersListVM.updateState = updateState;
       watchersListVM.iconFor = iconFor;
       watchersListVM.goToCreate = goToCreate;
 
@@ -27,6 +28,17 @@
           })
           .error(function(error) {
 
+          });
+      }
+
+      function updateState(watcher) {
+        elastic.updateWatcherState(watcher.id, !watcher.active)
+          .success(function(w) {
+            watcher.active = !watcher.active;
+            notifications.showSimple('Watcher with name: "' + watcher.id + '" has been updated!');
+          })
+          .error(function(error) {
+            notifications.showSimple('An error occured while updating watcher with name: "' + watcher.id + '"...');
           });
       }
 

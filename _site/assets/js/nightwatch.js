@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2016-01-08
+/*! nightwatch - v1.0.0 - 2016-01-15
 * Copyright (c) 2016 ; Licensed  */
 (function() {
   'use strict';
@@ -256,27 +256,38 @@
     jsonData.$inject = ['watchers'];
 
     function clusterStatus(elastic) {
-      return elastic.health().then(function(response) {
-        return response.data;
-      });
+      return elastic.health()
+        .then(function(response) {
+          return response.data;
+        }, function(error) {
+          return {};
+        });
     }
 
     function clusterIndices(elastic) {
-      return elastic.indicesHealth().then(function(response) {
-        return response.data.indices;
-      });
+      return elastic.indicesHealth()
+        .then(function(response) {
+          return response.data.indices;
+        }, function(error) {
+          return {};
+        });
     }
 
     function clusterNodes(elastic) {
-      return elastic.nodesInfo().then(function(response) {
-        return response.data.nodes;
-      });
+      return elastic.nodesInfo()
+        .then(function(response) {
+          return response.data.nodes;
+        }, function(error) {
+          return {};
+        });
     }
 
     function watchersListData(elastic) {
       return elastic.watchers()
         .then(function(response) {
           return _.map(response.data.hits.hits, function(w) { return { id: w._id, active: w._source._status.state.active }; });
+        }, function(error) {
+          return {};
         });
     }
 
@@ -729,7 +740,8 @@
       createPercolator: createPercolator,
       createWatcher: createWatcher,
       getWatcher: getWatcher,
-      watchers: watchers
+      watchers: watchers,
+      updateWatcherState: updateWatcherState
     };
 
     function health() {
@@ -770,6 +782,10 @@
 
     function watchers() {
       return $http.get('/.watches/_search');
+    }
+
+    function updateWatcherState(name, state) {
+      return $http.put('/_watcher/watch/' + name + '/' + (state ? '_activate' : '_deactivate'));
     }
   }
 })();
@@ -1899,14 +1915,15 @@
   angular.module('nightwatch')
     .controller('WatchersListCtrl', WatchersListCtrl);
 
-    WatchersListCtrl.$inject = ['$scope', '$state', 'watchers', 'elastic', 'watchersListData'];
+    WatchersListCtrl.$inject = ['$scope', '$state', 'watchers', 'elastic', 'notifications', 'watchersListData'];
 
-    function WatchersListCtrl($scope, $state, watchers, elastic, watchersListData) {
+    function WatchersListCtrl($scope, $state, watchers, elastic, notifications, watchersListData) {
       var watchersListVM = this;
 
       watchersListVM.watchers = watchersListData || {};
       watchersListVM.displayWatchers = displayWatchers;
       watchersListVM.displayWatcher = displayWatcher;
+      watchersListVM.updateState = updateState;
       watchersListVM.iconFor = iconFor;
       watchersListVM.goToCreate = goToCreate;
 
@@ -1922,6 +1939,17 @@
           })
           .error(function(error) {
 
+          });
+      }
+
+      function updateState(watcher) {
+        elastic.updateWatcherState(watcher.id, !watcher.active)
+          .success(function(w) {
+            watcher.active = !watcher.active;
+            notifications.showSimple('Watcher with name: "' + watcher.id + '" has been updated!');
+          })
+          .error(function(error) {
+            notifications.showSimple('An error occured while updating watcher with name: "' + watcher.id + '"...');
           });
       }
 

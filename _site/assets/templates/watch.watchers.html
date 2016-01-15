@@ -10,10 +10,14 @@
           </md-button>
         </md-fab-trigger>
         <md-fab-actions>
-          <md-button aria-label="See definition" class="md-fab md-raised md-mini md-primary"  ng-click="watchersListVM.displayWatcher(watcher.id)">
+          <md-button aria-label="See definition" class="md-fab md-raised md-mini md-primary" ng-click="watchersListVM.displayWatcher(watcher.id)">
             <md-tooltip md-direction="top" md-visible="tooltipVisible">See definition</md-tooltip>
             <md-icon class="material-icons">loupe</md-icon>
           </md-button>
+            <md-button aria-label="Update state" class="md-fab md-raised md-mini md-primary" ng-click="watchersListVM.updateState(watcher)">
+              <md-tooltip md-direction="top" md-visible="tooltipVisible">{{ watcher.active ? 'Deactivate' : 'Activate' }}</md-tooltip>
+              <md-icon class="material-icons">{{ watcher.active ? 'stop' : 'play_arrow' }}</md-icon>
+            </md-button>
           <md-button aria-label="Delete" class="md-fab md-raised md-mini md-warn" ng-click="watchersListVM.deleteWatcher($event, watcher.id, $index)">
             <md-tooltip md-direction="top" md-visible="tooltipVisible">Delete</md-tooltip>
             <md-icon class="material-icons">delete</md-icon>
