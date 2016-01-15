@@ -97,7 +97,8 @@
       }
 
       function getSummary(source) {
-        return source.length > 150 ? source.substring(0, 150) + '...' : source;
+        var json = angular.toJson(source);
+        return json.length > 100 ? json.substring(0, 100) + ' [...]' : json;
       }
     }
 })();
