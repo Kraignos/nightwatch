@@ -16,8 +16,10 @@
       deletePercolator: deletePercolator,
       createPercolator: createPercolator,
       createWatcher: createWatcher,
+      deleteWatcher: deleteWatcher,
       getWatcher: getWatcher,
-      watchers: watchers
+      watchers: watchers,
+      updateWatcherState: updateWatcherState
     };
 
     function health() {
@@ -52,12 +54,20 @@
       return $http.put('/_watcher/watch/' + name, definition);
     }
 
+    function deleteWatcher(name) {
+      return $http.delete('/_watcher/watch/' + name);
+    }
+
     function getWatcher(name) {
       return $http.get('/_watcher/watch/' + name);
     }
 
     function watchers() {
       return $http.get('/.watches/_search');
+    }
+
+    function updateWatcherState(name, state) {
+      return $http.put('/_watcher/watch/' + name + '/' + (state ? '_activate' : '_deactivate'));
     }
   }
 })();

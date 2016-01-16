@@ -43,7 +43,7 @@
         // Appending dialog to document.body to cover sidenav in docs app
         var confirm = $mdDialog.confirm()
               .title('Are you sure you want to delete this percolator?')
-              .textContent('The percolator named "' + p + '" will be deleted definitively.')
+              .textContent('The percolator called "' + p + '" will be deleted definitively. This action is irreversible!')
               .ariaLabel('Delete the percolator')
               .targetEvent(event)
               .ok('Yes, delete it')
@@ -111,7 +111,8 @@
       }
 
       function getSummary(source) {
-        return source.length > 150 ? source.substring(0, 150) + '...' : source;
+        var json = angular.toJson(source);
+        return json.length > 100 ? json.substring(0, 100) + ' [...]' : json;
       }
     }
 })();
