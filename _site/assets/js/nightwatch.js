@@ -1,4 +1,4 @@
-/*! nightwatch - v1.0.0 - 2016-01-15
+/*! nightwatch - v1.0.0 - 2016-08-31
 * Copyright (c) 2016 ; Licensed  */
 (function() {
   'use strict';
