@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/*! nightwatch - v1.0.0 - 2016-01-10
-=======
-/*! nightwatch - v1.0.0 - 2016-01-15
->>>>>>> develop
+/*! nightwatch - v1.0.0 - 2016-09-22
 * Copyright (c) 2016 ; Licensed  */
 (function() {
   'use strict';
